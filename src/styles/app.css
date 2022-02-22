@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.menu {
+    grid-area: menu;
+}
+
+.sidebar {
+    grid-area: sidebar;
+}
+
+/* .big-menu {
+	width: 200px;
+}
+.small-menu {
+	width: 60px;
+	
+} */
