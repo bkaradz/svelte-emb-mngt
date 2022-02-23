@@ -1,7 +1,7 @@
 <script>
 	import { page } from '$app/stores';
 	import { toggleMenu, anchorList } from '../stores/side-menu-store';
-    let src = '../../static/small_logo.png';
+	let src = '../../static/small_logo.png';
 	let location;
 	$: location;
 	if (typeof window !== 'undefined') {
@@ -10,7 +10,7 @@
 </script>
 
 <nav class="sidebar bg-blue-600 flex flex-col relative">
-    <img src={src} class="p-1 pt-3 h-16 object-scale-down" alt="Company Logo" >
+	<img {src} class="p-1 pt-3 h-16 object-scale-down" alt="Company Logo" />
 	<input
 		type="checkbox"
 		class="hidden"
@@ -55,12 +55,11 @@
 				<li class="flex w-full mt-2">
 					<a
 						href={tag.url}
-						class="flex flex-row w-full p-4 rounded-l-lg hover:bg-purple-600 hover:text-white  {$page
-							.url.pathname === tag.url
-							? `bg-gray-200 text-purple-600`
-							: `text-white bg-blue-500`}"
+						class="flex flex-row w-full p-4 rounded-l-lg   {$page.url.pathname === tag.url
+							? `bg-gray-200 text-purple-600 hover:bg-purple-400 hover:text-blue-600`
+							: `bg-blue-500 text-white hover:bg-purple-500 hover:text-white`}"
 					>
-						<span>{@html tag.icon}</span>  <span class="ml-3">{$toggleMenu ? tag.name : ''}</span>
+						<span>{@html tag.icon}</span> <span class="ml-3">{$toggleMenu ? tag.name : ''}</span>
 					</a>
 				</li>
 			{/each}
