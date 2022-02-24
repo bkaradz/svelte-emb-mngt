@@ -12,7 +12,7 @@
 	<Menu />
 	<!-- <div class="menu bg-gray-300">
 	</div> -->
-	<div class="main bg-gray-200">
+	<div class="main bg-neutral-200">
 		<slot />
 	</div>
 </div>
