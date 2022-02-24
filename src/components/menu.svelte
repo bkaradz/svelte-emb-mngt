@@ -1,10 +1,25 @@
 <script>
-	let loginMenu = true;
+	import { clickOutside } from '../utility/clickOutside';
+	let loginMenuOpen = false;
 	function handleClick() {
-		loginMenu = !loginMenu;
+		loginMenuOpen = !loginMenuOpen;
 	}
-	$: loginMenu;
+	$: loginMenuOpen;
+
+	function handleClickOutside(event) {
+		if (loginMenuOpen) {
+			loginMenuOpen = !loginMenuOpen;
+		}
+	}
+
+	function handleKeyDown(event) {
+		if (event.key === 'Escape') {
+			loginMenuOpen = !loginMenuOpen;
+		}
+	}
 </script>
+
+<svelte:window on:keydown={handleKeyDown} />
 
 <div class="menu flex flex-row justify-end items-center bg-neutral-100 drop-shadow-md ">
 	<span class="relative inline-block mr-8">
@@ -37,9 +52,11 @@
 		</button>
 
 		<div
-			class="{loginMenu
-				? 'hidden'
-				: ''} absolute right-0 w-60 px-5 py-3 dark:bg-gray-800 bg-blue-500 rounded-lg shadow border dark:border-transparent mt-1"
+			use:clickOutside
+			on:click_outside={handleClickOutside}
+			class="{loginMenuOpen
+				? ''
+				: 'hidden'} absolute right-0 w-60 px-5 py-3 bg-blue-500 rounded-lg shadow border dark:border-transparent mt-1"
 		>
 			<ul class="space-y-3 text-white">
 				<li class="font-medium">
