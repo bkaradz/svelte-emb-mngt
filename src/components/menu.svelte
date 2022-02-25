@@ -21,7 +21,7 @@
 
 <svelte:window on:keydown={handleKeyDown} />
 
-<div class="menu flex flex-row justify-end items-center bg-neutral-100 drop-shadow-md ">
+<div class="menu flex flex-row justify-end items-center bg-neutral-100 drop-shadow-md z-10">
 	<span class="relative inline-block mr-8">
 		<svg
 			class="w-7 h-7 fill-blue-500 stroke-blue-600"

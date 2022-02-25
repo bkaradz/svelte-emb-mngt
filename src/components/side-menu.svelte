@@ -9,7 +9,7 @@
 	}
 </script>
 
-<nav class="sidebar bg-blue-600 flex flex-col relative">
+<nav class="sidebar bg-blue-600 flex flex-col relative z-40">
 	<img {src} class="p-1 pt-3 h-16 object-scale-down" alt="Company Logo" />
 	<input
 		type="checkbox"
