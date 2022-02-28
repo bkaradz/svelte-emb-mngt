@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { clickOutside } from '../utility/clickOutside';
 	let loginMenuOpen = false;
 	function handleClick() {
@@ -41,7 +41,7 @@
 			>122</span
 		>
 	</span>
-
+ 
 	<div class="relative mr-6">
 		<!-- Dropdown toggle button -->
 		<button
@@ -53,7 +53,7 @@
 
 		<div
 			use:clickOutside
-			on:click_outside={handleClickOutside}
+			on:clickOutside={handleClickOutside}
 			class="{loginMenuOpen
 				? ''
 				: 'hidden'} absolute right-0 w-60 px-5 py-3 bg-blue-500 rounded-lg shadow border dark:border-transparent mt-1"

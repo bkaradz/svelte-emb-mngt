@@ -11,3 +11,9 @@ declare namespace App {
 
 	interface Stuff {}
 }
+
+declare namespace svelte.JSX {
+	interface DOMAttributes<T extends EventHandler> {
+		onclickOutside?: MouseEventHandler<T> | undefined | null;
+	}
+}

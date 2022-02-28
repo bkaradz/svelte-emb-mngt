@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { toggleMenu } from '../stores/side-menu-store';
 	import Menu from '../components/menu.svelte';
 	import SideMenu from '../components/side-menu.svelte';

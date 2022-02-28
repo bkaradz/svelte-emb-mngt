@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/stores';
 	import { toggleMenu, anchorList } from '../stores/side-menu-store';
 	let src = '../../static/small_logo.png';
-	let location;
+	let location: string;
 	$: location;
 	if (typeof window !== 'undefined') {
 		location = window.location.pathname;
