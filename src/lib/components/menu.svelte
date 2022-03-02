@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { clickOutside } from '../utility/clickOutside';
+	import { clickOutside } from '$lib/utility/clickOutside';
 	let loginMenuOpen = false;
 	function handleClick() {
 		loginMenuOpen = !loginMenuOpen;
@@ -21,10 +21,10 @@
 
 <svelte:window on:keydown={handleKeyDown} />
 
-<div class="menu flex flex-row justify-end items-center bg-neutral-100 drop-shadow-md z-10">
-	<span class="relative inline-block mr-8">
+<div class="menu z-10 flex flex-row items-center justify-end bg-neutral-100 drop-shadow-md">
+	<span class="relative mr-8 inline-block">
 		<svg
-			class="w-7 h-7 fill-blue-500 stroke-blue-600"
+			class="h-7 w-7 fill-blue-500 stroke-blue-600"
 			fill="none"
 			stroke="currentColor"
 			viewBox="0 0 24 24"
@@ -37,16 +37,16 @@
 			/></svg
 		>
 		<span
-			class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-purple-600 rounded-full"
+			class="absolute top-0 right-0 inline-flex translate-x-1/2 -translate-y-1/2 transform items-center justify-center rounded-full bg-purple-600 px-2 py-1 text-xs font-bold leading-none text-red-100"
 			>122</span
 		>
 	</span>
- 
+
 	<div class="relative mr-6">
 		<!-- Dropdown toggle button -->
 		<button
 			on:click={handleClick}
-			class="flex justify-center items-center bg-purple-600 w-12 h-12 rounded-full mr-2 border-2 border-solid border-white"
+			class="mr-2 flex h-12 w-12 items-center justify-center rounded-full border-2 border-solid border-white bg-purple-600"
 		>
 			<p class="text-white">B K</p>
 		</button>
@@ -56,18 +56,18 @@
 			on:clickOutside={handleClickOutside}
 			class="{loginMenuOpen
 				? ''
-				: 'hidden'} absolute right-0 w-60 px-5 py-3 bg-blue-500 rounded-lg shadow border dark:border-transparent mt-1"
+				: 'hidden'} absolute right-0 mt-1 w-60 rounded-lg border bg-blue-500 px-5 py-3 shadow dark:border-transparent"
 		>
 			<ul class="space-y-3 text-white">
 				<li class="font-medium">
 					<a
 						href="/"
 						on:click={handleClick}
-						class="flex items-center transform transition-colors duration-200 border-r-4 border-transparent hover:border-gray-300"
+						class="flex transform items-center border-r-4 border-transparent transition-colors duration-200 hover:border-gray-300"
 					>
 						<div class="mr-3">
 							<svg
-								class="w-6 h-6"
+								class="h-6 w-6"
 								fill="none"
 								stroke="currentColor"
 								viewBox="0 0 24 24"
@@ -87,11 +87,11 @@
 					<a
 						href="/"
 						on:click={handleClick}
-						class="flex items-center transform transition-colors duration-200 border-r-4 border-transparent hover:border-gray-300"
+						class="flex transform items-center border-r-4 border-transparent transition-colors duration-200 hover:border-gray-300"
 					>
 						<div class="mr-3">
 							<svg
-								class="w-6 h-6"
+								class="h-6 w-6"
 								fill="none"
 								stroke="currentColor"
 								viewBox="0 0 24 24"
@@ -117,11 +117,11 @@
 					<a
 						href="/"
 						on:click={handleClick}
-						class="flex items-center transform transition-colors duration-200 border-r-4 border-transparent hover:border-red-600"
+						class="flex transform items-center border-r-4 border-transparent transition-colors duration-200 hover:border-red-600"
 					>
 						<div class="mr-3 text-red-600">
 							<svg
-								class="w-6 h-6"
+								class="h-6 w-6"
 								fill="none"
 								stroke="currentColor"
 								viewBox="0 0 24 24"

@@ -9,8 +9,8 @@
 	}
 </script>
 
-<nav class="sidebar bg-blue-600 flex flex-col relative z-40">
-	<img {src} class="p-1 pt-3 h-16 object-scale-down" alt="Company Logo" />
+<nav class="sidebar relative z-40 flex flex-col bg-blue-600">
+	<img {src} class="h-16 object-scale-down p-1 pt-3" alt="Company Logo" />
 	<input
 		type="checkbox"
 		class="hidden"
@@ -21,7 +21,7 @@
 	<label for="humberger" class="absolute top-6 -right-8 hover:cursor-pointer">
 		{#if $toggleMenu}
 			<svg
-				class="w-7 h-7 text-purple-600 hover:text-blue-600"
+				class="h-7 w-7 text-purple-600 hover:text-blue-600"
 				fill="none"
 				stroke="currentColor"
 				viewBox="0 0 24 24"
@@ -52,10 +52,10 @@
 	<div>
 		<ul class="flex flex-col pl-1">
 			{#each $anchorList as tag}
-				<li class="flex w-full mt-2">
+				<li class="mt-2 flex w-full">
 					<a
 						href={tag.url}
-						class="flex flex-row w-full p-4 rounded-l-lg   {$page.url.pathname === tag.url
+						class="flex w-full flex-row rounded-l-lg p-4   {$page.url.pathname === tag.url
 							? `bg-gray-200 text-purple-600 hover:bg-purple-400 hover:text-blue-600`
 							: `bg-blue-500 text-white hover:bg-purple-500 hover:text-white`}"
 					>

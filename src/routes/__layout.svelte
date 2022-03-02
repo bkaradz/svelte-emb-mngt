@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { toggleMenu } from '../stores/side-menu-store';
-	import Menu from '../components/menu.svelte';
-	import SideMenu from '../components/side-menu.svelte';
+	import { toggleMenu } from '$lib/stores/side-menu-store';
+	import Menu from '$lib/components/menu.svelte';
+	import SideMenu from '$lib/components/side-menu.svelte';
 	import '../styles/app.css';
 </script>
 
@@ -12,7 +12,7 @@
 	<Menu />
 	<!-- <div class="menu bg-gray-300">
 	</div> -->
-	<div class="main bg-neutral-200 z-0">
+	<div class="main z-0 bg-neutral-200">
 		<slot />
 	</div>
 </div>
