@@ -2,7 +2,7 @@
 	<title>Customers</title>
 </svelte:head>
 
-<div class="p-6">
+<div class="">
 	<!-- Heading and Buttons Bar -->
 	<div class="main-header flex flex-row items-center justify-between">
 		<h1 class="text-2xl font-medium text-slate-700">Customers</h1>
@@ -29,7 +29,7 @@
 		</button>
 	</div>
 	<!-- Search and View Bar -->
-	<div class="mt-4 flex h-14 w-full flex-row items-center justify-between bg-white">
+	<div class="  z-10 mt-4 flex h-14 w-full flex-row items-center justify-between bg-white">
 		<div>
 			<div class="relative flex flex-row items-center text-left">
 				<button
@@ -68,9 +68,9 @@
 						/>
 					</svg>
 				</button>
-
+				<!-- hidden  -->
 				<div
-					class="absolute left-0 mt-2 hidden w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+					class="absolute left-0 top-9 z-10 mt-2 hidden w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
 					role="menu"
 					aria-orientation="vertical"
 					aria-labelledby="menu-button"
@@ -156,6 +156,7 @@
 			</div>
 			<div />
 		</div>
+		<!-- Veiw list Buttons -->
 		<div class="flex flex-row items-center ">
 			<svg
 				class="h-8 w-8"
@@ -199,7 +200,7 @@
 		</div>
 	</div>
 	<!-- List of Customers -->
-	<div class="mt-6 ">
+	<div class="mt-6">
 		<div class="relative h-[175px] w-[300px] border-t-4 border-indigo-500 bg-white shadow-lg">
 			<h4 class=" mt-6 ml-4 text-lg font-medium text-gray-600">Reactial</h4>
 			<div

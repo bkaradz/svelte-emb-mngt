@@ -7,14 +7,12 @@
 
 <div class="app {$toggleMenu ? 'big-menu' : 'small-menu'}">
 	<SideMenu />
-	<!-- <div class="sidebar bg-blue-600">
-	</div> -->
+
 	<Menu />
-	<!-- <div class="menu bg-gray-300">
-	</div> -->
-	<div class="main z-0 bg-neutral-200">
+
+	<main class="main z-0 bg-neutral-200 p-6">
 		<slot />
-	</div>
+	</main>
 </div>
 
 <style>
