@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { toggleMenu, anchorList } from '../stores/side-menu-store';
+	import { toggleMenu, anchorList } from '../stores/sideMenuStore';
 	let src = '../../static/small_logo.png';
 	let location: string;
 	$: location;

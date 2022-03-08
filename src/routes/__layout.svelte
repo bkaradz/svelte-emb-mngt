@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { toggleMenu } from '$lib/stores/side-menu-store';
-	import Menu from '$lib/components/menu.svelte';
-	import SideMenu from '$lib/components/side-menu.svelte';
+	import { toggleMenu } from '$lib/stores/sideMenuStore';
+	import Menu from '$lib/components/Menu.svelte';
+	import SideMenu from '$lib/components/SideMenu.svelte';
 	import '../styles/app.css';
 </script>
 

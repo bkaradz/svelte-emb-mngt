@@ -1,11 +1,11 @@
 <svelte:head>
-	<title>Customers</title>
+	<title>Contacts</title>
 </svelte:head>
 
 <div class="">
 	<!-- Heading and Buttons Bar -->
 	<div class="main-header flex flex-row items-center justify-between">
-		<h1 class="text-2xl font-medium text-slate-700">Customers</h1>
+		<h1 class="text-2xl font-medium text-slate-700">Contacts</h1>
 
 		<button
 			class="focus:shadow-outline inline-flex h-10 items-center rounded-lg bg-gradient-to-r from-blue-400 to-blue-600 px-5 text-indigo-100 transition-colors duration-150 hover:from-purple-400 hover:to-purple-600"
