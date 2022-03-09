@@ -5,10 +5,13 @@ export interface ContactsDocument extends Document {
 	completed: boolean;
 }
 
-const contactsSchema: Schema = new Schema<ContactsDocument>({
-	name: { type: String, required: true },
-	completed: { type: Boolean, required: true, default: false }
-});
+const contactsSchema: Schema = new Schema<ContactsDocument>(
+	{
+		name: { type: String, required: true },
+		completed: { type: Boolean, required: true, default: false }
+	},
+	{ timestamps: true }
+);
 
 const ContactsModel: Model<ContactsDocument> = model('Contacts', contactsSchema);
 
