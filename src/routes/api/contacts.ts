@@ -52,7 +52,7 @@ export async function put({ request }) {
 
 		const todo = await ContactsModel.findByIdAndUpdate(reqTodo._id, reqTodo);
 
-		console.log(todo);
+		// console.log(todo);
 
 		return {
 			status: 200,

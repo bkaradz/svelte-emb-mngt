@@ -1,5 +1,6 @@
 import { connect } from 'mongoose';
 import config from 'config';
+import logger from '$lib/utility/logger';
 
 // console.log();
 
@@ -8,9 +9,9 @@ export async function connectDB() {
 		const MONGODB_URI = config.get<string>('MONGODB_URI');
 
 		await connect(MONGODB_URI);
-		console.log('Database connected.....');
+		logger.info('Database connected.....');
 	} catch (err) {
-		console.error(`Could not connect to MongoDB, ${err}`);
+		logger.error(`Could not connect to MongoDB, ${err}`);
 		process.exit(1);
 	}
 }
