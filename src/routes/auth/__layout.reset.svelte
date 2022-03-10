@@ -1,15 +1,44 @@
+<script lang="ts">
+	import { page } from '$app/stores';
+
+	const navList = [
+		{
+			url: '/auth/login',
+			name: 'Login',
+			icon: `<svg xmlns="http://www.w3.org/2000/svg" class=" inline-block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+</svg>`
+		},
+		{
+			url: '/auth/register',
+			name: 'Register',
+			icon: `<svg xmlns="http://www.w3.org/2000/svg" class=" inline-block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+</svg>`
+		}
+	];
+</script>
+
 <div class="height_max flex flex-col items-center bg-gray-50">
 	<div
-		class="  mb-16 flex h-[70px] w-screen flex-row items-center justify-center bg-neutral-100 drop-shadow-md"
+		class="mb-16 flex h-[70px] w-screen flex-row items-center justify-center bg-neutral-100 drop-shadow-md"
 	>
-		<a
-			class="relative block appearance-none rounded-none rounded-l-md border border-gray-300 bg-transparent px-3 py-2  font-semibold text-gray-900 hover:bg-indigo-700 hover:text-gray-300"
-			href="/auth/login">Login</a
-		>
-		<a
-			class="relative block appearance-none rounded-none rounded-r-md border border-gray-300  bg-transparent px-3 py-2  font-semibold text-gray-900 hover:bg-indigo-700 hover:text-gray-300"
-			href="/auth/register">Register</a
-		>
+		<ul class="flex flex-row pl-1">
+			{#each navList as tag (tag.name)}
+				<li>
+					<a
+						class="relative m-1 block appearance-none border  bg-transparent px-3 py-2  font-semibold
+						{$page.url.pathname === tag.url
+							? `border-indigo-600 text-indigo-600 hover:border-green-600 hover:text-green-600`
+							: `border-gray-600 text-gray-600 hover:border-green-600 hover:text-green-600`}
+						"
+						href={tag.url}
+					>
+						<span>{@html tag.icon}</span> <span class="ml-1">{tag.name}</span>
+					</a>
+				</li>
+			{/each}
+		</ul>
 	</div>
 
 	<slot />

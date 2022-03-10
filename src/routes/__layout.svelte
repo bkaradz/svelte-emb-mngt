@@ -6,7 +6,7 @@
 	import '../styles/app.css';
 	import { goto } from '$app/navigation';
 
-	const isLoggedin = false;
+	const isLoggedin = true;
 
 	function redirectToLogin() {
 		if (typeof window !== 'undefined') {

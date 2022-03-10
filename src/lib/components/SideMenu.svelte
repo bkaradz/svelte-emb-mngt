@@ -55,7 +55,7 @@
 				<li class="mt-2 flex w-full">
 					<a
 						href={tag.url}
-						class="flex w-full flex-row rounded-l-lg p-4   {$page.url.pathname === tag.url
+						class="flex w-full flex-row rounded-l-lg p-4 {$page.url.pathname === tag.url
 							? `bg-gray-200 text-purple-600 hover:bg-purple-400 hover:text-blue-600`
 							: `bg-blue-500 text-white hover:bg-purple-500 hover:text-white`}"
 					>
