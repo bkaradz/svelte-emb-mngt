@@ -1,9 +1,23 @@
-<div class="w-full max-w-md space-y-8">
+<script lang="ts">
+	let email: string = '';
+	let password: string = '';
+	$: console.log({ email, password });
+
+	const handleSubmit = () => {
+		console.log('submit');
+	};
+</script>
+
+<svelte:head>
+	<title>Login</title>
+</svelte:head>
+
+<div class="h-full w-full max-w-md space-y-8">
 	<div>
 		<img class="mx-auto h-12 w-auto" src="../../../static/small_logo.png" alt="Lilian Logo" />
 		<h2 class="mt-6 text-center text-3xl font-bold text-gray-900">Login</h2>
 	</div>
-	<form class="mt-8 space-y-6" action="#" method="POST">
+	<form class="mt-8 space-y-6" on:submit|preventDefault={handleSubmit}>
 		<input type="hidden" name="remember" value="true" />
 		<div class="-space-y-px rounded-md shadow-sm">
 			<div>
@@ -16,6 +30,7 @@
 					required
 					class="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
 					placeholder="Email address"
+					bind:value={email}
 				/>
 			</div>
 			<div>
@@ -28,6 +43,7 @@
 					required
 					class="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
 					placeholder="Password"
+					bind:value={password}
 				/>
 			</div>
 		</div>
@@ -42,6 +58,8 @@
 						xmlns="http://www.w3.org/2000/svg"
 						class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
 						fill="none"
+						width="24"
+						height="24"
 						viewBox="0 0 24 24"
 						stroke="currentColor"
 						stroke-width="2"

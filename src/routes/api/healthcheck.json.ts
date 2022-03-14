@@ -1,4 +1,6 @@
-export async function get({ url, request }) {
+import type { RequestHandler } from '@sveltejs/kit';
+
+export const get: RequestHandler = async () => {
 	try {
 		return {
 			status: 200,
@@ -12,4 +14,4 @@ export async function get({ url, request }) {
 			}
 		};
 	}
-}
+};

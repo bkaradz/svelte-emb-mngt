@@ -40,6 +40,13 @@
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
+						class="ml-2 mr-0 h-7 w-7 text-gray-700"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"><path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z" /></svg
+					>
+					<!-- <svg
+						xmlns="http://www.w3.org/2000/svg"
 						class="ml-2 mr-0 h-6 w-6"
 						fill="none"
 						viewBox="0 0 24 24"
@@ -51,12 +58,14 @@
 							stroke-width="2"
 							d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
 						/>
-					</svg>
+					</svg> -->
 					Sort by Name
 					<!-- Heroicon name: solid/chevron-down -->
 					<svg
 						class="-mr-1 ml-2 h-5 w-5 text-blue-600"
 						xmlns="http://www.w3.org/2000/svg"
+						width="24"
+						height="24"
 						viewBox="0 0 20 20"
 						fill="currentColor"
 						aria-hidden="true"
@@ -144,6 +153,8 @@
 								fill="currentColor"
 								xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 24 24"
+								width="24"
+								height="24"
 							>
 								<path
 									d="M16.32 14.9l5.39 5.4a1 1 0 0 1-1.42 1.4l-5.38-5.38a8 8 0 1 1 1.41-1.41zM10 16a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"

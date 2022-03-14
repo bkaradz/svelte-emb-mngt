@@ -1,11 +1,13 @@
+import type { RequestHandler } from '@sveltejs/kit';
 import ContactsModel from '$lib/models/contacts.model';
+import { omit } from 'lodash';
+// import type { ContactsDocument } from '$lib/models/contacts.model';
 
-export async function get({ url }) {
+export const get: RequestHandler = async () => {
 	try {
-		const completed = url.searchParams.get('completed') === 'true' ? true : false;
+		// const completed = url.searchParams.get('completed') === 'true' ? true : false;
 
-		const contacts = await ContactsModel.find({ completed });
-
+		const contacts = await ContactsModel.find({ isUser: true }).select('-password');
 		return {
 			status: 200,
 			body: {
@@ -20,23 +22,28 @@ export async function get({ url }) {
 			}
 		};
 	}
-}
+};
 
-export async function post({ request }) {
+export const post = async ({ request }) => {
 	try {
-		const reqTodo = await request.json();
+		const reqUser = await request.json();
 
-		const contacts = new ContactsModel(reqTodo);
+		const contacts = new ContactsModel(reqUser);
+
+		contacts.isUser = true;
 
 		await contacts.save();
+
+		// console.log('api contacts', contacts);
 
 		return {
 			status: 200,
 			body: {
-				status: 'Success'
+				status: omit(contacts.toJSON(), 'password')
 			}
 		};
 	} catch (err) {
+		console.log(err.message);
 		return {
 			status: 500,
 			body: {
@@ -44,9 +51,9 @@ export async function post({ request }) {
 			}
 		};
 	}
-}
+};
 
-export async function put({ request }) {
+export const put = async ({ request }) => {
 	try {
 		const reqTodo = await request.json();
 
@@ -68,7 +75,7 @@ export async function put({ request }) {
 			}
 		};
 	}
-}
+};
 
 export async function del({ request }) {
 	return;

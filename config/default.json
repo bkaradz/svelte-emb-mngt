@@ -1,5 +1,5 @@
 {
-	"MONGODB_URI": "mongodb://127.0.0.1:27017/svelteEmbDevDB",
+	"MONGODB_URI": "mongodb://127.0.0.1:27017/embdb",
 	"MONGODB_DB": "sveltedb",
 	"saltWorkFactor": 10
 }
