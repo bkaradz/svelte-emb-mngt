@@ -19,6 +19,9 @@
     "@rgossiaux/svelte-headlessui": "^1.0.0-beta.10",
     "@sveltejs/adapter-auto": "next",
     "@sveltejs/kit": "next",
+    "@tailwindcss/aspect-ratio": "^0.4.0",
+    "@tailwindcss/forms": "^0.5.0",
+    "@tailwindcss/typography": "^0.5.2",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/svelte": "^3.0.3",
     "@types/bcrypt": "^5.0.0",
@@ -54,6 +57,7 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "config": "^3.3.6",
+    "cookie": "^0.4.2",
     "dayjs": "^1.10.8",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
@@ -63,6 +67,7 @@
     "pino-pretty": "^7.5.3",
     "ramda": "^0.28.0",
     "ts-node": "^9.1.1",
+    "validator": "^13.7.0",
     "vest": "^4.2.2"
   },
   "jest": {
