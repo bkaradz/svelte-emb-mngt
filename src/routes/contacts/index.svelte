@@ -1,231 +1,273 @@
+<script context="module" lang="ts">
+	import type { Load } from '@sveltejs/kit';
+
+	export const load = async ({ fetch }) => {
+		const res = await fetch('/api/contacts.json');
+		if (res.ok) {
+			const contacts = await res.json();
+			return {
+				props: { contacts }
+			};
+		}
+		const { message } = await res.json();
+		return {
+			props: { error: new Error(message) }
+		};
+	};
+</script>
+
+<script lang="ts">
+	import {
+		svgChevronLeft,
+		svgChevronRight,
+		svgGrid,
+		svgList,
+		svgPlus,
+		svgSearch,
+		svgSelector,
+		svgSort
+	} from '$lib/utility/svgLogos';
+	import { contactsList } from '$lib/stores/contactsTempList';
+	import { goto } from '$app/navigation';
+	export let contacts;
+	// console.log('contacts', contacts);
+
+	let noContactsPerPage = 10;
+	let paginationCurrentValue = 2;
+	const PAGINATION_LAST_VALUE = 20; // To be replace by the value from the database
+	$: disableLeft = paginationCurrentValue <= 2 ? true : false;
+	$: disableRight = paginationCurrentValue >= PAGINATION_LAST_VALUE ? true : false;
+
+	$: minusPagination = () => {
+		if (paginationCurrentValue > 2) {
+			paginationCurrentValue -= 1;
+		}
+	};
+	$: plusPagination = () => {
+		if (paginationCurrentValue < PAGINATION_LAST_VALUE) {
+			paginationCurrentValue += 1;
+		}
+	};
+	// $: console.log(paginationCurrentValue);
+	const viewContact = (id: string) => {
+		goto(`/contacts/${id}`);
+	};
+</script>
+
 <svelte:head>
 	<title>Contacts</title>
 </svelte:head>
 
-<div class="">
-	<!-- Heading and Buttons Bar -->
-	<div class="main-header flex flex-row items-center justify-between">
-		<h1 class="text-2xl font-medium text-slate-700">Contacts</h1>
+<div class="flex flex-1  flex-col overflow-hidden">
+	<div>
+		<!-- Heading and Buttons Bar -->
+		<div class="main-header flex flex-row items-center justify-between">
+			<h1 class="text-slate-700 text-2xl font-medium">Contacts</h1>
 
-		<button
-			class="focus:shadow-outline inline-flex h-10 items-center rounded-lg bg-gradient-to-r from-blue-400 to-blue-600 px-5 text-indigo-100 transition-colors duration-150 hover:from-purple-400 hover:to-purple-600"
-		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="h-6 w-6"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-				/>
-			</svg>
+			<button class="btn btn-primary inline-flex items-center justify-center px-3">
+				<span>
+					{@html svgPlus}
+				</span>
 
-			<span class="pl-1">Add New</span>
-		</button>
-	</div>
-	<!-- Search and View Bar -->
-	<div class="  z-10 mt-4 flex h-14 w-full flex-row items-center justify-between bg-white">
-		<div>
-			<div class="relative flex flex-row items-center text-left">
-				<button
-					class="inline-flex w-full items-center justify-center px-2 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100"
-					id="menu-button"
-					aria-expanded="true"
-					aria-haspopup="true"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="ml-2 mr-0 h-7 w-7 text-gray-700"
-						width="24"
-						height="24"
-						viewBox="0 0 24 24"><path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z" /></svg
-					>
-					<!-- <svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="ml-2 mr-0 h-6 w-6"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
-						/>
-					</svg> -->
-					Sort by Name
-					<!-- Heroicon name: solid/chevron-down -->
-					<svg
-						class="-mr-1 ml-2 h-5 w-5 text-blue-600"
-						xmlns="http://www.w3.org/2000/svg"
-						width="24"
-						height="24"
-						viewBox="0 0 20 20"
-						fill="currentColor"
-						aria-hidden="true"
-					>
-						<path
-							fill-rule="evenodd"
-							d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-							clip-rule="evenodd"
-						/>
-					</svg>
-				</button>
-				<!-- hidden  -->
-				<div
-					class="absolute left-0 top-9 z-10 mt-2 hidden w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-					role="menu"
-					aria-orientation="vertical"
-					aria-labelledby="menu-button"
-					tabindex="-1"
-				>
-					<div class="py-1" role="none">
-						<!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-						<a
-							href="/"
-							class="block px-4 py-2 text-sm text-gray-700"
-							role="menuitem"
-							tabindex="-1"
-							id="menu-item-0">Edit</a
-						>
-						<a
-							href="/"
-							class="block px-4 py-2 text-sm text-gray-700"
-							role="menuitem"
-							tabindex="-1"
-							id="menu-item-1">Duplicate</a
-						>
-					</div>
-					<div class="py-1" role="none">
-						<a
-							href="/"
-							class="block px-4 py-2 text-sm text-gray-700"
-							role="menuitem"
-							tabindex="-1"
-							id="menu-item-2">Archive</a
-						>
-						<a
-							href="/"
-							class="block px-4 py-2 text-sm text-gray-700"
-							role="menuitem"
-							tabindex="-1"
-							id="menu-item-3">Move</a
-						>
-					</div>
-					<div class="py-1" role="none">
-						<a
-							href="/"
-							class="block px-4 py-2 text-sm text-gray-700"
-							role="menuitem"
-							tabindex="-1"
-							id="menu-item-4">Share</a
-						>
-						<a
-							href="/"
-							class="block px-4 py-2 text-sm text-gray-700"
-							role="menuitem"
-							tabindex="-1"
-							id="menu-item-5">Add to favorites</a
-						>
-					</div>
-					<div class="py-1" role="none">
-						<a
-							href="/"
-							class="block px-4 py-2 text-sm text-gray-700"
-							role="menuitem"
-							tabindex="-1"
-							id="menu-item-6">Delete</a
-						>
-					</div>
-				</div>
+				<span class="ml-2">Add New</span>
+			</button>
+		</div>
 
-				<div class="container mx-auto flex">
-					<div class="flex rounded border border-solid border-gray-300">
-						<button class="flex items-center justify-center border-r px-4">
-							<svg
-								class="h-6 w-6 text-gray-600"
-								fill="currentColor"
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								width="24"
-								height="24"
-							>
-								<path
-									d="M16.32 14.9l5.39 5.4a1 1 0 0 1-1.42 1.4l-5.38-5.38a8 8 0 1 1 1.41-1.41zM10 16a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"
-								/>
-							</svg>
+		<!-- Search and View Bar -->
+		<div class="z-10 mt-4 flex h-14 w-full flex-row items-center justify-between bg-white">
+			<div>
+				<div class="relative flex flex-row items-center text-left">
+					<div>
+						<button
+							class="btn focus:ring-royal-royal-royal-blue-500 inline-flex w-full items-center justify-center px-2 py-2 text-sm text-pickled-bluewood-500 hover:bg-pickled-bluewood-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-pickled-bluewood-100"
+							id="menu-button"
+							aria-expanded="true"
+							aria-haspopup="true"
+						>
+							<span>
+								{@html svgSort}
+							</span>
+
+							Sort by Name
+							<span>
+								{@html svgSelector}
+							</span>
 						</button>
-						<input type="text" class="w-50 px-4 py-1.5" placeholder="Search..." />
+
+						<div
+							class="ring-black absolute left-0 top-9 z-10 mt-2 hidden w-56 origin-top-right divide-y divide-pickled-bluewood-100 rounded-md bg-white shadow-lg ring-1 ring-opacity-5 focus:outline-none"
+							role="menu"
+							aria-orientation="vertical"
+							aria-labelledby="menu-button"
+							tabindex="-1"
+						>
+							<div class="py-1" role="none">
+								<a
+									href="/"
+									class="block px-4 py-2 text-sm text-pickled-bluewood-700"
+									role="menuitem"
+									tabindex="-1"
+									id="menu-item-0">Edit</a
+								>
+								<a
+									href="/"
+									class="block px-4 py-2 text-sm text-pickled-bluewood-700"
+									role="menuitem"
+									tabindex="-1"
+									id="menu-item-1">Duplicate</a
+								>
+							</div>
+							<div class="py-1" role="none">
+								<a
+									href="/"
+									class="block px-4 py-2 text-sm text-pickled-bluewood-700"
+									role="menuitem"
+									tabindex="-1"
+									id="menu-item-2">Archive</a
+								>
+								<a
+									href="/"
+									class="block px-4 py-2 text-sm text-pickled-bluewood-700"
+									role="menuitem"
+									tabindex="-1"
+									id="menu-item-3">Move</a
+								>
+							</div>
+							<div class="py-1" role="none">
+								<a
+									href="/"
+									class="block px-4 py-2 text-sm text-pickled-bluewood-700"
+									role="menuitem"
+									tabindex="-1"
+									id="menu-item-4">Share</a
+								>
+								<a
+									href="/"
+									class="block px-4 py-2 text-sm text-pickled-bluewood-700"
+									role="menuitem"
+									tabindex="-1"
+									id="menu-item-5">Add to favorites</a
+								>
+							</div>
+							<div class="py-1" role="none">
+								<a
+									href="/"
+									class="block px-4 py-2 text-sm text-pickled-bluewood-700"
+									role="menuitem"
+									tabindex="-1"
+									id="menu-item-6">Delete</a
+								>
+							</div>
+						</div>
+					</div>
+
+					<div class="relative text-pickled-bluewood-100">
+						<input
+							class="input focus:shadow-outline h-10 w-full pl-8 pr-3 text-base placeholder-pickled-bluewood-400"
+							type="text"
+							placeholder="Search..."
+						/>
+						<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-2">
+							{@html svgSearch}
+						</div>
+					</div>
+				</div>
+				<div />
+			</div>
+			<!-- Veiw list Buttons -->
+			<div class="flex flex-row items-center ">
+				<div class="container mx-auto mr-4 flex justify-center">
+					<ul class="flex">
+						<li>
+							<div class="inline-flex items-center">
+								<label class="mr-4 text-sm  text-pickled-bluewood-500" for="noContactsPerPage"
+									>No of Contacts</label
+								>
+								<input
+									class="input w-16 border-r-0"
+									type="number"
+									name="noContactsPerPage"
+									id="noContactsPerPage"
+									bind:value={noContactsPerPage}
+								/>
+							</div>
+						</li>
+						<li>
+							<button
+								disabled={disableLeft}
+								on:click={minusPagination}
+								class="btn border border-r-0 border-pickled-bluewood-300 bg-white px-4 text-pickled-bluewood-500 hover:bg-pickled-bluewood-200 disabled:bg-pickled-bluewood-200"
+								>{@html svgChevronLeft}</button
+							>
+						</li>
+						<li>
+							<button
+								disabled={disableLeft}
+								on:click={minusPagination}
+								class="btn border border-r-0 border-pickled-bluewood-300 bg-white px-4 text-pickled-bluewood-500 hover:bg-pickled-bluewood-200 disabled:bg-pickled-bluewood-200"
+								>{paginationCurrentValue - 1}</button
+							>
+						</li>
+						<li>
+							<button
+								class="btn border border-pickled-bluewood-600  bg-pickled-bluewood-600 px-4 text-pickled-bluewood-100 hover:bg-pickled-bluewood-200 hover:text-pickled-bluewood-600 disabled:bg-pickled-bluewood-200"
+								>{paginationCurrentValue}</button
+							>
+						</li>
+						<li>
+							<button
+								disabled={disableRight}
+								on:click={plusPagination}
+								class="btn border border-l-0 border-pickled-bluewood-300 bg-white px-4 text-pickled-bluewood-500 hover:bg-pickled-bluewood-200 disabled:bg-pickled-bluewood-200"
+								>{paginationCurrentValue + 1}</button
+							>
+						</li>
+						<li>
+							<button
+								disabled={disableRight}
+								on:click={plusPagination}
+								class="btn border border-l-0 border-pickled-bluewood-300 bg-white px-4 text-pickled-bluewood-500 hover:bg-pickled-bluewood-200 disabled:bg-pickled-bluewood-200"
+								>{@html svgChevronRight}</button
+							>
+						</li>
+					</ul>
+				</div>
+				<button class="btn btn-primary btn-md mr-4 p-0">
+					{@html svgGrid}
+				</button>
+				<button class="btn btn-primary btn-md mr-6 p-0">
+					{@html svgList}
+				</button>
+			</div>
+		</div>
+	</div>
+	<!-- List of Contacts -->
+	<div class="mt-6 flex flex-1 flex-wrap gap-4 overflow-y-auto">
+		{#each contacts.contacts as contact (contact._id)}
+			<div
+				on:click={viewContact(contact._id)}
+				class=" flex h-44 w-full grow flex-col border-t-4 border-royal-blue-500 bg-white shadow-lg hover:cursor-pointer hover:bg-royal-blue-200 lg:w-1/6"
+			>
+				<div class="flex h-full items-center">
+					<h4 class="p-4 text-lg font-medium text-pickled-bluewood-600">{contact.name}</h4>
+				</div>
+				<div
+					class="mx-4 mb-4 flex h-full items-center justify-evenly border  border-royal-blue-100"
+				>
+					<div class="p-2">
+						<p class="p-2 text-xs font-semibold text-pickled-bluewood-500">BALANCE DUE</p>
+						<span class="p-2 text-lg font-bold text-pickled-bluewood-500">
+							${contact.balanceDue}
+						</span>
+					</div>
+					<div class="p-2">
+						<p class="p-2 text-xs font-semibold text-pickled-bluewood-500 ">TOTAL INVOICED</p>
+						<span class="p-2 text-lg font-bold text-pickled-bluewood-500">
+							${contact.totalReceipts}
+						</span>
 					</div>
 				</div>
 			</div>
-			<div />
-		</div>
-		<!-- Veiw list Buttons -->
-		<div class="flex flex-row items-center ">
-			<svg
-				class="h-8 w-8"
-				width="24"
-				height="24"
-				viewBox="0 0 24 24"
-				fill="none"
-				xmlns="http://www.w3.org/2000/svg"
-				><path d="M7 7H9V9H7V7Z" fill="currentColor" /><path
-					d="M11 7H13V9H11V7Z"
-					fill="currentColor"
-				/><path d="M17 7H15V9H17V7Z" fill="currentColor" /><path
-					d="M7 11H9V13H7V11Z"
-					fill="currentColor"
-				/><path d="M13 11H11V13H13V11Z" fill="currentColor" /><path
-					d="M15 11H17V13H15V11Z"
-					fill="currentColor"
-				/><path d="M9 15H7V17H9V15Z" fill="currentColor" /><path
-					d="M11 15H13V17H11V15Z"
-					fill="currentColor"
-				/><path d="M17 15H15V17H17V15Z" fill="currentColor" /></svg
-			>
-			<svg
-				class="h-8 w-8"
-				width="24"
-				height="24"
-				viewBox="0 0 24 24"
-				fill="none"
-				xmlns="http://www.w3.org/2000/svg"
-				><path d="M9 7H7V9H9V7Z" fill="currentColor" /><path
-					d="M7 13V11H9V13H7Z"
-					fill="currentColor"
-				/><path d="M7 15V17H9V15H7Z" fill="currentColor" /><path
-					d="M11 15V17H17V15H11Z"
-					fill="currentColor"
-				/><path d="M17 13V11H11V13H17Z" fill="currentColor" /><path
-					d="M17 7V9H11V7H17Z"
-					fill="currentColor"
-				/></svg
-			>
-		</div>
-	</div>
-	<!-- List of Customers -->
-	<div class="mt-6">
-		<div class="relative h-[175px] w-[300px] border-t-4 border-indigo-500 bg-white shadow-lg">
-			<h4 class=" mt-6 ml-4 text-lg font-medium text-gray-600">Reactial</h4>
-			<div
-				class="absolute bottom-0 left-0 mx-4 mb-4 flex h-[82px] w-[266px] items-center justify-evenly border border-[#DDE9FB]"
-			>
-				<div>
-					<p class=" text-xs font-semibold text-gray-500  ">BALANCE DUE</p>
-					<span class="  text-lg  font-bold text-gray-500 "> $230 </span>
-				</div>
-				<div>
-					<p class=" text-xs font-semibold text-gray-500  ">TOTAL INVOICED</p>
-					<span class="  text-lg  font-bold text-gray-500 "> $12 650 </span>
-				</div>
-			</div>
-		</div>
+		{/each}
 	</div>
 </div>

@@ -1,15 +1,16 @@
-import { model, Schema, Model, Document, Types } from 'mongoose';
+import { model, models, Schema, Model, Document, Types } from 'mongoose';
 import bcrypt from 'bcrypt';
 import config from 'config';
 
 export interface ContactsDocument extends Document {
 	userID?: Types.ObjectId;
+	organizationID?: Types.ObjectId;
 	name: string;
 	isCorporate: boolean;
 	notes?: string;
 	vatOrBpNo?: string;
 	email?: string;
-	phoneNo: string;
+	phone: string;
 	address?: string;
 	balanceDue: number;
 	totalReceipts: number;
@@ -24,18 +25,43 @@ export interface ContactsDocument extends Document {
 const contactsSchema: Schema = new Schema<ContactsDocument>(
 	{
 		userID: { type: Types.ObjectId, ref: 'Contacts' },
+		organizationID: { type: Types.ObjectId, ref: 'Contacts' },
 		name: { type: String, required: true },
 		isCorporate: { type: Boolean, required: true, default: false },
 		notes: { type: String },
 		vatOrBpNo: { type: String },
-		email: { type: String, unique: true },
-		phoneNo: { type: String, required: true },
-		address: { type: String },
+		email: {
+			type: String,
+			unique: true,
+			required: function () {
+				return this.isUser === true;
+			}
+		},
+		phone: { type: String, required: true },
+		address: {
+			type: String,
+			required: function () {
+				return this.isUser === true;
+			}
+		},
 		balanceDue: { type: Number, required: true, default: 0 },
 		totalReceipts: { type: Number, required: true, default: 0 },
 		isDeleted: { type: Boolean, required: true, default: false },
 		isUser: { type: Boolean, required: true, default: false },
-		password: { type: String },
+		isActive: { type: Boolean, required: true, default: false },
+		userRole: {
+			type: String,
+			default: 'user',
+			required: function () {
+				return this.isUser === true;
+			}
+		},
+		password: {
+			type: String,
+			required: function () {
+				return this.isUser === true;
+			}
+		},
 		createdAt: { type: Date },
 		updatedAt: { type: Date }
 	},
@@ -64,7 +90,7 @@ contactsSchema.pre('save', async function (next) {
 	return next();
 });
 
-contactsSchema.method.comparePassword = async function (
+contactsSchema.methods.comparePassword = async function (
 	candidatePassword: string
 ): Promise<boolean> {
 	const contact = this as ContactsDocument;
@@ -74,3 +100,5 @@ contactsSchema.method.comparePassword = async function (
 const ContactsModel = model<ContactsDocument>('Contacts', contactsSchema);
 
 export default ContactsModel;
+
+// const User = mongoose.models.User as UserModelInterface || mongoose.model<UserDoc, UserModelInterface>('User', UserSchema)

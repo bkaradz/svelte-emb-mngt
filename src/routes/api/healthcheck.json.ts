@@ -15,3 +15,16 @@ export const get: RequestHandler = async () => {
 		};
 	}
 };
+
+export const post: RequestHandler = async (event) => {
+	try {
+		// console.log('event', event.request.headers.get('user-agent'));
+	} catch (err) {
+		return {
+			status: 500,
+			body: {
+				error: event
+			}
+		};
+	}
+};

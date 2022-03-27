@@ -1,13 +1,6 @@
 import { writable } from 'svelte/store';
-// import { persistStore } from './persistStore';
-
-// import { browser } from '$app/env';
 
 export const toggleMenu = writable<boolean>(false);
-// export let toggleMenu;
-// if (browser) {
-// 	toggleMenu = persistStore<boolean>('toggleMenu', false);
-// }
 
 const anchorTags = [
 	{

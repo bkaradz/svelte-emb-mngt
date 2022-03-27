@@ -1,10 +1,70 @@
 <script lang="ts">
-	let email: string = '';
-	let password: string = '';
-	$: console.log({ email, password });
+	import { session } from '$app/stores';
+	import suite from '$lib/validation/login.validate';
+	import classnames from 'vest/classnames';
+	import { goto } from '$app/navigation';
+	import logger from '$lib/utility/logger';
 
-	const handleSubmit = () => {
-		console.log('submit');
+	let result = suite.get();
+
+	// console.log('session front', $session);
+
+	interface formDataType {
+		email: string;
+		password: string;
+	}
+
+	let formData: formDataType = {
+		email: '',
+		password: ''
+	};
+
+	const handleInput = (event) => {
+		let name = event.target.name;
+		let value = event.target.value;
+		formData[name] = value;
+		result = suite(formData, name);
+	};
+
+	$: cn = classnames(result, {
+		warning: 'warning',
+		invalid: 'error',
+		valid: 'success'
+	});
+
+	$: disabled = !result.isValid();
+
+	let error: string | undefined = undefined; // TODO: Impliment Alert Notification
+
+	const resetForm = () => {
+		formData = {
+			email: '',
+			password: ''
+		};
+	};
+
+	const handleSubmit = async () => {
+		try {
+			const res = await fetch('/api/session.json', {
+				method: 'POST',
+				body: JSON.stringify(formData),
+				headers: { 'Content-Type': 'application/json' }
+			});
+
+			if (res.ok) {
+				const data = await res.json();
+				// console.log('Register Form', data);
+				resetForm();
+				suite.reset();
+				goto('/');
+			} else {
+				logger.error('errors occured');
+				error = 'An error has occured';
+			}
+		} catch (err) {
+			logger.error(err.messages);
+			error = 'An error has occured';
+		}
 	};
 </script>
 
@@ -15,48 +75,56 @@
 <div class="h-full w-full max-w-md space-y-8">
 	<div>
 		<img class="mx-auto h-12 w-auto" src="../../../static/small_logo.png" alt="Lilian Logo" />
-		<h2 class="mt-6 text-center text-3xl font-bold text-gray-900">Login</h2>
+		<h2 class="mt-6 text-center text-3xl font-bold text-pickled-bluewood-900">Login</h2>
 	</div>
+
 	<form class="mt-8 space-y-6" on:submit|preventDefault={handleSubmit}>
 		<input type="hidden" name="remember" value="true" />
-		<div class="-space-y-px rounded-md shadow-sm">
-			<div>
-				<label for="email-address" class="sr-only">Email address</label>
-				<input
-					id="email-address"
-					name="email"
-					type="email"
-					autocomplete="email"
-					required
-					class="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-					placeholder="Email address"
-					bind:value={email}
-				/>
+		<div class="space-y-2 shadow-sm">
+			<div class="mb-1 flex justify-between">
+				<label for="email" class="text-sm">Email</label>
+				{#if result.getErrors('email').length}
+					<span class="text-sm {cn('email')}">{result.getErrors('email')[0]}</span>
+				{/if}
 			</div>
-			<div>
-				<label for="password" class="sr-only">Password</label>
-				<input
-					id="password"
-					name="password"
-					type="password"
-					autocomplete="current-password"
-					required
-					class="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-					placeholder="Password"
-					bind:value={password}
-				/>
+			<input
+				id="email"
+				class="input {cn('email')}"
+				name="email"
+				placeholder="Email"
+				type="email"
+				autocomplete="email"
+				required
+				on:input={handleInput}
+			/>
+			<div class="mb-1 flex justify-between">
+				<label for="password" class="text-sm">Password</label>
+				{#if result.getErrors('password').length}
+					<span class="text-sm {cn('password')}">{result.getErrors('password')[0]}</span>
+				{/if}
 			</div>
+			<input
+				id="password"
+				class="input {cn('password')}"
+				name="password"
+				type="password"
+				autocomplete="password"
+				required
+				placeholder="Password"
+				on:input={handleInput}
+			/>
 		</div>
 
 		<div>
 			<button
+				{disabled}
 				type="submit"
-				class="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+				class="relative flex w-full justify-center border border-transparent bg-royal-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-royal-blue-700 focus:outline-none focus:ring-2 focus:ring-royal-blue-500 focus:ring-offset-2"
 			>
 				<span class="absolute inset-y-0 left-0 flex items-center pl-3">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
+						class="h-4 w-4 text-royal-blue-500 group-hover:text-royal-blue-400"
 						fill="none"
 						width="24"
 						height="24"

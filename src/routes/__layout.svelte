@@ -1,3 +1,22 @@
+<script context="module" lang="ts">
+	import type { Load } from '@sveltejs/kit';
+
+	export const load: Load = async ({ session }) => {
+		// console.log('session', session);
+		if (!session.user.authenticated) {
+			return {
+				status: 302,
+				redirect: '/auth/unauthorized'
+			};
+		}
+		return {
+			props: {
+				user: session
+			}
+		};
+	};
+</script>
+
 <script lang="ts">
 	// import Login from './auth/login.svelte';
 	import { toggleMenu } from '$lib/stores/sideMenuStore';
@@ -6,26 +25,20 @@
 	import '../styles/app.css';
 	import { goto } from '$app/navigation';
 
-	const isLoggedin = true;
-
 	function redirectToLogin() {
 		if (typeof window !== 'undefined') {
-			goto('./auth/login');
+			goto('/auth/login');
 		}
 	}
 </script>
 
-{#if isLoggedin}
-	<div class="app {$toggleMenu ? 'big-menu' : 'small-menu'}">
-		<SideMenu />
-		<Menu />
-		<main class="main z-0 bg-neutral-200 p-6">
-			<slot />
-		</main>
-	</div>
-{:else}
-	{redirectToLogin()}
-{/if}
+<div class="app flex h-screen {$toggleMenu ? 'big-menu' : 'small-menu'}">
+	<SideMenu />
+	<Menu />
+	<main class="main z-0 flex flex-1 overflow-hidden bg-royal-blue-50 p-6">
+		<slot />
+	</main>
+</div>
 
 <style>
 	.app {

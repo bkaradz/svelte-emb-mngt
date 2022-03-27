@@ -1,0 +1,21 @@
+<script context="module" lang="ts">
+	import type { Load } from '@sveltejs/kit';
+
+	export const load: Load = async ({ session }) => {
+		// console.log('session back', session);
+
+		if (session.user.authenticated) {
+			return {
+				status: 302,
+				redirect: '/'
+			};
+		}
+		return {
+			props: {
+				user: session
+			}
+		};
+	};
+</script>
+
+<h1 class=" text-6xl text-danger">Unauthorized</h1>

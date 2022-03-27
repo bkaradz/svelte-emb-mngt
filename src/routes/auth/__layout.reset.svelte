@@ -1,5 +1,38 @@
+<script context="module" lang="ts">
+	import type { Load } from '@sveltejs/kit';
+
+	export const load: Load = async ({ session }) => {
+		// console.log('reset session back', session);
+
+		if (session.user.authenticated) {
+			return {
+				status: 302,
+				redirect: '/'
+			};
+		}
+		return {
+			props: {
+				user: session
+			}
+		};
+	};
+</script>
+
 <script lang="ts">
+	import { session } from '$app/stores';
+	import Loading from '$lib/components/Loading.svelte';
+	// console.log('reset store session front', $session);
+	// export let user;
+	// console.log('user user front', user);
+	import { getContext, onMount } from 'svelte';
+
 	import { page } from '$app/stores';
+
+	let isPageLoading = true;
+
+	onMount(() => (isPageLoading = false));
+
+	// const pageLoaded = () => (isPageLoading = false);
 
 	const navList = [
 		{
@@ -19,9 +52,13 @@
 	];
 </script>
 
-<div class="height_max flex flex-col items-center bg-gray-50">
+{#if isPageLoading}
+	<Loading />
+{/if}
+
+<div class="height_max flex flex-col items-center bg-pickled-bluewood-50">
 	<div
-		class="mb-16 flex h-[70px] w-screen flex-row items-center justify-center bg-neutral-100 drop-shadow-md"
+		class="mb-16 flex h-[70px] w-screen flex-row items-center justify-center bg-pickled-bluewood-100 drop-shadow-md"
 	>
 		<ul class="flex flex-row pl-1">
 			{#each navList as tag (tag.name)}
@@ -29,8 +66,8 @@
 					<a
 						class="relative m-1 block appearance-none border  bg-transparent px-3 py-2  font-semibold
 						{$page.url.pathname === tag.url
-							? `border-indigo-600 text-indigo-600 hover:border-green-600 hover:text-green-600`
-							: `border-gray-600 text-gray-600 hover:border-green-600 hover:text-green-600`}
+							? `border-royal-blue-600 text-royal-blue-600 hover:border-success hover:text-success`
+							: `border-pickled-bluewood-600 text-pickled-bluewood-600 hover:border-success hover:text-success`}
 						"
 						href={tag.url}
 					>
@@ -47,5 +84,21 @@
 <style>
 	.height_max {
 		height: 100vh !important;
+	}
+	.loader {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		display: grid;
+		place-items: center;
+		background: whitesmoke;
+		z-index: 99999;
+	}
+	.svgHeight {
+		width: 100px;
+		height: 100px;
+		color: blue;
 	}
 </style>

@@ -2,67 +2,92 @@
 @tailwind components;
 
 .btn {
-	@apply inline-flex items-center justify-center whitespace-nowrap rounded py-2 px-3 text-sm font-semibold uppercase leading-snug shadow-sm transition duration-300 ease-in-out;
+	/* @apply inline-flex items-center justify-center whitespace-nowrap border border-transparent py-2 px-3 text-sm font-medium capitalize leading-snug shadow-sm transition duration-300 ease-in-out; */
+	@apply relative justify-center border border-transparent py-2 px-4 text-sm font-medium capitalize text-white;
 }
 
 .btn-lg {
-	@apply py-3 px-5 text-base;
+	@apply py-2 px-3 text-base;
 }
 
-/* .btn-md {
+.btn-md {
 	@apply py-2 px-3 text-sm;
-} */
+}
 
 .btn-sm {
 	@apply py-2 px-3 text-xs;
 }
 
 .btn-primary {
-	@apply bg-blue-600  text-gray-200 hover:bg-blue-700;
+	@apply bg-royal-blue-500  text-white shadow-xl hover:shadow-royal-blue-500 focus:outline-none focus:ring-1 focus:ring-royal-blue-500 focus:ring-offset-2;
 }
 
 .btn-secondary {
-	@apply bg-purple-600  text-gray-200 hover:bg-purple-700;
+	@apply bg-royal-blue-300  text-royal-blue-700 shadow-xl hover:shadow-royal-blue-300 focus:outline-none focus:ring-1 focus:ring-royal-blue-300 focus:ring-offset-2;
 }
 
 .btn-tertiary {
-	@apply bg-gray-400 text-gray-50 hover:bg-gray-500;
+	@apply bg-pickled-bluewood-500 text-white shadow-xl hover:shadow-pickled-bluewood-500 focus:outline-none focus:ring-1 focus:ring-pickled-bluewood-500 focus:ring-offset-2;
 }
 
 .btn-success {
-	@apply bg-green-500  text-gray-200 hover:bg-green-600;
+	@apply bg-success text-white shadow-xl hover:shadow-success focus:outline-none focus:ring-1 focus:ring-success focus:ring-offset-2;
 }
 
 .btn-danger {
-	@apply bg-red-500  text-gray-200 hover:bg-red-600;
+	@apply bg-danger  text-white shadow-xl hover:shadow-danger focus:outline-none focus:ring-1 focus:ring-danger focus:ring-offset-2;
 }
 
 .btn-warning {
-	@apply bg-yellow-500 text-gray-200 hover:bg-yellow-600;
+	@apply bg-warning text-pickled-bluewood-600 shadow-xl hover:shadow-warning focus:outline-none focus:ring-1 focus:ring-warning focus:ring-offset-2;
 }
 
 .btn-primary.btn-outlined {
-	@apply border border-blue-600  bg-transparent text-blue-600 hover:bg-blue-700 hover:text-gray-200;
+	@apply border border-royal-blue-600  bg-transparent text-royal-blue-600 hover:bg-royal-blue-700 hover:text-white;
 }
 
 .btn-secondary.btn-outlined {
-	@apply border border-purple-600  bg-transparent text-purple-600 hover:bg-purple-700 hover:text-gray-200;
+	@apply border border-royal-blue-300  bg-transparent text-royal-blue-300 hover:bg-royal-blue-300 hover:text-royal-blue-700;
 }
 
 .btn-tertiary.btn-outlined {
-	@apply border border-gray-400  bg-transparent text-gray-400 hover:bg-gray-500 hover:text-gray-50;
+	@apply border border-pickled-bluewood-500  bg-transparent text-pickled-bluewood-500 hover:bg-pickled-bluewood-500 hover:text-white;
 }
 
 .btn-success.btn-outlined {
-	@apply border border-green-500  bg-transparent text-green-500 hover:bg-green-600 hover:text-gray-200;
+	@apply border  border-success  bg-transparent text-success hover:bg-success hover:text-white;
 }
 
 .btn-danger.btn-outlined {
-	@apply border border-red-500  bg-transparent text-red-500 hover:bg-red-600 hover:text-gray-200;
+	@apply border border-danger  bg-transparent text-danger hover:bg-danger hover:text-white;
 }
 
 .btn-warning.btn-outlined {
-	@apply border border-yellow-500  bg-transparent text-yellow-500 hover:bg-yellow-500 hover:text-gray-200;
+	@apply border border-warning bg-transparent text-warning hover:bg-warning hover:text-pickled-bluewood-600;
+}
+
+.input {
+	@apply block w-full appearance-none border border-pickled-bluewood-300 px-3 py-2 text-pickled-bluewood-900 placeholder-pickled-bluewood-500 selection:border focus:z-10 focus:border focus:border-royal-blue-500 focus:outline-none focus:ring-royal-blue-500 sm:text-sm;
+}
+
+.error {
+	@apply border-danger text-danger;
+}
+
+.success {
+	@apply border-success text-success;
+}
+
+.warning {
+	@apply border-warning text-warning;
+}
+
+.info {
+	@apply border-info text-info;
+}
+
+.spin {
+	@apply mr-2 inline h-8 w-8 animate-spin fill-royal-blue-600 text-pickled-bluewood-200;
 }
 
 @tailwind utilities;
@@ -80,5 +105,5 @@
 }
 .small-menu {
 	width: 60px;
-	
+
 } */
