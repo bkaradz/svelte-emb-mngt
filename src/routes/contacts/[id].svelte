@@ -9,11 +9,13 @@
 		svgPlus,
 		svgSearch,
 		svgSelector,
-		svgSort
+		svgSort,
+svgView
 	} from '$lib/utility/svgLogos';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import Loading from '$lib/components/Loading.svelte';
+import dayjs from 'dayjs';
 	const endpoint = `/api/contacts/${$page.params.id}.json`;
 	let contact = {
 		name: 'Loading...',
@@ -74,17 +76,17 @@
 		</button>
 	</div>
 
-	<div class="mt-4 flex h-full flex-col border border-royal-blue-500 xl:flex-row">
+	<div class="mt-4 flex h-full flex-col  xl:flex-row">
 		<!-- Contact Card -->
 		<div
-			class="mr-4 mb-4 flex  h-44 w-full basis-1/4 flex-col border-t-4 border-royal-blue-500 bg-white shadow-lg hover:cursor-pointer hover:bg-royal-blue-200"
+			class="mr-4 flex w-full basis-1/4 flex-col border-t-4 border-royal-blue-500 bg-white shadow-lg "
 		>
-			<div class="flex h-full items-center">
+			<div class="flex items-center">
 				<h4 class="p-4 text-lg font-medium text-pickled-bluewood-600">
 					{contact.name}
 				</h4>
 			</div>
-			<div class="mx-4 mb-4 flex h-full items-center justify-evenly border  border-royal-blue-100">
+			<div class="mx-4 mb-4 flex items-center justify-evenly bg-pickled-bluewood-50 border border-royal-blue-100">
 				<div class="p-2">
 					<p class="p-2 text-xs font-semibold text-pickled-bluewood-500">BALANCE DUE</p>
 					<span class="p-2 text-lg font-bold text-pickled-bluewood-500">
@@ -98,12 +100,27 @@
 					</span>
 				</div>
 			</div>
+			<div class="mx-4 mb-4 flex flex-col items-start bg-pickled-bluewood-50 border border-royal-blue-100">
+				<div class="p-2">
+					<p class="p-2 text-sm font-semibold text-pickled-bluewood-500">Company Details</p>
+					<p class="p-2 text-sm text-pickled-bluewood-500">
+						222 New Luveve
+						Bulawayo
+					</p>
+				</div>
+				<div class="p-2">
+					<p class="p-2 text-sm font-semibold text-pickled-bluewood-500">Notes</p>
+					<span class="p-2 text-lg font-bold text-pickled-bluewood-500">
+
+					</span>
+				</div>
+			</div>
 		</div>
 		<!-- End Contact -->
 		<div class="flex grow basis-3/4 flex-col">
 			<!-- Search and Grid/List Bar -->
 			<div
-				class="z-10 flex h-14 w-full flex-row items-center justify-between border border-danger bg-white"
+				class="z-10 flex h-14 w-full flex-row items-center justify-between  bg-white"
 			>
 				<div>
 					<div class="relative flex flex-row items-center text-left">
@@ -271,10 +288,28 @@
 				</div>
 			</div>
 			<!-- TODO use this for orders list -->
-			<div class="mt-6 flex flex-1 flex-wrap gap-4 overflow-y-auto border border-royal-blue-500">
+			<div class="mt-6 flex flex-1 flex-wrap gap-4 overflow-y-auto">
 				<!-- Table start -->
-				<div class="w-full rounded-lg bg-white py-6 shadow-lg">
-					<div class="mx-6 block overflow-x-auto">
+				<div class="w-full bg-white py-6 shadow-lg">
+					<div class="mx-6 mb-6">
+						<button class="btn-outlined btn-tertiary rounded w-32 h-16 mr-6">
+							<span class="mr-[2px]">All</span><span class="rounded-full bg-pickled-bluewood-400 px-2 py-0 text-xs text-white">25</span>
+							<p>$11 200.00</p>
+						</button>
+						<button class="btn-outlined btn-tertiary rounded w-32 h-16 mr-6">
+							<span class="mr-[2px]">Unpaid</span><span class="rounded-full bg-pickled-bluewood-400 px-2 py-0 text-xs text-white">25</span>
+							<p>$11 200.00</p>
+						</button>
+						<button class="btn-outlined btn-tertiary rounded w-32 h-16 mr-6">
+							<span class="mr-[2px]">Paid</span><span class="rounded-full bg-pickled-bluewood-400 px-2 py-0 text-xs text-white">25</span>
+							<p>$11 200.00</p>
+						</button>
+						<button class="btn-outlined btn-tertiary rounded w-32 h-16 mr-6">
+							<span class="mr-[2px]">Cancelled</span><span class="rounded-full bg-pickled-bluewood-400 px-2 py-0 text-xs text-white">25</span>
+							<p>$11 200.00</p>
+						</button>
+					</div>
+					<div class="mx-6 block overflow-y-auto">
 						<table class="w-full rounded-lg text-left">
 							<thead>
 								<tr
@@ -288,6 +323,7 @@
 									<th class="px-4 py-2">Outstanding</th>
 									<th class="px-4 py-2">Due Date</th>
 									<th class="px-4 py-2">State</th>
+									<th class="px-4 py-2">View</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -295,48 +331,78 @@
 									class="whitespace-no-wrap w-full border border-b-0 border-pickled-bluewood-300 bg-pickled-bluewood-100 font-light text-pickled-bluewood-500"
 								>
 									<td class="px-4 py-2">1</td>
-									<td class="px-4 py-2">Bedram Tamang</td>
-									<td class="px-4 py-2" />
-									<td class="px-4 py-2">tmgbedu@gmail.com</td>
+									<td class="px-4 py-2">{dayjs('2019-01-25').format('DD/MM/YYYY')}</td>
+									<td class="px-4 py-2" >000011</td>
+									<td class="px-4 py-2">{contact.name}</td>
+									<td class="px-4 py-2 text-right">$250.00</td>
+									<td class="px-4 py-2 text-right">$10.00</td>
+
+									<td class="px-4 py-2">{dayjs('2019-01-25').format('DD/MM/YYYY')}</td>
 									<td class="px-4 py-2">
-										<span class="rounded-full bg-success px-2 py-1 text-sm text-white">Active</span>
+										<span class="rounded-full bg-success px-3 py-1 text-xs font-bold text-white">Invoiced</span>
 									</td>
 									<td class="py-2 text-center">
-										<a href="/"><span class=" fill-current text-success">edit</span></a>
-										<a href="/"><span class=" fill-current text-danger">highlight_off</span></a>
+										<a href="/"><span class="fill-current text-pickled-bluewood-500">{@html svgView}</span></a>
 									</td>
 								</tr>
 								<tr
 									class="whitespace-no-wrap w-full border border-pickled-bluewood-300 font-light text-pickled-bluewood-500"
 								>
+
 									<td class="px-4 py-2">2</td>
-									<td class="px-4 py-2">Taylor Otwel</td>
-									<td class="px-4 py-2" />
-									<td class="px-4 py-2">taylow@laravel.com</td>
+									<td class="px-4 py-2">{dayjs('2019-01-25').format('DD/MM/YYYY')}</td>
+									<td class="px-4 py-2" >000012</td>
+									<td class="px-4 py-2">{contact.name}</td>
+									<td class="px-4 py-2 text-right">$1200.00</td>
+									<td class="px-4 py-2 text-right">$120.00</td>
+
+									<td class="px-4 py-2">{dayjs('2019-01-25').format('DD/MM/YYYY')}</td>
 									<td class="px-4 py-2">
-										<span class="rounded-full bg-warning px-2 py-1 text-sm text-white">Pending</span
+										<span class="rounded-full bg-warning px-3 py-1 text-xs font-bold text-white">Date Due</span
 										>
 									</td>
-									<td class="py-2 text-center">
-										<a href="/"><span class=" fill-current text-success">edit</span></a>
-										<a href="/"><span class=" fill-current text-danger">highlight_off</span></a>
+										<td class="py-2 text-center">
+										<a href="/"><span class=" fill-current text-pickled-bluewood-500">{@html svgView}</span></a>
 									</td>
 								</tr>
 								<tr
 									class="whitespace-no-wrap w-full border border-pickled-bluewood-300 bg-pickled-bluewood-100 font-light text-pickled-bluewood-500"
 								>
 									<td class="px-4 py-2">3</td>
-									<td class="px-4 py-2">Adam wathan</td>
-									<td class="px-4 py-2" />
-									<td class="px-4 py-2">tmgbedu@gmail.com</td>
-									<td class="px-4 py-2">
-										<span class="rounded-full bg-danger px-2 py-1 text-sm text-white"
-											>Not Active</span
+									<td class="px-4 py-2">{dayjs('2019-01-25').format('DD/MM/YYYY')}</td>
+									<td class="px-4 py-2" >000013</td>
+									<td class="px-4 py-2">{contact.name}</td>
+									<td class="px-4 py-2 text-right">$500.00</td>
+									<td class="px-4 py-2 text-right">$0.00</td>
+
+									<td class="px-4 py-2">{dayjs('2019-01-25').format('DD/MM/YYYY')}</td>
+									<td class="px-4 py-2 ">
+										<span class="rounded-full bg-danger px-3 py-1 text-xs font-bold text-white"
+											>Paid</span
 										>
 									</td>
-									<td class="py-2 text-center">
-										<a href="/"><span class=" fill-current text-success">edit</span></a>
-										<a href="/"><span class=" fill-current text-danger">highlight_off</span></a>
+										<td class="py-2 text-center">
+										<a href="/"><span class=" fill-current text-pickled-bluewood-500">{@html svgView}</span></a>
+									</td>
+								</tr>
+								<tr
+									class="whitespace-no-wrap w-full border border-pickled-bluewood-300 bg-pickled-bluewood-100 font-light text-pickled-bluewood-500"
+								>
+									<td class="px-4 py-2">3</td>
+									<td class="px-4 py-2">{dayjs('2019-01-25').format('DD/MM/YYYY')}</td>
+									<td class="px-4 py-2" >000013</td>
+									<td class="px-4 py-2">{contact.name}</td>
+									<td class="px-4 py-2 text-right">$500.00</td>
+									<td class="px-4 py-2 text-right">$0.00</td>
+
+									<td class="px-4 py-2">{dayjs('2019-01-25').format('DD/MM/YYYY')}</td>
+									<td class="px-4 py-2 ">
+										<span class="rounded-full bg-danger px-3 py-1 text-xs font-bold text-white"
+											>Overdue</span
+										>
+									</td>
+										<td class="py-2 text-center">
+										<a href="/"><span class=" fill-current text-pickled-bluewood-500">{@html svgView}</span></a>
 									</td>
 								</tr>
 							</tbody>

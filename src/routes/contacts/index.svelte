@@ -246,7 +246,7 @@
 		{#each contacts.contacts as contact (contact._id)}
 			<div
 				on:click={viewContact(contact._id)}
-				class=" flex h-44 w-full grow flex-col border-t-4 border-royal-blue-500 bg-white shadow-lg hover:cursor-pointer hover:bg-royal-blue-200 lg:w-1/6"
+				class=" flex h-44 w-full max-w-xs grow flex-col border-t-4 border-royal-blue-500 bg-white shadow-lg hover:cursor-pointer hover:bg-royal-blue-200 lg:w-1/6"
 			>
 				<div class="flex h-full items-center">
 					<h4 class="p-4 text-lg font-medium text-pickled-bluewood-600">{contact.name}</h4>
