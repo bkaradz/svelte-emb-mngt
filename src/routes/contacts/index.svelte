@@ -52,6 +52,10 @@
 	const viewContact = (id: string) => {
 		goto(`/contacts/${id}`);
 	};
+
+	const gotoAddContact = () => {
+		goto(`/contacts/add`);
+	};
 </script>
 
 <svelte:head>
@@ -64,7 +68,10 @@
 		<div class="main-header flex flex-row items-center justify-between">
 			<h1 class="text-slate-700 text-2xl font-medium">Contacts</h1>
 
-			<button class="btn btn-primary inline-flex items-center justify-center px-3">
+			<button
+				on:click={gotoAddContact}
+				class="btn btn-primary inline-flex items-center justify-center px-3"
+			>
 				<span>
 					{@html svgPlus}
 				</span>
