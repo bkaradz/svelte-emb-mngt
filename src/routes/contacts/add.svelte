@@ -109,7 +109,7 @@
 			<h2 class="text-center text-3xl font-bold text-pickled-bluewood-900">Add Contact</h2>
 		</div>
 		<form class="mt-2 space-y-6" on:submit|preventDefault={handleSubmit}>
-			<input type="hidden" name="remember" value="true" />
+			<input type="hidden" name="organizationID" value="true" />
 			<div class="space-y-2 shadow-sm">
 				<div class="mb-1 flex justify-between">
 					<label for="name" class="text-sm">Name</label>
@@ -127,6 +127,8 @@
 					required
 					on:input={handleInput}
 				/>
+
+
 
 				<div class="mb-1 flex justify-between">
 					<label for="email" class="text-sm">Email</label>
