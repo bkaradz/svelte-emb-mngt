@@ -2,7 +2,6 @@
 	import type { Load } from '@sveltejs/kit';
 
 	export const load: Load = async ({ session }) => {
-		// console.log('reset session back', session);
 
 		if (session.user.authenticated) {
 			return {
@@ -21,9 +20,6 @@
 <script lang="ts">
 	import { session } from '$app/stores';
 	import Loading from '$lib/components/Loading.svelte';
-	// console.log('reset store session front', $session);
-	// export let user;
-	// console.log('user user front', user);
 	import { getContext, onMount } from 'svelte';
 
 	import { page } from '$app/stores';
@@ -32,7 +28,6 @@
 
 	onMount(() => (isPageLoading = false));
 
-	// const pageLoaded = () => (isPageLoading = false);
 
 	const navList = [
 		{

@@ -22,7 +22,6 @@
 		balanceDue: 0,
 		totalReceipts: 0
 	};
-	// console.log($page.params);
 
 	onMount(async () => {
 		const res = await fetch(endpoint);
@@ -30,7 +29,6 @@
 			const results = await res.json();
 			contact = { ...contact, ...results.contact };
 		}
-		console.log('contact inside', contact);
 	});
 
 	let noOrdersPerPage = 10;
@@ -49,7 +47,6 @@
 			paginationCurrentValue += 1;
 		}
 	};
-	// $: console.log(paginationCurrentValue);
 	const gotoContacts = () => {
 		goto(`/contacts`);
 	};

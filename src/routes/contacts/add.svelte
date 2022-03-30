@@ -54,7 +54,6 @@
 	};
 
 	const handleSubmit = async () => {
-		// console.log('contactData Submit', contactData);
 		try {
 			const res = await fetch('/api/register.json', {
 				method: 'POST',
@@ -64,7 +63,6 @@
 
 			if (res.ok) {
 				const data = await res.json();
-				// console.log('Register Form', data);
 
 				resetForm();
 
@@ -86,7 +84,7 @@
 <svelte:head>
 	<title>Add Contact</title>
 </svelte:head>
-<div class=" flex flex-1 flex-col">
+<div class="flex flex-1 flex-col">
 	<div class="main-header mb-6 flex flex-row items-center justify-between">
 		<div class="flex">
 			<button class="mr-3" on:click={gotoContacts}>
@@ -109,7 +107,7 @@
 			<h2 class="text-center text-3xl font-bold text-pickled-bluewood-900">Add Contact</h2>
 		</div>
 		<form class="mt-2 space-y-6" on:submit|preventDefault={handleSubmit}>
-			<input type="hidden" name="organizationID" value="true" />
+			<input type="hidden" name="userid" value="true" />
 			<div class="space-y-2 shadow-sm">
 				<div class="mb-1 flex justify-between">
 					<label for="name" class="text-sm">Name</label>
@@ -128,7 +126,27 @@
 					on:input={handleInput}
 				/>
 
-
+				<div class="flex flex-row justify-between">
+					<!-- Toggle A -->
+					<div class="mt-2 mb-1 flex w-full items-center">
+						<label for="toogleA" class="flex cursor-pointer items-center">
+							<!-- toggle -->
+							<div class="relative">
+								<!-- input -->
+								<input id="toogleA" type="checkbox" class="sr-only" />
+								<!-- line -->
+								<div class="h-4 w-10 rounded-full bg-pickled-bluewood-400 shadow-inner" />
+								<!-- dot -->
+								<div
+									class="dot absolute -left-1 -top-1 h-6 w-6 rounded-full bg-white shadow transition"
+								/>
+							</div>
+							<!-- label -->
+							<div class="ml-3 font-medium text-pickled-bluewood-700">Corparate or Individual</div>
+						</label>
+					</div>
+					<div class="grow" />
+				</div>
 
 				<div class="mb-1 flex justify-between">
 					<label for="email" class="text-sm">Email</label>

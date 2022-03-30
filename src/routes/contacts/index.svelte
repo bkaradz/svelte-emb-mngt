@@ -30,7 +30,6 @@
 	import { contactsList } from '$lib/stores/contactsTempList';
 	import { goto } from '$app/navigation';
 	export let contacts;
-	// console.log('contacts', contacts);
 
 	let noContactsPerPage = 10;
 	let paginationCurrentValue = 2;
@@ -48,7 +47,6 @@
 			paginationCurrentValue += 1;
 		}
 	};
-	// $: console.log(paginationCurrentValue);
 	const viewContact = (id: string) => {
 		goto(`/contacts/${id}`);
 	};

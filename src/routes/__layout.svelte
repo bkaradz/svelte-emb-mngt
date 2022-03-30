@@ -2,7 +2,6 @@
 	import type { Load } from '@sveltejs/kit';
 
 	export const load: Load = async ({ session }) => {
-		// console.log('session', session);
 		if (!session.user.authenticated) {
 			return {
 				status: 302,
@@ -18,7 +17,6 @@
 </script>
 
 <script lang="ts">
-	// import Login from './auth/login.svelte';
 	import { toggleMenu } from '$lib/stores/sideMenuStore';
 	import Menu from '$lib/components/Menu.svelte';
 	import SideMenu from '$lib/components/SideMenu.svelte';

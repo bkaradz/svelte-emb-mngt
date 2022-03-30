@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { USD } from '@dinero.js/currencies';
-	import { dinero, toFormat, toSnapshot } from 'dinero.js';
+	import { dinero, toFormat, toSnapshot, type Dinero } from 'dinero.js';
 
 	const transformer = (props) => `${props.currency.code} ${props.amount}`;
 

@@ -7,8 +7,6 @@
 
 	let result = suite.get();
 
-	// console.log('session front', $session);
-
 	interface formDataType {
 		email: string;
 		password: string;
@@ -53,7 +51,6 @@
 
 			if (res.ok) {
 				const data = await res.json();
-				// console.log('Register Form', data);
 				resetForm();
 				suite.reset();
 				goto('/');

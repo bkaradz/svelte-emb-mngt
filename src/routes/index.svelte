@@ -50,9 +50,7 @@
 		type: ''
 	};
 
-	// $: console.log('props', props2.value);
 
-	// let name = 'with icon';
 	let name = '';
 </script>
 

@@ -53,7 +53,6 @@
 	};
 
 	const handleSubmit = async () => {
-		// console.log('contactData Submit', contactData);
 		try {
 			const res = await fetch('/api/register.json', {
 				method: 'POST',
@@ -63,7 +62,6 @@
 
 			if (res.ok) {
 				const data = await res.json();
-				// console.log('Register Form', data);
 
 				resetForm();
 
