@@ -1,62 +1,74 @@
-import parseCSV from '$lib/services/csvParse.services'
-import { postSuite } from '$lib/validation/server/contacts.validate'
-import ContactsModel from '$lib/models/contacts.model'
-import pickBy from 'lodash/pickBy'
-import identity from 'lodash/identity'
+import parseCSV from '$lib/services/csvParse.services';
+import { postSuite } from '$lib/validation/server/contacts.validate';
+import ContactsModel from '$lib/models/contacts.model';
+import pickBy from 'lodash/pickBy';
+import identity from 'lodash/identity';
 
-import type { RequestHandler } from '@sveltejs/kit'
+import type { RequestHandler } from '@sveltejs/kit';
 
-export const post: RequestHandler = async ({ request }) => {
-  try {
-    const jsonFile = await parseCSV(request)
+export const post: RequestHandler = async ({ request, locals }) => {
+	console.log('locals', locals.user._id);
+	try {
+		if (!locals.user._id) {
+			return {
+				status: 403,
+				body: {
+					message: 'Unauthorized'
+				}
+			};
+		}
 
-    interface contactInterface {
-      Name: string
-      Email: string
-      Phone: string
-      Organization: string
-      isActive: string
-    }
-    jsonFile.forEach(async (element) => {
-      const { Name, Email, Phone }: contactInterface = element
+		const userId = locals.user._id;
 
-      const name = Name.replace(/Emb$/gm, '').trim()
-      const email = Email.trim()
-      const phone = Phone.split(',')[0].trim().replace(/ /g, '')
+		const jsonFile = await parseCSV(request);
 
-      const contact = { name, email, phone, isActive: true, isUser: false }
+		interface contactInterface {
+			Name: string;
+			Email: string;
+			Phone: string;
+			Organization: string;
+			isActive: string;
+		}
+		jsonFile.forEach(async (element) => {
+			const { Name, Email, Phone }: contactInterface = element;
 
-      const contactFiltered = pickBy(contact, identity)
+			const name = Name.replace(/Emb$/gm, '').trim();
+			const email = Email.trim();
+			const phone = Phone.split(',')[0].trim().replace(/ /g, '');
 
-      const result = postSuite(contactFiltered)
+			const contact = { name, email, phone, isActive: true, isUser: false, userID: userId };
 
-      if (result.hasErrors()) {
-        return {
-          status: 400,
-          body: {
-            message: result.getErrors(),
-          },
-        }
-      }
+			const contactFiltered = pickBy(contact, identity);
 
-      const newContacts = new ContactsModel(contactFiltered)
+			const result = postSuite(contactFiltered);
 
-      await newContacts.save()
-    })
+			if (result.hasErrors()) {
+				return {
+					status: 400,
+					body: {
+						message: result.getErrors()
+					}
+				};
+			}
 
-    return {
-      status: 200,
-      body: {
-        message: 'ok',
-      },
-    }
-  } catch (err) {
-    console.error('Error', err.message)
-    return {
-      status: 500,
-      body: {
-        message: 'Error has ocurred',
-      },
-    }
-  }
-}
+			const newContacts = new ContactsModel(contactFiltered);
+
+			await newContacts.save();
+		});
+
+		return {
+			status: 200,
+			body: {
+				message: 'ok'
+			}
+		};
+	} catch (err) {
+		console.error('Error', err.message);
+		return {
+			status: 500,
+			body: {
+				message: 'Error has ocurred'
+			}
+		};
+	}
+};
