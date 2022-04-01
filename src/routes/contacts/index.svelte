@@ -10,9 +10,9 @@
 		const res = await fetch('/api/contacts.json?' + searchParams.toString());
 		if (res.ok) {
 			const contacts = await res.json();
-			console.log('contacts', contacts);
+			console.log('contacts line 13', { ...contacts });
 			return {
-				props: { contacts }
+				props: { ...contacts }
 			};
 		}
 		const { message } = await res.json();
@@ -35,9 +35,9 @@
 	} from '$lib/utility/svgLogos';
 	import { contactsList } from '$lib/stores/contactsTempList';
 	import { goto } from '$app/navigation';
-	export let contacts;
+	export let results;
 
-	console.log('contacts front', contacts.results);
+	// $: console.log('contacts front', results);
 
 	let noContactsPerPage = 10;
 	let paginationCurrentValue = 2;
@@ -256,7 +256,7 @@
 	</div>
 	<!-- List of Contacts -->
 	<div class="mt-6 flex flex-1 flex-wrap gap-4 overflow-y-auto">
-		{#each contacts.results as contact (contact._id)}
+		{#each results as contact (contact._id)}
 			<div
 				on:click={viewContact(contact._id)}
 				class=" flex h-44 w-full max-w-xs grow flex-col border-t-4 border-royal-blue-500 bg-white shadow-lg hover:cursor-pointer hover:bg-royal-blue-200 lg:w-1/6"
