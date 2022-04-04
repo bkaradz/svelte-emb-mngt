@@ -1,46 +1,60 @@
-import omit from 'lodash/omit'
+import omit from 'lodash/omit';
 
 const query = async (query, model) => {
-  try {
-    const results = {}
-    let { limit, page } = query
+	try {
+		const results = {};
+		let { limit, page, sort } = query;
 
-    limit = parseInt(limit)
-    page = parseInt(page)
+		limit = parseInt(limit) < 1 ? 1 : parseInt(limit);
+		page = parseInt(page);
 
-    const newQuery = omit(query, ['limit', 'page'])
+		const newQuery = omit(query, ['limit', 'page', 'sort']);
 
-    const startIndex = (page - 1) * limit
-    const endIndex = page * limit
+		const startIndex = (page - 1) * limit;
+		const endIndex = page * limit;
 
-    const totalRecords = await await model.countDocuments({ ...newQuery }).exec()
+		const totalRecords = await await model.countDocuments({ ...newQuery }).exec();
 
-    results.totalRecords = totalRecords
+		results.totalRecords = totalRecords;
+		results.totalPages = Math.ceil(totalRecords / limit);
+		results.limit = limit;
 
-    if (startIndex > 0) {
-      results.previous = {
-        page: page - 1,
-        limit,
-      }
-    }
-    if (endIndex < totalRecords) {
-      results.next = {
-        page: page + 1,
-        limit,
-      }
-    }
+		results.previous = null;
+		results.next = null;
 
-    results.results = await model
-      .find({ ...newQuery })
-      .select('-password')
-      .limit(limit)
-      .skip(startIndex)
-      .exec()
+		if (startIndex > 0) {
+			results.previous = {
+				page: page - 1,
+				limit
+			};
+		}
 
-    return results
-  } catch (err) {
-    return err.message
-  }
-}
+		results.current = {
+			page: page,
+			limit
+		};
 
-export default query
+		if (endIndex < totalRecords) {
+			results.next = {
+				page: page + 1,
+				limit
+			};
+		}
+
+		results.results = await model
+			.find({ ...newQuery })
+			.select('-password')
+			.limit(limit)
+			.skip(startIndex)
+			.sort(sort)
+			.exec();
+
+		// console.log('🚀 ~ file: query.services.ts ~ line 51 ~ query ~ results', results);
+
+		return results;
+	} catch (err) {
+		return err.message;
+	}
+};
+
+export default query;

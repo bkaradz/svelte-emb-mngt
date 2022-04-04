@@ -5,13 +5,10 @@ import logger from '$lib/utility/logger';
 import query from '$lib/services/query.services';
 
 export const get: RequestHandler = async ({ params, url }) => {
-	// console.log('params', params);
-	// console.log('url', Object.fromEntries(url.searchParams));
 	try {
-		// const contacts = await ContactsModel.find({}).select('-password').limit(15);
-		const contacts = await query(Object.fromEntries(url.searchParams), ContactsModel);
+		const queryParams = Object.fromEntries(url.searchParams);
 
-		// console.log('contacts api', contacts);
+		const contacts = await query(queryParams, ContactsModel);
 
 		return {
 			status: 200,
