@@ -50,13 +50,44 @@
 		type: ''
 	};
 
-
 	let name = '';
+
+	let value = 0;
+	const increment = () => (value += 1);
+	const decrement = () => (value -= 1);
 </script>
 
 <svelte:head>
 	<title>Dashboad</title>
 </svelte:head>
+
+<div class="custom-number-input h-10 w-24">
+	<label for="custom-input-number" class="w-full text-sm font-semibold text-pickled-bluewood-700"
+		>Counter Input
+	</label>
+	<div class="relative mt-1 flex h-10 w-full flex-row rounded-lg bg-transparent">
+		<button
+			on:click={decrement}
+			data-action="decrement"
+			class=" h-full w-20 cursor-pointer rounded-l bg-pickled-bluewood-300 text-pickled-bluewood-700 outline-none hover:bg-pickled-bluewood-400 hover:text-pickled-bluewood-700"
+		>
+			<span class="m-auto text-2xl font-thin">−</span>
+		</button>
+		<input
+			type="number"
+			class=" text-md hover:text-black focus:text-black md:text-basecursor-default flex w-full select-all items-center border-0 bg-pickled-bluewood-300 text-center font-semibold  text-pickled-bluewood-700 outline-none focus:border-0  focus:outline-none"
+			name="custom-input-number"
+			bind:value
+		/>
+		<button
+			on:click={increment}
+			data-action="increment"
+			class="h-full w-20 cursor-pointer rounded-r bg-pickled-bluewood-300 text-pickled-bluewood-600 hover:bg-pickled-bluewood-400 hover:text-pickled-bluewood-700"
+		>
+			<span class="m-auto text-2xl font-thin">+</span>
+		</button>
+	</div>
+</div>
 
 <div class=" space-x-2 space-y-4">
 	<h3 class=" m-4 text-sm font-semibold uppercase tracking-wider text-pickled-bluewood-700">
@@ -201,3 +232,19 @@
 
 	<hr class=" my-4 border border-pickled-bluewood-600" />
 </div>
+
+<style>
+	input[type='number']::-webkit-inner-spin-button,
+	input[type='number']::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	.custom-number-input input:focus {
+		outline: none !important;
+	}
+
+	.custom-number-input button:focus {
+		outline: none !important;
+	}
+</style>

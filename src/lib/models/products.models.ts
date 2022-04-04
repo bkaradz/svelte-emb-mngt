@@ -4,8 +4,8 @@ import config from 'config';
 
 export interface ContactsDocument extends Document {
 	userID?: Types.ObjectId;
-	organizationID?: Types.ObjectId;
 	name: string;
+	productID: string;
 	isCorporate: boolean;
 	notes?: string;
 	vatOrBpNo?: string;
@@ -25,43 +25,48 @@ export interface ContactsDocument extends Document {
 const contactsSchema: Schema = new Schema<ContactsDocument>(
 	{
 		userID: { type: Types.ObjectId, ref: 'Contacts' },
-		organizationID: { type: Types.ObjectId, ref: 'Contacts' },
 		name: { type: String, required: true },
-		isCorporate: { type: Boolean, required: true, default: false },
-		notes: { type: String },
-		vatOrBpNo: { type: String },
-		email: {
+		productID: {
+			// of the form xxx-xxx-xxxx /^([0-9]{3}-){2}[0-9]{4}$/
 			type: String,
+			match: /^([0-9]{3}-){2}[0-9]{4}$/,
+			required: true,
 			unique: true,
-			sparse: true,
+			index: true
+		},
+		title: {
+			type: String
+		},
+		description: {
+			type: String
+		},
+		unit_price: {
+			type: Number,
 			required: function () {
-				return this.isUser === true;
+				return this.category !== constants.DEF_PRODUCT_CATEGORY;
 			}
 		},
-		phone: { type: String, required: true },
-		address: {
+		category: {
 			type: String,
-			required: function () {
-				return this.isUser === true;
+			default: constants.DEF_PRODUCT_CATEGORY,
+			required: true,
+			validate: (value) => {
+				return findEnumValue(constants.PRODUCT_CATEGORIES, value);
 			}
 		},
-		balanceDue: { type: Decimal128, required: true, default: 0 },
-		totalReceipts: { type: Number, required: true, default: 0 },
-		isActive: { type: Boolean, required: true, default: false },
-		isUser: { type: Boolean, required: true, default: false },
-		userRole: {
-			type: String,
-			default: 'user',
+		stitches: {
+			type: Number,
 			required: function () {
-				return this.isUser === true;
+				return this.category === constants.DEF_PRODUCT_CATEGORY;
 			}
 		},
-		password: {
-			type: String,
+		quantity: {
+			type: Number,
 			required: function () {
-				return this.isUser === true;
+				return this.category !== constants.DEF_PRODUCT_CATEGORY;
 			}
 		},
+		isActive: { type: Boolean, required: true, default: true },
 		createdAt: { type: Date },
 		updatedAt: { type: Date }
 	},
