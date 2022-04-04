@@ -76,7 +76,7 @@
 		goto(`/contacts/add`);
 	};
 
-	let gridView = true;
+	let gridView = false;
 	$: console.log('gridView', gridView);
 </script>
 
@@ -295,6 +295,7 @@
 			</div>
 		</div>
 		<!-- List of Contacts -->
+		<!-- TODO: fix overflow in list View so that the header is not hidden -->
 		<div class="mt-6 flex flex-1 flex-wrap gap-4 overflow-y-auto">
 			{#if gridView}
 				{#each contacts.results as contact (contact._id)}
@@ -326,50 +327,54 @@
 					</div>
 				{/each}
 			{:else}
-				<!-- TODO use this for orders list -->
-				<div class=" flex flex-1 flex-wrap gap-4 overflow-y-auto">
+				<!-- TODO: use this for orders list -->
+				<div class=" flex flex-1 flex-wrap gap-4">
 					<!-- Table start -->
 					<div class="w-full bg-white py-6 shadow-lg">
-						<div class="mx-6 block overflow-y-auto">
-							<table class="w-full rounded-lg text-left">
+						<div class="mx-6 block ">
+							<table class="relative w-full rounded-lg text-left">
 								<thead>
 									<tr
-										class="border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
+										class=" sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
 									>
-										<th class="px-4 py-2">#</th>
-										<th class="px-4 py-2">Date</th>
-										<th class="px-4 py-2">Order No</th>
 										<th class="px-4 py-2">Customer</th>
-										<th class="px-4 py-2">Amount</th>
-										<th class="px-4 py-2">Outstanding</th>
-										<th class="px-4 py-2">Due Date</th>
+										<th class="px-4 py-2">Organization</th>
+										<th class="px-4 py-2">Phone</th>
+										<th class="px-4 py-2">Email</th>
+										<th class="px-4 py-2">Corparate</th>
+										<th class="px-4 py-2">VatNo</th>
+										<th class="px-4 py-2">Balance Due</th>
+										<th class="px-4 py-2">Total Receipts</th>
 										<th class="px-4 py-2">State</th>
 										<th class="px-4 py-2">View</th>
 									</tr>
 								</thead>
-								<tbody>
+								<tbody class="overflow-y-auto">
 									{#each contacts.results as contact (contact._id)}
 										<tr
 											class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 odd:bg-pickled-bluewood-100 even:text-pickled-bluewood-500 font-light odd:text-pickled-bluewood-500"
 										>
-											<td class="px-4 py-2">1</td>
-											<td class="px-4 py-2">{dayjs('2019-01-25').format('DD/MM/YYYY')}</td>
-											<td class="px-4 py-2">000011</td>
-											<td class="px-4 py-2">Ted</td>
-											<td class="px-4 py-2 text-right">$250.00</td>
-											<td class="px-4 py-2 text-right">$10.00</td>
+											<td class="px-4 py-2">{contact.name}</td>
+											<td class="px-4 py-2">Organization</td>
+											<td class="px-4 py-2">{contact.phone}</td>
+											<td class="px-4 py-2">{!contact.email ? '...' : contact.email}</td>
 
-											<td class="px-4 py-2">{dayjs('2019-01-25').format('DD/MM/YYYY')}</td>
+											<td class="px-4 py-2">{contact.isCorporate}</td>
+											<td class="px-4 py-2">
+												{!contact.vatOrBpNo ? '...' : contact.vatOrBpNo}
+											</td>
+											<td class="px-4 py-2 text-right">${contact.balanceDue}</td>
+											<td class="px-4 py-2 text-right">${contact.totalReceipts}</td>
 											<td class="px-4 py-2">
 												<span class="rounded-full bg-success px-3 py-1 text-xs font-bold text-white"
 													>Invoiced</span
 												>
 											</td>
 											<td class="py-2 text-center">
-												<a href="/"
+												<button on:click={(e) => goto(`/contacts/${contact._id}`)}
 													><span class="fill-current text-pickled-bluewood-500"
 														>{@html svgView}</span
-													></a
+													></button
 												>
 											</td>
 										</tr>
