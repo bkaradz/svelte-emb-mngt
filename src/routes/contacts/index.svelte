@@ -13,6 +13,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import dayjs from 'dayjs';
+	import Loading from '$lib/components/Loading.svelte';
 
 	interface ContentIterface {
 		results: [
@@ -39,7 +40,7 @@
 
 	let contacts: ContentIterface;
 	let error: any;
-	let limit = 20;
+	let limit = 12;
 
 	const checkValue = () => {
 		if (limit < 1) {
@@ -76,7 +77,7 @@
 	};
 
 	let gridView = false;
-	$: console.log('gridView', gridView);
+	// $: console.log('gridView', gridView);
 </script>
 
 <svelte:head>
@@ -359,7 +360,13 @@
 											<td class="px-4 py-2">{!contact.email ? '...' : contact.email}</td>
 
 											<td class="px-4 py-2">
-												<input type="checkbox" name="" id="" bind:checked={contact.isCorporate} />
+												<input
+													disabled
+													type="checkbox"
+													name=""
+													id=""
+													bind:checked={contact.isCorporate}
+												/>
 											</td>
 											<td class="px-4 py-2">
 												{!contact.vatOrBpNo ? '...' : contact.vatOrBpNo}
@@ -390,5 +397,5 @@
 		</div>
 	</div>
 {:else}
-	<h2>Loading....</h2>
+	<Loading />
 {/if}
