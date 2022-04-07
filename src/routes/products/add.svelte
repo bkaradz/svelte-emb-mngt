@@ -1,7 +1,5 @@
 <script lang="ts">
-	import suite from '$lib/validation/register.validate';
-	import classnames from 'vest/classnames';
-	import { goto } from '$app/navigation';
+	import suite from '$lib/validation/client/signUp.validate';
 	import logger from '$lib/utility/logger';
 	import { svgArrow, svgPlus } from '$lib/utility/svgLogos';
 

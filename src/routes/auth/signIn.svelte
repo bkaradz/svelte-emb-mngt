@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { session } from '$app/stores';
-	import suite from '$lib/validation/login.validate';
-	import classnames from 'vest/classnames';
-	import { goto } from '$app/navigation';
+	import suite from '$lib/validation/client/signIn.validate';
 	import logger from '$lib/utility/logger';
+	import classNames from "vest/classNames";
+	import { goto } from '$app/navigation';
+
 
 	let result = suite.get();
 
@@ -24,7 +25,7 @@
 		result = suite(formData, name);
 	};
 
-	$: cn = classnames(result, {
+	$: cn = classNames(result, {
 		warning: 'warning',
 		invalid: 'error',
 		valid: 'success'
@@ -41,24 +42,27 @@
 		};
 	};
 
-	const handleSubmit = async () => {
+	const handleSignIn = async () => {
 		try {
-			const res = await fetch('/api/session.json', {
+			const res = await fetch('/api/auth/signIn.json', {
 				method: 'POST',
 				body: JSON.stringify(formData),
 				headers: { 'Content-Type': 'application/json' }
 			});
 
 			if (res.ok) {
-				const data = await res.json();
+				const sessionData = await res.json();
 				resetForm();
 				suite.reset();
-				goto('/');
+				$session = sessionData;
+				await goto('/');
 			} else {
 				logger.error('errors occured');
 				error = 'An error has occured';
 			}
 		} catch (err) {
+			console.error(err);
+
 			logger.error(err.messages);
 			error = 'An error has occured';
 		}
@@ -75,7 +79,7 @@
 		<h2 class="mt-6 text-center text-3xl font-bold text-pickled-bluewood-900">Login</h2>
 	</div>
 
-	<form class="mt-8 space-y-6" on:submit|preventDefault={handleSubmit}>
+	<form class="mt-8 space-y-6" on:submit|preventDefault={handleSignIn}>
 		<input type="hidden" name="remember" value="true" />
 		<div class="space-y-2 shadow-sm">
 			<div class="mb-1 flex justify-between">

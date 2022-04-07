@@ -3,35 +3,36 @@
 	import logger from '$lib/utility/logger';
 	import { goto } from '$app/navigation';
 	import { svgLogout, svgMessages, svgSettings, svgUser } from '$lib/utility/svgLogos';
+	import { session } from '$app/stores';
 
-	let loginMenuOpen = false;
+	let signInMenuOpen = false;
 	function handleClick() {
-		loginMenuOpen = !loginMenuOpen;
+		signInMenuOpen = !signInMenuOpen;
 	}
-	$: loginMenuOpen;
+	$: signInMenuOpen;
 
 	function handleClickOutside(event) {
-		if (loginMenuOpen) {
-			loginMenuOpen = !loginMenuOpen;
+		if (signInMenuOpen) {
+			signInMenuOpen = !signInMenuOpen;
 		}
 	}
 
 	function handleKeyDown(event) {
 		if (event.key === 'Escape') {
-			loginMenuOpen = !loginMenuOpen;
+			signInMenuOpen = !signInMenuOpen;
 		}
 	}
 
-	const handleLogout = async () => {
-		console.error('Logout Starts Now');
+	const handleSignOut = async () => {
 		try {
-			const res = await fetch('/api/logout.json', {
+			const res = await fetch('/api/auth/signOut.json', {
 				method: 'GET'
 			});
 
 			if (res.ok) {
 				const data = await res.json();
-				goto('/auth/login');
+				$session = {};
+				await goto('/auth/signIn');
 			}
 		} catch (err) {
 			logger.error(err.messages);
@@ -64,7 +65,7 @@
 		<div
 			use:clickOutside
 			on:clickOutside={handleClickOutside}
-			class="{loginMenuOpen
+			class="{signInMenuOpen
 				? ''
 				: 'hidden'} ring-black absolute right-0 top-9 z-10 mt-2 w-56 origin-top-right divide-y divide-pickled-bluewood-300 rounded-md bg-royal-blue-50 shadow-lg ring-1 ring-opacity-5 focus:outline-none"
 		>
@@ -100,7 +101,7 @@
 					role="menuitem"
 					tabindex="-1"
 					id="menu-item-2"
-					on:click={handleLogout}
+					on:click={handleSignOut}
 				>
 					<div class="mr-3">
 						{@html svgLogout}

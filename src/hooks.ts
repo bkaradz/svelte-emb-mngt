@@ -2,6 +2,7 @@ import { connectDB } from '$lib/database/mongooseDB'
 import { setContext } from 'svelte'
 import * as cookie from 'cookie'
 import { verifyJwt } from '$lib/utility/jwt.utils'
+import { findSessions } from '$lib/services/session.services'
 import type { GetSession, Handle } from '@sveltejs/kit'
 
 connectDB()
@@ -16,12 +17,14 @@ export const handle: Handle = async ({ event, resolve }) => {
   // }
 
   const { decoded } = verifyJwt(accessToken)
-  console.log('🚀 ~ file: hooks.ts ~ line 19 ~ consthandle:Handle= ~ decoded', decoded)
 
   if (decoded) {
-    event.locals.user = decoded
-    event.locals.user.authenticated = true
-    return await resolve(event)
+    const session = await findSessions({ _id: decoded.session })
+    if (session.length) {
+      event.locals.user = decoded
+      event.locals.user.authenticated = true
+      return await resolve(event)
+    }
   }
 
   event.locals.user = null
@@ -29,7 +32,5 @@ export const handle: Handle = async ({ event, resolve }) => {
 }
 
 export const getSession: GetSession = async ({ locals }) => {
-  console.log('🚀 ~ file: hooks.ts ~ line 32 ~ constgetSession:GetSession= ~ locals', locals)
-
   return locals?.user ? locals : {}
 }

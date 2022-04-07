@@ -1,7 +1,5 @@
 <script lang="ts">
-	import suite from '$lib/validation/register.validate';
-	import classnames from 'vest/classnames';
-	import { goto } from '$app/navigation';
+	import suite from '$lib/validation/client/signUp.validate';
 	import logger from '$lib/utility/logger';
 	import { svgArrow, svgPlus } from '$lib/utility/svgLogos';
 
@@ -55,7 +53,7 @@
 
 	const handleSubmit = async () => {
 		try {
-			const res = await fetch('/api/register.json', {
+			const res = await fetch('/api/auth/signUp.json', {
 				method: 'POST',
 				body: JSON.stringify(formData),
 				headers: { 'Content-Type': 'application/json' }

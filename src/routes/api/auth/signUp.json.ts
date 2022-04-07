@@ -1,7 +1,7 @@
 import type { RequestHandler } from '@sveltejs/kit'
 import ContactsModel from '$lib/models/contacts.model'
 import omit from 'lodash/omit'
-import { postSuite } from '$lib/validation/server/register.validate'
+import { postSuite } from '$lib/validation/server/signUp.validate'
 import logger from '$lib/utility/logger'
 
 export const get: RequestHandler = async () => {

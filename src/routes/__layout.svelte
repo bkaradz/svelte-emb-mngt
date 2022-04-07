@@ -2,7 +2,6 @@
 	import type { Load } from '@sveltejs/kit';
 
 	export const load: Load = async ({ session }) => {
-		console.log('🚀 ~ file: __layout.svelte ~ line 5 ~ constload:Load= ~ session', session);
 		if (!session?.user?.authenticated) {
 			return {
 				status: 302,
@@ -27,10 +26,9 @@
 
 	function redirectToLogin() {
 		if (typeof window !== 'undefined') {
-			goto('/auth/login');
+			goto('/auth/signIn');
 		}
 	}
-	console.log('session front', $session);
 </script>
 
 <div class="app flex h-screen {$toggleMenu ? 'big-menu' : 'small-menu'}">

@@ -1,19 +1,4 @@
-<!-- <script context="module">
-	export async function load({ session }) {
-		console.log('session', session);
-		if (!session.authenticated) {
-			return {
-				status: 302,
-				redirect: '/auth/unauthorized'
-			};
-		}
-		return {
-			props: {
-				user: session
-			}
-		};
-	}
-</script> -->
+
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
 	import IconButton from '$lib/components/IconButton.svelte';

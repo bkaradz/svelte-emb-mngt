@@ -6,8 +6,6 @@ import type { SessionsDocument } from '$lib/models/sessions.model'
 import { deleteSessionCookies, deleteSessions } from '$lib/services/session.services'
 
 export const get: RequestHandler = async ({ request, locals }) => {
-  console.error('Second Come Hear')
-
   const sessionId = locals.user.session
 
   deleteSessions(sessionId)
@@ -15,7 +13,6 @@ export const get: RequestHandler = async ({ request, locals }) => {
   locals.user = {}
 
   const headers = deleteSessionCookies()
-  console.log('🚀 ~ file: logout.json.ts ~ line 16 ~ constget:RequestHandler= ~ headers', headers)
 
   return {
     status: 200,

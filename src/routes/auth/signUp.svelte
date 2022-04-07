@@ -1,8 +1,10 @@
 <script lang="ts">
-	import suite from '$lib/validation/register.validate';
-	import classnames from 'vest/classnames';
+	import suite from '$lib/validation/client/signUp.validate';
 	import { goto } from '$app/navigation';
 	import logger from '$lib/utility/logger';
+	import classNames from "vest/classNames";
+
+
 
 	let result = suite.get();
 
@@ -31,7 +33,7 @@
 		result = suite(formData, name);
 	};
 
-	$: cn = classnames(result, {
+	$: cn = classNames(result, {
 		warning: 'warning',
 		invalid: 'error',
 		valid: 'success'
@@ -52,9 +54,9 @@
 		};
 	};
 
-	const handleSubmit = async () => {
+	const handleSignUp = async () => {
 		try {
-			const res = await fetch('/api/register.json', {
+			const res = await fetch('/api/auth/signUp.json', {
 				method: 'POST',
 				body: JSON.stringify(formData),
 				headers: { 'Content-Type': 'application/json' }
@@ -67,7 +69,7 @@
 
 				suite.reset();
 
-				goto('/auth/login');
+				goto('/auth/signIn');
 			} else {
 				error = 'An error has occured';
 			}
@@ -87,7 +89,7 @@
 		<img class="mx-auto h-12 w-auto" src="../../../static/small_logo.png" alt="Lilian Logo" />
 		<h2 class="mt-6 text-center text-3xl font-bold text-pickled-bluewood-900">Register</h2>
 	</div>
-	<form class="mt-8 space-y-6" on:submit|preventDefault={handleSubmit}>
+	<form class="mt-8 space-y-6" on:submit|preventDefault={handleSignUp}>
 		<input type="hidden" name="remember" value="true" />
 		<div class="space-y-2 shadow-sm">
 			<div class="mb-1 flex justify-between">
