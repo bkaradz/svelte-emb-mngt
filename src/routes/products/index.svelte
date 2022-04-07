@@ -76,7 +76,7 @@
 	};
 
 	let gridView = false;
-	$: console.log('gridView', gridView);
+	// $: console.log('gridView', gridView);
 </script>
 
 <svelte:head>

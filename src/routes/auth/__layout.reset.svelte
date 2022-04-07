@@ -2,8 +2,7 @@
 	import type { Load } from '@sveltejs/kit';
 
 	export const load: Load = async ({ session }) => {
-
-		if (session.user.authenticated) {
+		if (session?.user?.authenticated) {
 			return {
 				status: 302,
 				redirect: '/'
@@ -27,7 +26,6 @@
 	let isPageLoading = true;
 
 	onMount(() => (isPageLoading = false));
-
 
 	const navList = [
 		{

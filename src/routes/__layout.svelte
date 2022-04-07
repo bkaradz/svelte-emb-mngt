@@ -2,7 +2,8 @@
 	import type { Load } from '@sveltejs/kit';
 
 	export const load: Load = async ({ session }) => {
-		if (!session.user.authenticated) {
+		console.log('🚀 ~ file: __layout.svelte ~ line 5 ~ constload:Load= ~ session', session);
+		if (!session?.user?.authenticated) {
 			return {
 				status: 302,
 				redirect: '/auth/unauthorized'
@@ -10,13 +11,14 @@
 		}
 		return {
 			props: {
-				user: session
+				user: session.user
 			}
 		};
 	};
 </script>
 
 <script lang="ts">
+	import { session } from '$app/stores';
 	import { toggleMenu } from '$lib/stores/sideMenuStore';
 	import Menu from '$lib/components/Menu.svelte';
 	import SideMenu from '$lib/components/SideMenu.svelte';
@@ -28,6 +30,7 @@
 			goto('/auth/login');
 		}
 	}
+	console.log('session front', $session);
 </script>
 
 <div class="app flex h-screen {$toggleMenu ? 'big-menu' : 'small-menu'}">

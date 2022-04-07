@@ -23,6 +23,7 @@
 	}
 
 	const handleLogout = async () => {
+		console.error('Logout Starts Now');
 		try {
 			const res = await fetch('/api/logout.json', {
 				method: 'GET'

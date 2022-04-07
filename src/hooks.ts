@@ -11,33 +11,25 @@ export const handle: Handle = async ({ event, resolve }) => {
 
   const accessToken = cookies.accessToken
 
-  if (!accessToken) {
+  // if (!accessToken) {
+  //   return await resolve(event)
+  // }
+
+  const { decoded } = verifyJwt(accessToken)
+  console.log('🚀 ~ file: hooks.ts ~ line 19 ~ consthandle:Handle= ~ decoded', decoded)
+
+  if (decoded) {
+    event.locals.user = decoded
+    event.locals.user.authenticated = true
     return await resolve(event)
   }
 
-  const { decoded, expired } = verifyJwt(accessToken)
-
-  if (decoded && !(event.url.pathname === '/api/logout.json')) {
-    event.locals.user = decoded
-    event.locals.user.authenticated = true
-  } else {
-    event.locals.user = {}
-    event.locals.user.authenticated = false
-  }
-
-  const response = await resolve(event)
-  if (event.url.pathname === '/api/logout.json') {
-    response.headers.delete('set-cookie')
-  }
-  return response
+  event.locals.user = null
+  return await resolve(event)
 }
 
 export const getSession: GetSession = async ({ locals }) => {
-  let user = await locals.user
-  if (!user) {
-    user = { authenticated: false }
-  }
-  return {
-    user,
-  }
+  console.log('🚀 ~ file: hooks.ts ~ line 32 ~ constgetSession:GetSession= ~ locals', locals)
+
+  return locals?.user ? locals : {}
 }

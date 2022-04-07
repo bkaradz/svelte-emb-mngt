@@ -1,24 +1,24 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import * as cookie from 'cookie';
-import type { FilterQuery } from 'mongoose';
-import SessionsModel from '$lib/models/sessions.model';
-import type { SessionsDocument } from '$lib/models/sessions.model';
-import { deleteSessionCookies, deleteSessions } from '$lib/services/session.services';
+import type { RequestHandler } from '@sveltejs/kit'
+import * as cookie from 'cookie'
+import type { FilterQuery } from 'mongoose'
+import SessionsModel from '$lib/models/sessions.model'
+import type { SessionsDocument } from '$lib/models/sessions.model'
+import { deleteSessionCookies, deleteSessions } from '$lib/services/session.services'
 
 export const get: RequestHandler = async ({ request, locals }) => {
-	const sessionId = locals.user.session;
+  console.error('Second Come Hear')
 
-	deleteSessions(sessionId);
+  const sessionId = locals.user.session
 
-	locals.user = {};
+  deleteSessions(sessionId)
 
-	const headers = deleteSessionCookies();
+  locals.user = {}
 
-	return {
-		status: 200,
-		headers,
-		body: {
-			ok: true
-		}
-	};
-};
+  const headers = deleteSessionCookies()
+  console.log('🚀 ~ file: logout.json.ts ~ line 16 ~ constget:RequestHandler= ~ headers', headers)
+
+  return {
+    status: 200,
+    headers,
+  }
+}

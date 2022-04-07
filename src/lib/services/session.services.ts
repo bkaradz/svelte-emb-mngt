@@ -34,7 +34,7 @@ export const deleteSessionCookies = () => {
   return {
     'Set-Cookie': [
       cookie.serialize('accessToken', '', {
-        maxAge: -1,
+        expires: new Date(0),
         httpOnly: true,
         domain: 'localhost',
         path: '/',
@@ -42,7 +42,7 @@ export const deleteSessionCookies = () => {
         secure: false,
       }),
       cookie.serialize('refreshToken', '', {
-        maxAge: -1,
+        expires: new Date(0),
         httpOnly: true,
         domain: 'localhost',
         path: '/',
