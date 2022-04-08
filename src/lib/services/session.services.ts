@@ -75,7 +75,7 @@ export async function validateSessionPassword({ email, password }: { email: stri
     return false
   }
 
-  return omit(user.toJSON(), 'password')
+  return omit(user.toJSON(), ['password', 'phone', 'address', 'balanceDue', 'totalReceipts', 'createdAt', 'updatedAt', '__v'])
 }
 
 export async function deleteSessions(query: FilterQuery<SessionsDocument>) {

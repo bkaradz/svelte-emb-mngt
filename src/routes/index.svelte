@@ -1,4 +1,3 @@
-
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
 	import IconButton from '$lib/components/IconButton.svelte';
@@ -47,6 +46,9 @@
 </svelte:head>
 
 <div class="custom-number-input h-10 w-24">
+	<div class=" flex items-center justify-center">
+		<div class="border-gray-900 h-6 w-6 animate-spin rounded-full border-b-2" />
+	</div>
 	<label for="custom-input-number" class="w-full text-sm font-semibold text-pickled-bluewood-700"
 		>Counter Input
 	</label>

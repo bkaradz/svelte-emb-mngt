@@ -104,11 +104,15 @@
 			>
 				<div class="p-2">
 					<p class="p-2 text-sm font-semibold text-pickled-bluewood-500">Company Details</p>
-					<p class="p-2 text-sm text-pickled-bluewood-500">222 New Luveve Bulawayo</p>
+					<p class="p-2 text-sm text-pickled-bluewood-500">
+						{contact.address ? contact.address : '...'}
+					</p>
 				</div>
 				<div class="p-2">
 					<p class="p-2 text-sm font-semibold text-pickled-bluewood-500">Notes</p>
-					<span class="p-2 text-lg font-bold text-pickled-bluewood-500" />
+					<p class="p-2 text-sm text-pickled-bluewood-500">
+						{contact.notes ? contact.notes : '...'}
+					</p>
 				</div>
 			</div>
 		</div>

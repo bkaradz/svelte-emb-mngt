@@ -2,9 +2,7 @@
 	import suite from '$lib/validation/client/signUp.validate';
 	import { goto } from '$app/navigation';
 	import logger from '$lib/utility/logger';
-	import classNames from "vest/classNames";
-
-
+	import classNames from 'vest/classNames';
 
 	let result = suite.get();
 

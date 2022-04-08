@@ -2,6 +2,7 @@
 	import suite from '$lib/validation/client/signUp.validate';
 	import logger from '$lib/utility/logger';
 	import { svgArrow, svgPlus } from '$lib/utility/svgLogos';
+	import classNames from 'vest/classNames';
 
 	let result = suite.get();
 
@@ -30,7 +31,7 @@
 		result = suite(formData, name);
 	};
 
-	$: cn = classnames(result, {
+	$: cn = classNames(result, {
 		warning: 'warning',
 		invalid: 'error',
 		valid: 'success'

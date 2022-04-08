@@ -8,6 +8,7 @@ import config from 'config'
 import logger from '$lib/utility/logger'
 import { postSuite } from '$lib/validation/server/session.validate'
 import { setSessionCookies, deleteSessionCookies, createSession, findSessions, validateSessionPassword } from '$lib/services/session.services'
+import omit from 'lodash/omit'
 
 export const post: RequestHandler = async ({ request }) => {
   try {
@@ -46,6 +47,10 @@ export const post: RequestHandler = async ({ request }) => {
         },
       }
     }
+
+    /**
+     * TODO: check if sessions exists for the user and delete, before creating a new session
+     */
 
     // create a session
     const session = await createSession(user._id, request.headers.get('user-agent') || '')
