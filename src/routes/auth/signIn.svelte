@@ -2,9 +2,8 @@
 	import { session } from '$app/stores';
 	import suite from '$lib/validation/client/signIn.validate';
 	import logger from '$lib/utility/logger';
-	import classNames from "vest/classNames";
+	import classnames from 'vest/classnames';
 	import { goto } from '$app/navigation';
-
 
 	let result = suite.get();
 
@@ -25,7 +24,7 @@
 		result = suite(formData, name);
 	};
 
-	$: cn = classNames(result, {
+	$: cn = classnames(result, {
 		warning: 'warning',
 		invalid: 'error',
 		valid: 'success'
@@ -70,7 +69,7 @@
 </script>
 
 <svelte:head>
-	<title>Login</title>
+	<title>Sign In</title>
 </svelte:head>
 
 <div class="h-full w-full max-w-md space-y-8">

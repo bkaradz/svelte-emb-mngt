@@ -3,6 +3,7 @@
 	import logger from '$lib/utility/logger';
 	import { goto } from '$app/navigation';
 	import { svgLogout, svgMessages, svgSettings, svgUser } from '$lib/utility/svgLogos';
+	import { Menu, MenuItems, MenuItem, MenuButton } from '@rgossiaux/svelte-headlessui';
 	import { session } from '$app/stores';
 
 	let signInMenuOpen = false;
@@ -53,62 +54,70 @@
 		>
 	</span>
 
-	<div class="relative mr-6">
-		<!-- Dropdown toggle button -->
-		<button
-			on:click={handleClick}
+	<Menu as="div" class="relative mr-6">
+		<MenuButton
 			class="mr-2 flex h-12 w-12 items-center justify-center rounded-full border border-solid border-pickled-bluewood-200 bg-royal-blue-600"
+			id="menu-button"
+			aria-expanded="true"
+			aria-haspopup="true"
 		>
 			<p class="text-white">B K</p>
-		</button>
+		</MenuButton>
 
-		<div
-			use:clickOutside
-			on:clickOutside={handleClickOutside}
-			class="{signInMenuOpen
-				? ''
-				: 'hidden'} ring-black absolute right-0 top-9 z-10 mt-2 w-56 origin-top-right divide-y divide-pickled-bluewood-300 rounded-md bg-royal-blue-50 shadow-lg ring-1 ring-opacity-5 focus:outline-none"
+		<MenuItems
+			class=" absolute right-0 top-9 z-10 mt-2 w-40 origin-top-right divide-y divide-pickled-bluewood-100 rounded-md bg-white shadow-lg ring-1 ring-royal-blue-300 focus:outline-none"
+			role="menu"
+			aria-orientation="vertical"
+			aria-labelledby="menu-button"
+			tabindex="-1"
 		>
 			<div class="py-1" role="none">
-				<a
-					href="/"
-					class="flex items-center px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-100"
-					role="menuitem"
-					tabindex="-1"
-					id="menu-item-0"
-				>
-					<div class="mr-3">
-						{@html svgUser}
-					</div>
-					Account</a
-				>
-				<a
-					href="/"
-					class="flex items-center px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-100"
-					role="menuitem"
-					tabindex="-1"
-					id="menu-item-1"
-				>
-					<div class="mr-3">
-						{@html svgSettings}
-					</div>
-					Setting</a
-				>
+				<MenuItem active={true}>
+					<a
+						href="/"
+						class="flex items-center px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+						role="menuitem"
+						tabindex="-1"
+						id="menu-item-0"
+					>
+						<div class="mr-3">
+							{@html svgUser}
+						</div>
+						Account
+					</a>
+				</MenuItem>
+				<MenuItem>
+					<a
+						href="/"
+						class="flex items-center px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+						role="menuitem"
+						tabindex="-1"
+						id="menu-item-1"
+					>
+						<div class="mr-3">
+							{@html svgSettings}
+						</div>
+						Setting
+					</a>
+				</MenuItem>
 			</div>
 			<div class="py-1" role="none">
-				<a
-					class="flex items-center px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-100"
-					role="menuitem"
-					tabindex="-1"
-					id="menu-item-2"
-					on:click={handleSignOut}
-				>
-					<div class="mr-3">
-						{@html svgLogout}
-					</div>
-					Logout</a
-				>
+				<MenuItem>
+					<a
+						href="/"
+						class="flex items-center px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+						role="menuitem"
+						tabindex="-1"
+						id="menu-item-2"
+						on:click={handleSignOut}
+					>
+						<div class="mr-3">
+							{@html svgLogout}
+						</div>
+						Logout
+					</a>
+				</MenuItem>
 			</div>
-		</div>
-	</div>
+		</MenuItems>
+	</Menu>
 </div>

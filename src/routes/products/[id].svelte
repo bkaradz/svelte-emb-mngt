@@ -47,8 +47,8 @@
 			paginationCurrentValue += 1;
 		}
 	};
-	const gotoProducts = () => {
-		goto(`/products`);
+	const gotoProducts = async () => {
+		await goto(`/products`);
 	};
 
 	$: product;

@@ -2,7 +2,8 @@
 	import suite from '$lib/validation/client/signUp.validate';
 	import logger from '$lib/utility/logger';
 	import { svgArrow, svgPlus } from '$lib/utility/svgLogos';
-	import classNames from 'vest/classNames';
+	import classnames from 'vest/classnames';
+	import { goto } from '$app/navigation';
 
 	let result = suite.get();
 
@@ -31,7 +32,7 @@
 		result = suite(formData, name);
 	};
 
-	$: cn = classNames(result, {
+	$: cn = classnames(result, {
 		warning: 'warning',
 		invalid: 'error',
 		valid: 'success'
@@ -75,8 +76,8 @@
 		}
 	};
 
-	const gotoContacts = () => {
-		goto(`/contacts`);
+	const gotoContacts = async () => {
+		await goto(`/contacts`);
 	};
 </script>
 

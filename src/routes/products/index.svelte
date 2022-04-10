@@ -67,12 +67,12 @@
 		getProducts();
 	});
 
-	const viewProducts = (id: string) => {
-		goto(`/products/${id}`);
+	const viewProducts = async (id: string) => {
+		await goto(`/products/${id}`);
 	};
 
-	const gotoAddProducts = () => {
-		goto(`/products/add`);
+	const gotoAddProducts = async () => {
+		await goto(`/products/add`);
 	};
 
 	let gridView = false;
@@ -371,7 +371,7 @@
 												>
 											</td>
 											<td class="py-2 text-center">
-												<button on:click={(e) => goto(`/products/${product._id}`)}
+												<button on:click={async (e) => await goto(`/products/${product._id}`)}
 													><span class="fill-current text-pickled-bluewood-500"
 														>{@html svgView}</span
 													></button

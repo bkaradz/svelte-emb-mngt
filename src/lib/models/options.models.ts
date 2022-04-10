@@ -1,7 +1,7 @@
 import { model, Schema, Document, Types } from 'mongoose';
 
 export interface OptionsDocument extends Document {
-	userID?: Types.ObjectId;
+	userID: Types.ObjectId;
 	group: string;
 	name: string;
 	value: string;
@@ -13,7 +13,7 @@ export interface OptionsDocument extends Document {
 
 const optionsSchema: Schema = new Schema<OptionsDocument>(
 	{
-		userID: { type: Types.ObjectId, ref: 'Contacts' },
+		userID: { type: Schema.Types.ObjectId, ref: 'Contacts' },
 		group: {
 			type: String,
 			required: true

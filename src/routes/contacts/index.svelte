@@ -8,12 +8,14 @@
 		svgSearch,
 		svgSelector,
 		svgSort,
+		svgUpload,
 		svgView
 	} from '$lib/utility/svgLogos';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import dayjs from 'dayjs';
 	import Loading from '$lib/components/Loading.svelte';
+	import { Menu, MenuButton, MenuItems, MenuItem } from '@rgossiaux/svelte-headlessui';
 
 	interface ContentIterface {
 		results: [
@@ -40,7 +42,7 @@
 
 	let contacts: ContentIterface;
 	let error: any;
-	let limit = 12;
+	let limit = 15;
 
 	const checkValue = () => {
 		if (limit < 1) {
@@ -49,6 +51,7 @@
 	};
 
 	const getContacts = async (values?: object) => {
+		console.log('🚀 ~ file: index.svelte ~ line 54 ~ getContacts ~ values', values);
 		try {
 			let paramsObj = {
 				limit,
@@ -68,15 +71,26 @@
 		getContacts();
 	});
 
-	const viewContact = (id: string) => {
-		goto(`/contacts/${id}`);
+	const viewContact = async (id: string) => {
+		await goto(`/contacts/${id}`);
 	};
 
-	const gotoAddContact = () => {
-		goto(`/contacts/add`);
+	const gotoAddContact = async () => {
+		await goto(`/contacts/add`);
 	};
 
-	let gridView = false;
+	let gridView = true;
+	let name = 'name';
+
+	const heandleSearchSelection = (e) => {
+		console.log('select value', e.target.name);
+		name = e.target.name;
+	};
+
+	const heandleSearch = async (e) => {
+		let searchWord = e.target.value;
+		getContacts({ [name]: searchWord });
+	};
 </script>
 
 <svelte:head>
@@ -91,26 +105,44 @@
 			<!-- Heading and Buttons Bar -->
 			<div class="main-header flex flex-row items-center justify-between">
 				<h1 class="text-slate-700 text-2xl font-medium">Contacts</h1>
+				<div class="flex items-center">
+					<div class="relative mr-2">
+						<button
+							class="absolute bg-royal-blue-500 border border-royal-blue-500 text-white p-2"
+							for="uploadCSV">{@html svgUpload}</button
+						>
+						<input
+							class="file:opacity-0 file:p-1 file:w-10 w-72 ring-royal-blue-500 bg-pickled-bluewood-100 border border-pickled-bluewood-300 text-pickled-bluewood-500"
+							type="file"
+							name="UploadCSV"
+							id="uploadCSV"
+							accept=".csv, .CSV"
+						/>
+						<button
+							class="absolute right-0 bg-royal-blue-500 border border-royal-blue-500 text-white p-2"
+							type="submit">{@html svgPlus}</button
+						>
+					</div>
+					<button
+						on:click={gotoAddContact}
+						class="btn btn-primary inline-flex items-center justify-center px-3"
+					>
+						<span>
+							{@html svgPlus}
+						</span>
 
-				<button
-					on:click={gotoAddContact}
-					class="btn btn-primary inline-flex items-center justify-center px-3"
-				>
-					<span>
-						{@html svgPlus}
-					</span>
-
-					<span class="ml-2">Add Contact</span>
-				</button>
+						<span class="ml-2">Add Contact</span>
+					</button>
+				</div>
 			</div>
 
 			<!-- Search and View Bar -->
 			<div class="z-10 mt-4 flex h-14 w-full flex-row items-center justify-between bg-white">
 				<div>
 					<div class="relative flex flex-row items-center text-left">
-						<div>
-							<button
-								class="btn focus:ring-royal-royal-royal-blue-500 inline-flex w-full items-center justify-center px-2 py-2 text-sm text-pickled-bluewood-500 hover:bg-pickled-bluewood-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-pickled-bluewood-100"
+						<Menu as="div" class="relative">
+							<MenuButton
+								class="btn inline-flex w-full items-center justify-center px-2 py-2 text-sm text-pickled-bluewood-500 hover:bg-pickled-bluewood-50 focus:outline-none focus:ring-2 focus:ring-royal-blue-50 focus:ring-offset-2 focus:ring-offset-pickled-bluewood-100"
 								id="menu-button"
 								aria-expanded="true"
 								aria-haspopup="true"
@@ -119,84 +151,116 @@
 									{@html svgSort}
 								</span>
 
-								Sort by Name
+								Search by Name
 								<span>
 									{@html svgSelector}
 								</span>
-							</button>
+							</MenuButton>
 
-							<div
-								class="ring-black absolute left-0 top-9 z-10 mt-2 hidden w-56 origin-top-right divide-y divide-pickled-bluewood-100 rounded-md bg-white shadow-lg ring-1 ring-opacity-5 focus:outline-none"
+							<MenuItems
+								class=" absolute left-2 top-9 z-10 mt-2 w-40 origin-top-right divide-y divide-pickled-bluewood-100 bg-white shadow-lg ring-1 ring-royal-blue-300 focus:outline-none"
 								role="menu"
 								aria-orientation="vertical"
 								aria-labelledby="menu-button"
 								tabindex="-1"
 							>
 								<div class="py-1" role="none">
-									<a
-										href="/"
-										class="block px-4 py-2 text-sm text-pickled-bluewood-700"
-										role="menuitem"
-										tabindex="-1"
-										id="menu-item-0">Edit</a
-									>
-									<a
-										href="/"
-										class="block px-4 py-2 text-sm text-pickled-bluewood-700"
-										role="menuitem"
-										tabindex="-1"
-										id="menu-item-1">Duplicate</a
-									>
+									<MenuItem active={true}>
+										<a
+											on:click={heandleSearchSelection}
+											name="name"
+											class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+											role="menuitem"
+											tabindex="-1"
+											id="menu-item-0">Name</a
+										>
+									</MenuItem>
+									<MenuItem>
+										<a
+											on:click={heandleSearchSelection}
+											name="organization"
+											class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+											role="menuitem"
+											tabindex="-1"
+											id="menu-item-1">Organisation</a
+										>
+									</MenuItem>
 								</div>
 								<div class="py-1" role="none">
-									<a
-										href="/"
-										class="block px-4 py-2 text-sm text-pickled-bluewood-700"
-										role="menuitem"
-										tabindex="-1"
-										id="menu-item-2">Archive</a
-									>
-									<a
-										href="/"
-										class="block px-4 py-2 text-sm text-pickled-bluewood-700"
-										role="menuitem"
-										tabindex="-1"
-										id="menu-item-3">Move</a
-									>
+									<MenuItem>
+										<a
+											on:click={heandleSearchSelection}
+											name="phone"
+											class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+											role="menuitem"
+											tabindex="-1"
+											id="menu-item-2">Phone</a
+										>
+									</MenuItem>
+									<MenuItem>
+										<a
+											on:click={heandleSearchSelection}
+											name="email"
+											class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+											role="menuitem"
+											tabindex="-1"
+											id="menu-item-3">Email</a
+										>
+									</MenuItem>
 								</div>
 								<div class="py-1" role="none">
-									<a
-										href="/"
-										class="block px-4 py-2 text-sm text-pickled-bluewood-700"
-										role="menuitem"
-										tabindex="-1"
-										id="menu-item-4">Share</a
-									>
-									<a
-										href="/"
-										class="block px-4 py-2 text-sm text-pickled-bluewood-700"
-										role="menuitem"
-										tabindex="-1"
-										id="menu-item-5">Add to favorites</a
-									>
+									<MenuItem>
+										<a
+											on:click={heandleSearchSelection}
+											name="vatNo"
+											class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+											role="menuitem"
+											tabindex="-1"
+											id="menu-item-4">Vat Number</a
+										>
+									</MenuItem>
+									<MenuItem>
+										<a
+											on:click={heandleSearchSelection}
+											name="balanceDue"
+											class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+											role="menuitem"
+											tabindex="-1"
+											id="menu-item-5">Balance Due</a
+										>
+									</MenuItem>
 								</div>
 								<div class="py-1" role="none">
-									<a
-										href="/"
-										class="block px-4 py-2 text-sm text-pickled-bluewood-700"
-										role="menuitem"
-										tabindex="-1"
-										id="menu-item-6">Delete</a
-									>
+									<MenuItem>
+										<a
+											on:click={heandleSearchSelection}
+											name="state"
+											class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+											role="menuitem"
+											tabindex="-1"
+											id="menu-item-6">State</a
+										>
+									</MenuItem>
+									<MenuItem>
+										<a
+											on:click={heandleSearchSelection}
+											name="reset"
+											class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+											role="menuitem"
+											tabindex="-1"
+											id="menu-item-6">Reset</a
+										>
+									</MenuItem>
 								</div>
-							</div>
-						</div>
+							</MenuItems>
+						</Menu>
 
 						<div class="relative text-pickled-bluewood-100">
 							<input
 								class="input focus:shadow-outline h-10 w-full pl-8 pr-3 text-base placeholder-pickled-bluewood-400"
 								type="text"
 								placeholder="Search..."
+								on:input={heandleSearch}
 							/>
 							<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-2">
 								{@html svgSearch}
@@ -221,7 +285,7 @@
 										name="limit"
 										id="limit"
 										bind:value={limit}
-										on:change={getContacts({ ...contacts.current, limit })}
+										on:change={(e) => getContacts({ ...contacts.current, limit })}
 										on:input={checkValue}
 									/>
 
@@ -331,34 +395,34 @@
 					<!-- Table start -->
 					<div class="w-full bg-white py-6 shadow-lg">
 						<div class="mx-6 block ">
-							<table class="relative w-full rounded-lg text-left">
+							<table class="relative w-full rounded-lg text-left text-sm">
 								<thead>
 									<tr
 										class=" sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
 									>
-										<th class="px-4 py-2">Customer</th>
-										<th class="px-4 py-2">Organization</th>
-										<th class="px-4 py-2">Phone</th>
-										<th class="px-4 py-2">Email</th>
-										<th class="px-4 py-2">Corporate</th>
-										<th class="px-4 py-2">VatNo</th>
-										<th class="px-4 py-2">Balance Due</th>
-										<th class="px-4 py-2">Total Receipts</th>
-										<th class="px-4 py-2">State</th>
-										<th class="px-4 py-2">View</th>
+										<th class="px-2 py-2">Customer</th>
+										<th class="px-2 py-2">Organization</th>
+										<th class="px-2 py-2">Phone</th>
+										<th class="px-2 py-2">Email</th>
+										<th class="px-2 py-2">Corporate</th>
+										<th class="px-2 py-2">VatNo</th>
+										<th class="px-2 py-2">Balance Due</th>
+										<th class="px-2 py-2">Total Receipts</th>
+										<th class="px-2 py-2">State</th>
+										<th class="px-2 py-2">View</th>
 									</tr>
 								</thead>
 								<tbody class="overflow-y-auto">
 									{#each contacts.results as contact (contact._id)}
 										<tr
-											class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 odd:bg-pickled-bluewood-100 even:text-pickled-bluewood-500 font-light odd:text-pickled-bluewood-500"
+											class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 odd:bg-pickled-bluewood-100 even:text-pickled-bluewood-900 font-light odd:text-pickled-bluewood-900"
 										>
-											<td class="px-4 py-2">{contact.name}</td>
-											<td class="px-4 py-2">Organization</td>
-											<td class="px-4 py-2">{contact.phone}</td>
-											<td class="px-4 py-2">{!contact.email ? '...' : contact.email}</td>
+											<td class="px-2 py-1">{contact.name}</td>
+											<td class="px-2 py-1">Organization</td>
+											<td class="px-2 py-1">{contact.phone}</td>
+											<td class="px-2 py-1">{!contact.email ? '...' : contact.email}</td>
 
-											<td class="px-4 py-2">
+											<td class="px-2 py-1">
 												<input
 													disabled
 													type="checkbox"
@@ -367,18 +431,20 @@
 													bind:checked={contact.isCorporate}
 												/>
 											</td>
-											<td class="px-4 py-2">
+											<td class="px-2 py-1">
 												{!contact.vatOrBpNo ? '...' : contact.vatOrBpNo}
 											</td>
-											<td class="px-4 py-2 text-right">${contact.balanceDue}</td>
-											<td class="px-4 py-2 text-right">${contact.totalReceipts}</td>
-											<td class="px-4 py-2">
+											<td class="px-2 py-1 text-right">${contact.balanceDue}</td>
+											<td class="px-2 py-1 text-right">${contact.totalReceipts}</td>
+											<td class="px-2 py-1">
 												<span class="rounded-full bg-success px-3 py-1 text-xs font-bold text-white"
 													>Invoiced</span
 												>
 											</td>
-											<td class="py-2 text-center">
-												<button on:click={(e) => goto(`/contacts/${contact._id}`)}
+											<td class="p-1 text-center ">
+												<button
+													class=" m-0 p-0"
+													on:click={async (e) => await goto(`/contacts/${contact._id}`)}
 													><span class="fill-current text-pickled-bluewood-500"
 														>{@html svgView}</span
 													></button

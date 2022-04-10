@@ -2,6 +2,8 @@
 	import suite from '$lib/validation/client/signUp.validate';
 	import logger from '$lib/utility/logger';
 	import { svgArrow, svgPlus } from '$lib/utility/svgLogos';
+	import classnames from 'vest/classnames';
+	import { goto } from '$app/navigation';
 
 	let result = suite.get();
 
@@ -74,8 +76,8 @@
 		}
 	};
 
-	const gotoProducts = () => {
-		goto(`/products`);
+	const gotoProducts = async () => {
+		await goto(`/products`);
 	};
 </script>
 

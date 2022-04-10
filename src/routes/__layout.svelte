@@ -24,9 +24,9 @@
 	import '../styles/app.css';
 	import { goto } from '$app/navigation';
 
-	function redirectToLogin() {
+	async function redirectToLogin() {
 		if (typeof window !== 'undefined') {
-			goto('/auth/signIn');
+			await goto('/auth/signIn');
 		}
 	}
 </script>

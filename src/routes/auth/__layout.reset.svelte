@@ -2,17 +2,25 @@
 	import type { Load } from '@sveltejs/kit';
 
 	export const load: Load = async ({ session }) => {
-		if (session?.user?.authenticated) {
+		try {
+			if (session?.user?.authenticated) {
+				return {
+					status: 302,
+					redirect: '/'
+				};
+			}
 			return {
-				status: 302,
-				redirect: '/'
+				props: {
+					user: session
+				}
+			};
+		} catch (err) {
+			return {
+				props: {
+					error: err.message
+				}
 			};
 		}
-		return {
-			props: {
-				user: session
-			}
-		};
 	};
 </script>
 
@@ -22,10 +30,18 @@
 	import { getContext, onMount } from 'svelte';
 
 	import { page } from '$app/stores';
+	import type { ContactsDocument } from '$lib/models/contacts.model';
+
+	export let user;
+	let error: any;
 
 	let isPageLoading = true;
 
-	onMount(() => (isPageLoading = false));
+	onMount(() => {
+		setTimeout(function () {
+			isPageLoading = false;
+		}, 450);
+	});
 
 	const navList = [
 		{
@@ -45,34 +61,36 @@
 	];
 </script>
 
-{#if isPageLoading}
+{#if error}
+	<h2>Error while loading the data</h2>
+{:else if !isPageLoading}
+	<div class="height_max flex flex-col items-center bg-pickled-bluewood-50">
+		<div
+			class="mb-16 flex h-[70px] w-screen flex-row items-center justify-center bg-pickled-bluewood-100 drop-shadow-md"
+		>
+			<ul class="flex flex-row pl-1">
+				{#each navList as tag (tag.name)}
+					<li>
+						<a
+							class="relative m-1 block appearance-none border  bg-transparent px-3 py-2  font-semibold
+						{$page.url.pathname === tag.url
+								? `border-royal-blue-600 text-royal-blue-600 hover:border-success hover:text-success`
+								: `border-pickled-bluewood-600 text-pickled-bluewood-600 hover:border-success hover:text-success`}
+						"
+							href={tag.url}
+						>
+							<span>{@html tag.icon}</span> <span class="ml-1">{tag.name}</span>
+						</a>
+					</li>
+				{/each}
+			</ul>
+		</div>
+
+		<slot />
+	</div>
+{:else}
 	<Loading />
 {/if}
-
-<div class="height_max flex flex-col items-center bg-pickled-bluewood-50">
-	<div
-		class="mb-16 flex h-[70px] w-screen flex-row items-center justify-center bg-pickled-bluewood-100 drop-shadow-md"
-	>
-		<ul class="flex flex-row pl-1">
-			{#each navList as tag (tag.name)}
-				<li>
-					<a
-						class="relative m-1 block appearance-none border  bg-transparent px-3 py-2  font-semibold
-						{$page.url.pathname === tag.url
-							? `border-royal-blue-600 text-royal-blue-600 hover:border-success hover:text-success`
-							: `border-pickled-bluewood-600 text-pickled-bluewood-600 hover:border-success hover:text-success`}
-						"
-						href={tag.url}
-					>
-						<span>{@html tag.icon}</span> <span class="ml-1">{tag.name}</span>
-					</a>
-				</li>
-			{/each}
-		</ul>
-	</div>
-
-	<slot />
-</div>
 
 <style>
 	.height_max {

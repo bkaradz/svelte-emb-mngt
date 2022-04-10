@@ -2,29 +2,25 @@ import { model, Schema, Document, Types } from 'mongoose';
 import bcrypt from 'bcrypt';
 import config from 'config';
 
-export interface ContactsDocument extends Document {
-	userID?: Types.ObjectId;
+export interface ProductsDocument extends Document {
+	userID: Types.ObjectId;
 	name: string;
 	productID: string;
-	isCorporate: boolean;
-	notes?: string;
-	vatOrBpNo?: string;
-	email?: string;
-	phone: string;
-	address?: string;
-	balanceDue: number;
-	totalReceipts: number;
+	title?: string;
+	description?: string;
+	unitPrice: number;
+	category?: string;
+	stitches: number;
+	quantity: number;
 	isActive: boolean;
-	isUser: boolean;
-	password?: string;
 	createdAt: Date;
 	updatedAt: Date;
 	comparePassword: (candidatePassword: string) => Promise<boolean>;
 }
 
-const contactsSchema: Schema = new Schema<ContactsDocument>(
+const productsSchema: Schema = new Schema<ProductsDocument>(
 	{
-		userID: { type: Types.ObjectId, ref: 'Contacts' },
+		userID: { type: Schema.Types.ObjectId, ref: 'Products' },
 		name: { type: String, required: true },
 		productID: {
 			// of the form xxx-xxx-xxxx /^([0-9]{3}-){2}[0-9]{4}$/
@@ -40,7 +36,7 @@ const contactsSchema: Schema = new Schema<ContactsDocument>(
 		description: {
 			type: String
 		},
-		unit_price: {
+		unitPrice: {
 			type: Number,
 			required: function () {
 				return this.category !== constants.DEF_PRODUCT_CATEGORY;
@@ -73,33 +69,33 @@ const contactsSchema: Schema = new Schema<ContactsDocument>(
 	{ timestamps: true }
 );
 
-contactsSchema.pre('save', async function (next) {
-	const contact = this as ContactsDocument;
+productsSchema.pre('save', async function (next) {
+	const product = this as ProductsDocument;
 
-	if (!contact.isUser) {
+	if (!product.isUser) {
 		return next();
 	}
 
-	if (!contact.isModified('password')) {
+	if (!product.isModified('password')) {
 		return next();
 	}
 
 	const salt = await bcrypt.genSalt(config.get('saltWorkFactor'));
 
-	const hash = bcrypt.hashSync(contact.password, salt);
+	const hash = bcrypt.hashSync(product.password, salt);
 
-	contact.password = hash;
+	product.password = hash;
 
 	return next();
 });
 
-contactsSchema.methods.comparePassword = async function (
+productsSchema.methods.comparePassword = async function (
 	candidatePassword: string
 ): Promise<boolean> {
-	const contact = this as ContactsDocument;
-	return bcrypt.compare(candidatePassword, contact.password).catch(() => false);
+	const product = this as ProductsDocument;
+	return bcrypt.compare(candidatePassword, product.password).catch(() => false);
 };
 
-const ContactsModel = model<ContactsDocument>('Contacts', contactsSchema);
+const ProductsModel = model<ProductsDocument>('Products', productsSchema);
 
-export default ContactsModel;
+export default ProductsModel;

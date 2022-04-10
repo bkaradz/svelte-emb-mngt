@@ -2,7 +2,7 @@
 	import suite from '$lib/validation/client/signUp.validate';
 	import { goto } from '$app/navigation';
 	import logger from '$lib/utility/logger';
-	import classNames from 'vest/classNames';
+	import classnames from 'vest/classnames';
 
 	let result = suite.get();
 
@@ -31,7 +31,7 @@
 		result = suite(formData, name);
 	};
 
-	$: cn = classNames(result, {
+	$: cn = classnames(result, {
 		warning: 'warning',
 		invalid: 'error',
 		valid: 'success'
@@ -67,7 +67,7 @@
 
 				suite.reset();
 
-				goto('/auth/signIn');
+				await goto('/auth/signIn');
 			} else {
 				error = 'An error has occured';
 			}
@@ -79,7 +79,7 @@
 </script>
 
 <svelte:head>
-	<title>Register</title>
+	<title>Sign Up</title>
 </svelte:head>
 
 <div class="h-full w-full max-w-md space-y-8">

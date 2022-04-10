@@ -4,6 +4,7 @@
 		svgArrow,
 		svgChevronLeft,
 		svgChevronRight,
+		svgDotsVertical,
 		svgGrid,
 		svgList,
 		svgPlus,
@@ -16,6 +17,7 @@
 	import { goto } from '$app/navigation';
 	import Loading from '$lib/components/Loading.svelte';
 	import dayjs from 'dayjs';
+	import { Menu, MenuButton, MenuItems, MenuItem } from '@rgossiaux/svelte-headlessui';
 	const endpoint = `/api/contacts/${$page.params.id}.json`;
 	let contact = {
 		name: 'Loading...',
@@ -47,8 +49,8 @@
 			paginationCurrentValue += 1;
 		}
 	};
-	const gotoContacts = () => {
-		goto(`/contacts`);
+	const gotoContacts = async () => {
+		await goto(`/contacts`);
 	};
 
 	$: contact;
@@ -78,10 +80,51 @@
 		<div
 			class="mr-4 flex w-full basis-1/4 flex-col border-t-4 border-royal-blue-500 bg-white shadow-lg"
 		>
-			<div class="flex items-center">
+			<div class="flex items-center justify-between">
 				<h4 class="p-4 text-lg font-medium text-pickled-bluewood-600">
 					{contact.name}
 				</h4>
+				<Menu as="div" class="relative">
+					<MenuButton
+						class="btn inline-flex w-full items-center justify-center px-2 py-2 text-sm text-pickled-bluewood-500 hover:text-danger focus:outline-none"
+						id="menu-button"
+						aria-expanded="true"
+						aria-haspopup="true"
+					>
+						<span>
+							{@html svgDotsVertical}
+						</span>
+					</MenuButton>
+
+					<MenuItems
+						class=" absolute right-4 top-9 z-10 mt-2 w-20 origin-top-right divide-y divide-pickled-bluewood-100 bg-white shadow-lg ring-1 ring-royal-blue-300 focus:outline-none"
+						role="menu"
+						aria-orientation="vertical"
+						aria-labelledby="menu-button"
+						tabindex="-1"
+					>
+						<div class="py-1" role="none">
+							<MenuItem active={true}>
+								<a
+									href="/"
+									class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+									role="menuitem"
+									tabindex="-1"
+									id="menu-item-0">Edit</a
+								>
+							</MenuItem>
+							<MenuItem>
+								<a
+									href="/"
+									class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+									role="menuitem"
+									tabindex="-1"
+									id="menu-item-1">Delete</a
+								>
+							</MenuItem>
+						</div>
+					</MenuItems>
+				</Menu>
 			</div>
 			<div
 				class="mx-4 mb-4 flex items-center justify-evenly border border-royal-blue-100 bg-pickled-bluewood-50"

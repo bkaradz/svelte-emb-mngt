@@ -1,58 +1,87 @@
-import omit from 'lodash/omit'
+import type { ContactsDocument } from '$lib/models/contacts.model';
+import omit from 'lodash/omit';
 
 const query = async (query, model) => {
-  try {
-    const results = {}
-    let { limit, page, sort } = query
+	try {
+		interface paginationNavInterface {
+			page: number;
+			limit: number;
+		}
+		interface resultsInterface {
+			totalRecords: number;
+			totalPages: number;
+			limit: number;
+			previous: paginationNavInterface | null;
+			next: paginationNavInterface;
+			current: paginationNavInterface | null;
+			results: Array<ContactsDocument>;
+		}
 
-    limit = parseInt(limit) < 1 ? 1 : parseInt(limit)
-    page = parseInt(page)
+		const results: resultsInterface = {
+			totalRecords: 0,
+			totalPages: 0,
+			limit: 12,
+			previous: undefined,
+			next: undefined,
+			current: undefined,
+			results: []
+		};
 
-    const newQuery = omit(query, ['limit', 'page', 'sort'])
+		const { sort, name } = query;
+		let regexName = /./i;
+		if (name) {
+			regexName = new RegExp(name, 'ig');
+		}
+		let { limit, page } = query;
 
-    const startIndex = (page - 1) * limit
-    const endIndex = page * limit
+		limit = parseInt(limit) < 1 ? 1 : parseInt(limit);
+		page = parseInt(page);
 
-    const totalRecords = await await model.countDocuments({ ...newQuery }).exec()
+		const newQuery = omit(query, ['limit', 'page', 'sort', 'name']);
 
-    results.totalRecords = totalRecords
-    results.totalPages = Math.ceil(totalRecords / limit)
-    results.limit = limit
+		const startIndex = (page - 1) * limit;
+		const endIndex = page * limit;
 
-    results.previous = null
-    results.next = null
+		const totalRecords = await model.countDocuments({ ...newQuery, name: regexName }).exec();
 
-    if (startIndex > 0) {
-      results.previous = {
-        page: page - 1,
-        limit,
-      }
-    }
+		results.totalRecords = totalRecords;
+		results.totalPages = Math.ceil(totalRecords / limit);
+		results.limit = limit;
 
-    results.current = {
-      page: page,
-      limit,
-    }
+		results.previous = null;
+		results.next = null;
 
-    if (endIndex < totalRecords) {
-      results.next = {
-        page: page + 1,
-        limit,
-      }
-    }
+		if (startIndex > 0) {
+			results.previous = {
+				page: page - 1,
+				limit
+			};
+		}
 
-    results.results = await model
-      .find({ ...newQuery })
-      .select('-password')
-      .limit(limit)
-      .skip(startIndex)
-      .sort(sort)
-      .exec()
+		results.current = {
+			page: page,
+			limit
+		};
 
-    return results
-  } catch (err) {
-    return err.message
-  }
-}
+		if (endIndex < totalRecords) {
+			results.next = {
+				page: page + 1,
+				limit
+			};
+		}
 
-export default query
+		results.results = await model
+			.find({ ...newQuery, name: regexName })
+			.select('-password')
+			.limit(limit)
+			.skip(startIndex)
+			.sort(sort)
+			.exec();
+
+		return results;
+	} catch (err) {
+		return err.message;
+	}
+};
+
+export default query;
