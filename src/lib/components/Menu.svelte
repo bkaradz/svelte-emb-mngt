@@ -3,7 +3,7 @@
 	import logger from '$lib/utility/logger';
 	import { goto } from '$app/navigation';
 	import { svgLogout, svgMessages, svgSettings, svgUser } from '$lib/utility/svgLogos';
-	import { Menu, MenuItems, MenuItem, MenuButton } from '@rgossiaux/svelte-headlessui';
+	import { Menu, MenuItems, MenuItem, MenuButton, Transition } from '@rgossiaux/svelte-headlessui';
 	import { session } from '$app/stores';
 
 	let signInMenuOpen = false;
@@ -72,7 +72,7 @@
 			tabindex="-1"
 		>
 			<div class="py-1" role="none">
-				<MenuItem active={true}>
+				<MenuItem let:active let:disabled>
 					<a
 						href="/"
 						class="flex items-center px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
@@ -86,7 +86,7 @@
 						Account
 					</a>
 				</MenuItem>
-				<MenuItem>
+				<MenuItem let:active let:disabled>
 					<a
 						href="/"
 						class="flex items-center px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
@@ -102,10 +102,12 @@
 				</MenuItem>
 			</div>
 			<div class="py-1" role="none">
-				<MenuItem>
+				<MenuItem let:active let:disabled>
 					<a
 						href="/"
-						class="flex items-center px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+						class={`${
+							active ? 'bg-royal-blue-500 text-white' : ''
+						} flex items-center px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 						role="menuitem"
 						tabindex="-1"
 						id="menu-item-2"

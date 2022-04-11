@@ -16,6 +16,20 @@
 	import dayjs from 'dayjs';
 	import Loading from '$lib/components/Loading.svelte';
 	import { Menu, MenuButton, MenuItems, MenuItem } from '@rgossiaux/svelte-headlessui';
+	import {
+		Listbox,
+		ListboxButton,
+		ListboxOptions,
+		ListboxOption
+	} from '@rgossiaux/svelte-headlessui';
+
+	const people = [
+		{ id: 1, name: 'Durward Reynolds', unavailable: false },
+		{ id: 2, name: 'Kenton Towne', unavailable: false },
+		{ id: 3, name: 'Therese Wunsch', unavailable: false },
+		{ id: 4, name: 'Benedict Kessler', unavailable: true },
+		{ id: 5, name: 'Katelyn Rohan', unavailable: false }
+	];
 
 	interface ContentIterface {
 		results: [
@@ -80,16 +94,16 @@
 	};
 
 	let gridView = true;
-	let name = 'name';
+	let searchValue = 'name';
 
 	const heandleSearchSelection = (e) => {
 		console.log('select value', e.target.name);
-		name = e.target.name;
+		searchValue = e.target.name;
 	};
 
 	const heandleSearch = async (e) => {
 		let searchWord = e.target.value;
-		getContacts({ [name]: searchWord });
+		getContacts({ [searchValue]: searchWord });
 	};
 </script>
 
@@ -147,11 +161,11 @@
 								aria-expanded="true"
 								aria-haspopup="true"
 							>
-								<span>
+								<!-- <span>
 									{@html svgSort}
-								</span>
+								</span> -->
 
-								Search by Name
+								Search by {searchValue}
 								<span>
 									{@html svgSelector}
 								</span>
@@ -165,21 +179,27 @@
 								tabindex="-1"
 							>
 								<div class="py-1" role="none">
-									<MenuItem active={true}>
+									<MenuItem let:active let:disabled>
 										<a
 											on:click={heandleSearchSelection}
 											name="name"
-											class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+											class={`${
+												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
+											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
 											tabindex="-1"
-											id="menu-item-0">Name</a
+											id="menu-item-0"
 										>
+											Name
+										</a>
 									</MenuItem>
-									<MenuItem>
+									<MenuItem let:active let:disabled>
 										<a
 											on:click={heandleSearchSelection}
 											name="organization"
-											class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+											class={`${
+												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
+											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
 											tabindex="-1"
 											id="menu-item-1">Organisation</a
@@ -187,21 +207,25 @@
 									</MenuItem>
 								</div>
 								<div class="py-1" role="none">
-									<MenuItem>
+									<MenuItem let:active let:disabled>
 										<a
 											on:click={heandleSearchSelection}
 											name="phone"
-											class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+											class={`${
+												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
+											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
 											tabindex="-1"
 											id="menu-item-2">Phone</a
 										>
 									</MenuItem>
-									<MenuItem>
+									<MenuItem let:active let:disabled>
 										<a
 											on:click={heandleSearchSelection}
 											name="email"
-											class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+											class={`${
+												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
+											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
 											tabindex="-1"
 											id="menu-item-3">Email</a
@@ -209,21 +233,25 @@
 									</MenuItem>
 								</div>
 								<div class="py-1" role="none">
-									<MenuItem>
+									<MenuItem let:active let:disabled>
 										<a
 											on:click={heandleSearchSelection}
 											name="vatNo"
-											class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+											class={`${
+												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
+											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
 											tabindex="-1"
 											id="menu-item-4">Vat Number</a
 										>
 									</MenuItem>
-									<MenuItem>
+									<MenuItem let:active let:disabled>
 										<a
 											on:click={heandleSearchSelection}
 											name="balanceDue"
-											class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+											class={`${
+												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
+											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
 											tabindex="-1"
 											id="menu-item-5">Balance Due</a
@@ -231,21 +259,25 @@
 									</MenuItem>
 								</div>
 								<div class="py-1" role="none">
-									<MenuItem>
+									<MenuItem let:active let:disabled>
 										<a
 											on:click={heandleSearchSelection}
 											name="state"
-											class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+											class={`${
+												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
+											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
 											tabindex="-1"
 											id="menu-item-6">State</a
 										>
 									</MenuItem>
-									<MenuItem>
+									<MenuItem let:active let:disabled>
 										<a
 											on:click={heandleSearchSelection}
 											name="reset"
-											class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
+											class={`${
+												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
+											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
 											tabindex="-1"
 											id="menu-item-6">Reset</a
