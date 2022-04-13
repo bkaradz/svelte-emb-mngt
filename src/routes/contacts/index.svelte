@@ -48,24 +48,6 @@
 		}
 	};
 
-	const getContacts = async (values?: object) => {
-		console.log('🚀 ~ file: index.svelte ~ line 54 ~ getContacts ~ values', values);
-		try {
-			let paramsObj = {
-				limit,
-				page: 1,
-				sort: 'name',
-				query: JSON.stringify({ ...values }),
-				...values
-			};
-			let searchParams = new URLSearchParams(paramsObj);
-			const res = await fetch('/api/contacts.json?' + searchParams.toString());
-			contacts = await res.json();
-		} catch (err) {
-			error = error.message;
-		}
-	};
-
 	onMount(() => {
 		getContacts();
 	});
@@ -82,6 +64,16 @@
 	let searchInputValue = '';
 	let searchOption = 'name';
 
+	const searchNamesOptions = {
+		name: 'Name',
+		organisation: 'Organisation',
+		phone: 'Phone',
+		email: 'Email',
+		vatNo: 'Vat Number',
+		balanceDue: 'Balance Due',
+		state: 'State'
+	};
+
 	const heandleSearchSelection = (e) => {
 		console.log('select value', e.target.name);
 		searchOption = e.target.name;
@@ -91,6 +83,25 @@
 	const heandleSearch = async (e) => {
 		let searchWord = e.target.value;
 		getContacts({ [searchOption]: searchWord });
+	};
+
+	// Input must be of the form {limit, page, sort, query}
+	const getContacts = async (values?: object) => {
+		console.log('🚀 ~ file: index.svelte ~ line 54 ~ getContacts ~ values', values);
+		try {
+			let paramsObj = {
+				limit,
+				page: 1,
+				sort: 'name',
+				query: JSON.stringify({ ...values }),
+				...values
+			};
+			let searchParams = new URLSearchParams(paramsObj);
+			const res = await fetch('/api/contacts.json?' + searchParams.toString());
+			contacts = await res.json();
+		} catch (err) {
+			error = error.message;
+		}
 	};
 </script>
 
@@ -148,7 +159,7 @@
 								aria-expanded="true"
 								aria-haspopup="true"
 							>
-								Search by {searchOption}
+								Search by {searchNamesOptions[searchOption]}
 								<span>
 									{@html svgSelector}
 								</span>
@@ -179,7 +190,7 @@
 									<MenuItem let:active let:disabled>
 										<a
 											on:click={heandleSearchSelection}
-											name="organization"
+											name="organisation"
 											class={`${
 												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
 											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
@@ -188,8 +199,7 @@
 											id="menu-item-1">Organisation</a
 										>
 									</MenuItem>
-								</div>
-								<div class="py-1" role="none">
+
 									<MenuItem let:active let:disabled>
 										<a
 											on:click={heandleSearchSelection}
@@ -214,8 +224,7 @@
 											id="menu-item-3">Email</a
 										>
 									</MenuItem>
-								</div>
-								<div class="py-1" role="none">
+
 									<MenuItem let:active let:disabled>
 										<a
 											on:click={heandleSearchSelection}
@@ -240,8 +249,7 @@
 											id="menu-item-5">Balance Due</a
 										>
 									</MenuItem>
-								</div>
-								<div class="py-1" role="none">
+
 									<MenuItem let:active let:disabled>
 										<a
 											on:click={heandleSearchSelection}
@@ -252,18 +260,6 @@
 											role="menuitem"
 											tabindex="-1"
 											id="menu-item-6">State</a
-										>
-									</MenuItem>
-									<MenuItem let:active let:disabled>
-										<a
-											on:click={heandleSearchSelection}
-											name="reset"
-											class={`${
-												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
-											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
-											role="menuitem"
-											tabindex="-1"
-											id="menu-item-6">Reset</a
 										>
 									</MenuItem>
 								</div>

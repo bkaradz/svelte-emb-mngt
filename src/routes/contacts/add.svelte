@@ -1,3 +1,17 @@
+<script context="module" lang="ts">
+	/** @type {import('./[slug]').Load} */
+	export async function load({ params, fetch, session, stuff }) {
+		const response = await fetch('');
+
+		return {
+			status: response.status,
+			props: {
+				article: response.ok && (await response.json())
+			}
+		};
+	}
+</script>
+
 <script lang="ts">
 	import suite from '$lib/validation/client/signUp.validate';
 	import logger from '$lib/utility/logger';
