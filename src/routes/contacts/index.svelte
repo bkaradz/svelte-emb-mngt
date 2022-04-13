@@ -7,29 +7,13 @@
 		svgPlus,
 		svgSearch,
 		svgSelector,
-		svgSort,
 		svgUpload,
 		svgView
 	} from '$lib/utility/svgLogos';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import dayjs from 'dayjs';
 	import Loading from '$lib/components/Loading.svelte';
 	import { Menu, MenuButton, MenuItems, MenuItem } from '@rgossiaux/svelte-headlessui';
-	import {
-		Listbox,
-		ListboxButton,
-		ListboxOptions,
-		ListboxOption
-	} from '@rgossiaux/svelte-headlessui';
-
-	const people = [
-		{ id: 1, name: 'Durward Reynolds', unavailable: false },
-		{ id: 2, name: 'Kenton Towne', unavailable: false },
-		{ id: 3, name: 'Therese Wunsch', unavailable: false },
-		{ id: 4, name: 'Benedict Kessler', unavailable: true },
-		{ id: 5, name: 'Katelyn Rohan', unavailable: false }
-	];
 
 	interface ContentIterface {
 		results: [
@@ -71,6 +55,7 @@
 				limit,
 				page: 1,
 				sort: 'name',
+				query: JSON.stringify({ ...values }),
 				...values
 			};
 			let searchParams = new URLSearchParams(paramsObj);
@@ -94,16 +79,18 @@
 	};
 
 	let gridView = true;
-	let searchValue = 'name';
+	let searchInputValue = '';
+	let searchOption = 'name';
 
 	const heandleSearchSelection = (e) => {
 		console.log('select value', e.target.name);
-		searchValue = e.target.name;
+		searchOption = e.target.name;
+		searchInputValue = '';
 	};
 
 	const heandleSearch = async (e) => {
 		let searchWord = e.target.value;
-		getContacts({ [searchValue]: searchWord });
+		getContacts({ [searchOption]: searchWord });
 	};
 </script>
 
@@ -156,16 +143,12 @@
 					<div class="relative flex flex-row items-center text-left">
 						<Menu as="div" class="relative">
 							<MenuButton
-								class="btn inline-flex w-full items-center justify-center px-2 py-2 text-sm text-pickled-bluewood-500 hover:bg-pickled-bluewood-50 focus:outline-none focus:ring-2 focus:ring-royal-blue-50 focus:ring-offset-2 focus:ring-offset-pickled-bluewood-100"
+								class="btn inline-flex w-full items-center justify-center px-2 py-2 text-xs text-pickled-bluewood-500 hover:bg-pickled-bluewood-50 focus:outline-none focus:ring-royal-blue-50 focus:ring-offset-transparent"
 								id="menu-button"
 								aria-expanded="true"
 								aria-haspopup="true"
 							>
-								<!-- <span>
-									{@html svgSort}
-								</span> -->
-
-								Search by {searchValue}
+								Search by {searchOption}
 								<span>
 									{@html svgSelector}
 								</span>
@@ -292,6 +275,7 @@
 								class="input focus:shadow-outline h-10 w-full pl-8 pr-3 text-base placeholder-pickled-bluewood-400"
 								type="text"
 								placeholder="Search..."
+								bind:value={searchInputValue}
 								on:input={heandleSearch}
 							/>
 							<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-2">
