@@ -132,19 +132,31 @@
 				<div class="p-2">
 					<p class="p-2 text-xs font-semibold text-pickled-bluewood-500">BALANCE DUE</p>
 					<span class="p-2 text-lg font-bold text-pickled-bluewood-500">
-						${contact.balanceDue}
+						${contact.balanceDue.$numberDecimal}
 					</span>
 				</div>
 				<div class="p-2">
 					<p class="p-2 text-xs font-semibold text-pickled-bluewood-500 ">TOTAL INVOICED</p>
 					<span class="p-2 text-lg font-bold text-pickled-bluewood-500">
-						${contact.totalReceipts}
+						${contact.totalReceipts.$numberDecimal}
 					</span>
 				</div>
 			</div>
 			<div
 				class="mx-4 mb-4 flex flex-col items-start border border-royal-blue-100 bg-pickled-bluewood-50"
 			>
+				<div class="p-2">
+					<p class="p-2 text-sm font-semibold text-pickled-bluewood-500">Phone</p>
+					<p class="p-2 text-sm text-pickled-bluewood-500">
+						{contact.phone ? contact.phone : '...'}
+					</p>
+				</div>
+				<div class="p-2">
+					<p class="p-2 text-sm font-semibold text-pickled-bluewood-500">Email</p>
+					<p class="p-2 text-sm text-pickled-bluewood-500">
+						{contact.email ? contact.email : '...'}
+					</p>
+				</div>
 				<div class="p-2">
 					<p class="p-2 text-sm font-semibold text-pickled-bluewood-500">Company Details</p>
 					<p class="p-2 text-sm text-pickled-bluewood-500">

@@ -44,17 +44,22 @@
 		page: number;
 		sort?: string;
 		query?: string;
+		name?: string;
+		organisation?: string;
+		phone?: string;
+		email?: string;
+		vatNo?: string;
+		balanceDue?: string;
+		state?: string;
 	}
 
 	let contacts: ContentIterface;
 	let error: any;
 	let limit = 15;
-	let currentSearchParams = {};
 	let currentGlobalParams: getContactsInterface = {
 		limit,
 		page: 1,
-		sort: 'name',
-		query: JSON.stringify({ ...currentSearchParams })
+		sort: 'name'
 	};
 
 	const checkValue = () => {
@@ -97,7 +102,7 @@
 
 	const heandleSearch = async (e) => {
 		let searchWord = e.target.value;
-		currentSearchParams = { [searchOption]: searchWord };
+		currentGlobalParams = { ...currentGlobalParams, [searchOption]: searchWord };
 		getContacts(currentGlobalParams);
 	};
 
@@ -413,13 +418,13 @@
 							<div class="p-1">
 								<p class="p-1 text-xs font-semibold text-pickled-bluewood-500">BALANCE DUE</p>
 								<span class="p-1 text-base font-bold text-pickled-bluewood-500">
-									${contact.balanceDue}
+									${contact.balanceDue.$numberDecimal}
 								</span>
 							</div>
 							<div class="p-1">
 								<p class="p-1 text-xs font-semibold text-pickled-bluewood-500">TOTAL INVOICED</p>
 								<span class="p-1 text-base font-bold text-pickled-bluewood-500">
-									${contact.totalReceipts.toString()}
+									${contact.totalReceipts.$numberDecimal}
 								</span>
 							</div>
 						</div>
@@ -451,7 +456,7 @@
 								<tbody class="overflow-y-auto">
 									{#each contacts.results as contact (contact._id)}
 										<tr
-											class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 odd:bg-pickled-bluewood-100 even:text-pickled-bluewood-900 font-light odd:text-pickled-bluewood-900"
+											class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 odd:bg-pickled-bluewood-100 even:text-pickled-bluewood-900 font-normal odd:text-pickled-bluewood-900"
 										>
 											<td class="px-2 py-1">{contact.name}</td>
 											<td class="px-2 py-1">Organization</td>
@@ -470,9 +475,9 @@
 											<td class="px-2 py-1">
 												{!contact.vatOrBpNo ? '...' : contact.vatOrBpNo}
 											</td>
-											<td class="px-2 py-1 text-right">${contact.balanceDue}</td>
-											<td class="px-2 py-1 text-right">${contact.totalReceipts}</td>
-											<td class="px-2 py-1">
+											<td class="px-2 py-1 text-right">${contact.balanceDue.$numberDecimal}</td>
+											<td class="px-2 py-1 text-right">${contact.totalReceipts.$numberDecimal}</td>
+											<td class="px-2 py-1 flex justify-end items-center">
 												<span class="rounded-full bg-success px-3 py-1 text-xs font-bold text-white"
 													>Invoiced</span
 												>

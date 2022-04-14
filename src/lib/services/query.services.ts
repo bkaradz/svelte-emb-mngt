@@ -1,98 +1,100 @@
-import type { ContactsDocument } from '$lib/models/contacts.model';
-import logger from '$lib/utility/logger';
+import type { ContactsDocument } from '$lib/models/contacts.model'
+import logger from '$lib/utility/logger'
+import { omit } from 'lodash'
 
 const query = async (searchQuery, model) => {
-	console.log('🚀 ~ file: query.services.ts ~ line 5 ~ query ~ searchQuery', searchQuery);
-	try {
-		interface paginationNavInterface {
-			page: number;
-			limit: number;
-		}
-		interface resultsInterface {
-			error: boolean;
-			totalRecords: number;
-			totalPages: number;
-			limit: number;
-			previous: paginationNavInterface | null;
-			next: paginationNavInterface;
-			current: paginationNavInterface | null;
-			results: Array<ContactsDocument>;
-		}
+  console.log('🚀 ~ file: query.services.ts ~ line 5 ~ query ~ searchQuery', searchQuery)
+  try {
+    interface paginationNavInterface {
+      page: number
+      limit: number
+    }
+    interface resultsInterface {
+      error: boolean
+      totalRecords: number
+      totalPages: number
+      limit: number
+      previous: paginationNavInterface | null
+      next: paginationNavInterface
+      current: paginationNavInterface | null
+      results: Array<ContactsDocument>
+    }
 
-		const results: resultsInterface = {
-			error: false,
-			totalRecords: 0,
-			totalPages: 0,
-			limit: 12,
-			previous: undefined,
-			next: undefined,
-			current: undefined,
-			results: []
-		};
+    const results: resultsInterface = {
+      error: false,
+      totalRecords: 0,
+      totalPages: 0,
+      limit: 12,
+      previous: undefined,
+      next: undefined,
+      current: undefined,
+      results: [],
+    }
 
-		let { limit = 15, page = 1 } = searchQuery;
+    let { limit = 15, page = 1 } = searchQuery
 
-		const { sort = 'name', query = '{}' } = searchQuery;
+    const { sort = 'name' } = searchQuery
 
-		const finalQuery = JSON.parse(query);
+    const finalQuery = omit(searchQuery, ['page', 'limit', 'sort'])
 
-		const objectKeys = Object.keys(finalQuery);
+    // const finalQuery = JSON.parse(query)
 
-		let newRegExQuery = {};
+    const objectKeys = Object.keys(finalQuery)
 
-		objectKeys.forEach((name) => {
-			const regexValue = new RegExp(finalQuery[name], 'ig');
-			newRegExQuery = { ...newRegExQuery, [name]: regexValue };
-		});
-		console.log('🚀 ~ file: query.services.ts ~ line 39 ~ query ~ newRegExQuery', newRegExQuery);
+    let newRegExQuery = {}
 
-		limit = parseInt(limit) < 1 ? 1 : parseInt(limit);
-		page = parseInt(page);
+    objectKeys.forEach((name) => {
+      if (name === 'isCorporate' || name === 'isUser' || name === 'isActive') {
+        const value = finalQuery[name] === 'true' ? true : false
+        newRegExQuery = { ...newRegExQuery, [name]: value }
+      } else {
+        const regexValue = new RegExp(finalQuery[name], 'ig')
+        newRegExQuery = { ...newRegExQuery, [name]: regexValue }
+      }
+    })
+    console.log('🚀 ~ file: query.services.ts ~ line 39 ~ query ~ newRegExQuery', newRegExQuery)
 
-		const startIndex = (page - 1) * limit;
-		const endIndex = page * limit;
+    limit = parseInt(limit) < 1 ? 1 : parseInt(limit)
+    page = parseInt(page)
 
-		const totalRecords = await model.countDocuments(newRegExQuery).exec();
+    const startIndex = (page - 1) * limit
+    const endIndex = page * limit
 
-		results.totalRecords = totalRecords;
-		results.totalPages = Math.ceil(totalRecords / limit);
-		results.limit = limit;
+    const totalRecords = await model.countDocuments(newRegExQuery).exec()
 
-		results.previous = null;
-		results.next = null;
+    results.totalRecords = totalRecords
+    results.totalPages = Math.ceil(totalRecords / limit)
+    results.limit = limit
 
-		if (startIndex > 0) {
-			results.previous = {
-				page: page - 1,
-				limit
-			};
-		}
+    results.previous = null
+    results.next = null
 
-		results.current = {
-			page: page,
-			limit
-		};
+    if (startIndex > 0) {
+      results.previous = {
+        page: page - 1,
+        limit,
+      }
+    }
 
-		if (endIndex < totalRecords) {
-			results.next = {
-				page: page + 1,
-				limit
-			};
-		}
+    results.current = {
+      page: page,
+      limit,
+    }
 
-		results.results = await model
-			.find(newRegExQuery)
-			.select('-password')
-			.limit(limit)
-			.skip(startIndex)
-			.sort(sort)
-			.exec();
+    if (endIndex < totalRecords) {
+      results.next = {
+        page: page + 1,
+        limit,
+      }
+    }
 
-		return results;
-	} catch (err) {
-		logger.error(err);
-		return { error: true, message: err.message };
-	}
-};
+    results.results = await model.find(newRegExQuery).select('-password').limit(limit).skip(startIndex).sort(sort).exec()
 
-export default query;
+    return results
+  } catch (err) {
+    logger.error(err)
+    return { error: true, message: err.message }
+  }
+}
+
+export default query
