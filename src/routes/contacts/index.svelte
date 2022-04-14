@@ -13,6 +13,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import Loading from '$lib/components/Loading.svelte';
+	import logger from '$lib/utility/logger';
 	import { Menu, MenuButton, MenuItems, MenuItem } from '@rgossiaux/svelte-headlessui';
 
 	interface ContentIterface {
@@ -38,9 +39,23 @@
 		next: { page: number; limit: number };
 	}
 
+	interface getContactsInterface {
+		limit: number;
+		page: number;
+		sort?: string;
+		query?: string;
+	}
+
 	let contacts: ContentIterface;
 	let error: any;
 	let limit = 15;
+	let currentSearchParams = {};
+	let currentGlobalParams: getContactsInterface = {
+		limit,
+		page: 1,
+		sort: 'name',
+		query: JSON.stringify({ ...currentSearchParams })
+	};
 
 	const checkValue = () => {
 		if (limit < 1) {
@@ -49,7 +64,7 @@
 	};
 
 	onMount(() => {
-		getContacts();
+		getContacts(currentGlobalParams);
 	});
 
 	const viewContact = async (id: string) => {
@@ -82,25 +97,19 @@
 
 	const heandleSearch = async (e) => {
 		let searchWord = e.target.value;
-		getContacts({ [searchOption]: searchWord });
+		currentSearchParams = { [searchOption]: searchWord };
+		getContacts(currentGlobalParams);
 	};
 
 	// Input must be of the form {limit, page, sort, query}
-	const getContacts = async (values?: object) => {
-		console.log('🚀 ~ file: index.svelte ~ line 54 ~ getContacts ~ values', values);
+	const getContacts = async (paramsObj: getContactsInterface) => {
 		try {
-			let paramsObj = {
-				limit,
-				page: 1,
-				sort: 'name',
-				query: JSON.stringify({ ...values }),
-				...values
-			};
 			let searchParams = new URLSearchParams(paramsObj);
 			const res = await fetch('/api/contacts.json?' + searchParams.toString());
 			contacts = await res.json();
 		} catch (err) {
-			error = error.message;
+			logger.error(err.message);
+			error = err.message;
 		}
 	};
 </script>
@@ -297,7 +306,10 @@
 										name="limit"
 										id="limit"
 										bind:value={limit}
-										on:change={(e) => getContacts({ ...contacts.current, limit })}
+										on:change={(e) => {
+											currentGlobalParams = { ...currentGlobalParams, ...contacts.current };
+											getContacts(currentGlobalParams);
+										}}
 										on:input={checkValue}
 									/>
 
@@ -307,7 +319,10 @@
 							<li>
 								<button
 									disabled={!contacts.previous}
-									on:click|preventDefault={(e) => getContacts(contacts.previous)}
+									on:click|preventDefault={(e) => {
+										currentGlobalParams = { ...currentGlobalParams, ...contacts.previous };
+										getContacts(currentGlobalParams);
+									}}
 									class="{!contacts.previous
 										? 'hidden'
 										: ''} btn border border-r-0 border-pickled-bluewood-300 bg-white px-4 text-pickled-bluewood-500 hover:bg-pickled-bluewood-200 disabled:bg-pickled-bluewood-200"
@@ -317,7 +332,10 @@
 							<li>
 								<button
 									disabled={!contacts.previous}
-									on:click|preventDefault={(e) => getContacts(contacts.previous)}
+									on:click|preventDefault={(e) => {
+										currentGlobalParams = { ...currentGlobalParams, ...contacts.previous };
+										getContacts(currentGlobalParams);
+									}}
 									class="{!contacts.previous
 										? 'hidden'
 										: ''} btn border border-r-0 border-pickled-bluewood-300 bg-white px-4 text-pickled-bluewood-500 hover:bg-pickled-bluewood-200 disabled:bg-pickled-bluewood-200"
@@ -334,7 +352,10 @@
 							<li>
 								<button
 									disabled={!contacts.next}
-									on:click|preventDefault={(e) => getContacts(contacts.next)}
+									on:click|preventDefault={(e) => {
+										currentGlobalParams = { ...currentGlobalParams, ...contacts.next };
+										getContacts(currentGlobalParams);
+									}}
 									class="{!contacts.next
 										? 'hidden'
 										: ''} btn border border-l-0 border-pickled-bluewood-300 bg-white px-4 text-pickled-bluewood-500 hover:bg-pickled-bluewood-200 disabled:bg-pickled-bluewood-200"
@@ -344,7 +365,10 @@
 							<li>
 								<button
 									disabled={!contacts.next}
-									on:click|preventDefault={(e) => getContacts(contacts.next)}
+									on:click|preventDefault={(e) => {
+										currentGlobalParams = { ...currentGlobalParams, ...contacts.next };
+										getContacts(currentGlobalParams);
+									}}
 									class=" {!contacts.next
 										? 'hidden'
 										: ''} btn border border-l-0 border-pickled-bluewood-300 bg-white px-4 text-pickled-bluewood-500 hover:bg-pickled-bluewood-200 disabled:bg-pickled-bluewood-200"
@@ -395,7 +419,7 @@
 							<div class="p-1">
 								<p class="p-1 text-xs font-semibold text-pickled-bluewood-500">TOTAL INVOICED</p>
 								<span class="p-1 text-base font-bold text-pickled-bluewood-500">
-									${contact.totalReceipts}
+									${contact.totalReceipts.toString()}
 								</span>
 							</div>
 						</div>

@@ -1,4 +1,4 @@
-import { model, Schema, Document, Types } from 'mongoose';
+import mongoose, { model, Schema, Document, Types } from 'mongoose';
 import bcrypt from 'bcrypt';
 import config from 'config';
 
@@ -12,8 +12,8 @@ export interface ContactsDocument extends Document {
 	email?: string;
 	phone: string;
 	address?: string;
-	balanceDue: number;
-	totalReceipts: number;
+	balanceDue: Types.Decimal128;
+	totalReceipts: Types.Decimal128;
 	isActive: boolean;
 	isUser: boolean;
 	userRole?: string;
@@ -46,8 +46,20 @@ const contactsSchema: Schema = new Schema<ContactsDocument>(
 				return this.isUser === true;
 			}
 		},
-		balanceDue: { type: Number, required: true, default: 0 },
-		totalReceipts: { type: Number, required: true, default: 0 },
+		balanceDue: {
+			type: Schema.Types.Decimal128,
+			required: true,
+			get: (v) => mongoose.Types.Decimal128.fromString((+v.toString()).toFixed(2)),
+			set: (v) => mongoose.Types.Decimal128.fromString(v.toFixed(2)),
+			default: 0
+		},
+		totalReceipts: {
+			type: Schema.Types.Decimal128,
+			required: true,
+			get: (v) => mongoose.Types.Decimal128.fromString((+v.toString()).toFixed(2)),
+			set: (v) => mongoose.Types.Decimal128.fromString(v.toFixed(2)),
+			default: 0
+		},
 		isActive: { type: Boolean, required: true, default: false },
 		isUser: { type: Boolean, required: true, default: false },
 		userRole: {
@@ -66,7 +78,7 @@ const contactsSchema: Schema = new Schema<ContactsDocument>(
 		createdAt: { type: Date },
 		updatedAt: { type: Date }
 	},
-	{ timestamps: true }
+	{ timestamps: true, toJSON: { getters: true } }
 );
 
 contactsSchema.pre('save', async function (next) {

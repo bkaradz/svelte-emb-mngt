@@ -1,17 +1,3 @@
-<script context="module" lang="ts">
-	/** @type {import('./[slug]').Load} */
-	export async function load({ params, fetch, session, stuff }) {
-		const response = await fetch('');
-
-		return {
-			status: response.status,
-			props: {
-				article: response.ok && (await response.json())
-			}
-		};
-	}
-</script>
-
 <script lang="ts">
 	import suite from '$lib/validation/client/signUp.validate';
 	import logger from '$lib/utility/logger';
@@ -20,6 +6,20 @@
 	import { goto } from '$app/navigation';
 
 	let result = suite.get();
+
+	const getCoporateContacts = async (params: string) => {
+		try {
+			let paramsObj = {
+				limit: 6,
+				query: JSON.stringify({ isCoporate: true, name: params })
+			};
+			let searchParams = new URLSearchParams(paramsObj);
+			const res = await fetch('/api/contacts.json?' + searchParams.toString());
+			return await res.json();
+		} catch (err) {
+			return err.message;
+		}
+	};
 
 	interface formDataType {
 		name: string;
