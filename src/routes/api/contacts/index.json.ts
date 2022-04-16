@@ -10,7 +10,7 @@ export const get = async ({ url }) => {
 		console.log('🚀 ~ file: index.json.ts ~ line 10 ~ get ~ queryParams', queryParams);
 
 		const contacts = await query(queryParams, ContactsModel);
-		console.log('🚀 ~ file: index.json.ts ~ line 13 ~ get ~ contacts', contacts);
+		// console.log('🚀 ~ file: index.json.ts ~ line 13 ~ get ~ contacts', contacts);
 
 		return {
 			status: 200,

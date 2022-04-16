@@ -132,13 +132,13 @@
 				<div class="p-2">
 					<p class="p-2 text-xs font-semibold text-pickled-bluewood-500">BALANCE DUE</p>
 					<span class="p-2 text-lg font-bold text-pickled-bluewood-500">
-						${contact.balanceDue.$numberDecimal}
+						${contact.balanceDue}
 					</span>
 				</div>
 				<div class="p-2">
 					<p class="p-2 text-xs font-semibold text-pickled-bluewood-500 ">TOTAL INVOICED</p>
 					<span class="p-2 text-lg font-bold text-pickled-bluewood-500">
-						${contact.totalReceipts.$numberDecimal}
+						${contact.totalReceipts}
 					</span>
 				</div>
 			</div>

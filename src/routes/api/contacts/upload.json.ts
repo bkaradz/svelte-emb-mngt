@@ -30,20 +30,41 @@ export const post: RequestHandler = async ({ request, locals }) => {
 			isActive: string;
 		}
 		jsonFile.forEach(async (element) => {
-			const { Name, Email, Phone }: contactInterface = element;
+			const {
+				Name,
+				Email,
+				Phone,
+				balanceDue,
+				totalReceipts,
+				notes,
+				address,
+				vatOrBpNo
+			}: contactInterface = element;
 
 			const name = Name.replace(/Emb$/gm, '').trim();
 			const email = Email.trim();
 			const phone = Phone.split(',')[0].trim().replace(/ /g, '');
 
-			const contact = { name, email, phone, isActive: true, isUser: false, userID: userId };
+			const contact = {
+				name,
+				email,
+				phone,
+				isActive: true,
+				isUser: false,
+				userID: userId,
+				totalReceipts,
+				balanceDue,
+				notes,
+				address,
+				vatOrBpNo
+			};
 
 			const contactFiltered = pickBy(contact, identity);
 
 			const result = postSuite(contactFiltered);
 
 			if (result.hasErrors()) {
-				logger.error('Error', result.getErrors());
+				logger.error(result.getErrors());
 				return {
 					status: 400,
 					body: {
