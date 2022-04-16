@@ -18,7 +18,6 @@
 	];
 
 	let selectedSearchValue = searchValues[0];
-	console.log('🚀 ~ file: test.svelte ~ line 21 ~ selectedSearchValue', selectedSearchValue);
 </script>
 
 <div class="z-10 mt-4 flex h-14 w-full flex-row items-center justify-between bg-white">
@@ -26,7 +25,6 @@
 		<Listbox
 			value={selectedSearchValue}
 			on:change={(e) => {
-				console.log('e.detail', e.detail);
 				selectedSearchValue = e.detail;
 			}}
 		>

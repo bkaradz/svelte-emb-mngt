@@ -1,33 +1,38 @@
-import type { ContactsDocument } from '$lib/models/contacts.model';
 import logger from '$lib/utility/logger';
 import { omit } from 'lodash';
 
 const query = async (searchQuery, model) => {
-	console.log('🚀 ~ file: query.services.ts ~ line 5 ~ query ~ searchQuery', searchQuery);
 	try {
 		interface paginationNavInterface {
 			page: number;
 			limit: number;
 		}
-		interface resultsInterface {
+		interface metaDataInterface {
 			error: boolean;
 			totalRecords: number;
 			totalPages: number;
 			limit: number;
 			previous: paginationNavInterface | null;
-			next: paginationNavInterface;
 			current: paginationNavInterface | null;
-			results: Array<ContactsDocument>;
+			next: paginationNavInterface | null;
+		}
+		interface resultsInterface {
+			metaData: Array<metaDataInterface>;
+			results: [];
 		}
 
 		const results: resultsInterface = {
-			error: false,
-			totalRecords: 0,
-			totalPages: 0,
-			limit: 12,
-			previous: undefined,
-			next: undefined,
-			current: undefined,
+			metaData: [
+				{
+					error: false,
+					totalRecords: 0,
+					totalPages: 0,
+					limit: 12,
+					previous: null,
+					next: null,
+					current: null
+				}
+			],
 			results: []
 		};
 
@@ -52,7 +57,6 @@ const query = async (searchQuery, model) => {
 				newRegExQuery = { ...newRegExQuery, [name]: regexValue };
 			}
 		});
-		console.log('🚀 ~ file: query.services.ts ~ line 39 ~ query ~ newRegExQuery', newRegExQuery);
 
 		limit = parseInt(limit) < 1 ? 1 : parseInt(limit);
 		page = parseInt(page);
@@ -62,27 +66,37 @@ const query = async (searchQuery, model) => {
 
 		const totalRecords = await model.countDocuments(newRegExQuery).exec();
 
-		results.totalRecords = totalRecords;
-		results.totalPages = Math.ceil(totalRecords / limit);
-		results.limit = limit;
+		results.metaData = [];
+		const metaDataTemp: metaDataInterface = {
+			error: false,
+			totalRecords: 0,
+			totalPages: 0,
+			limit: 0,
+			previous: null,
+			current: null,
+			next: null
+		};
+		metaDataTemp.totalRecords = totalRecords;
+		metaDataTemp.totalPages = Math.ceil(totalRecords / limit);
+		metaDataTemp.limit = limit;
 
-		results.previous = null;
-		results.next = null;
+		metaDataTemp.previous = null;
+		metaDataTemp.next = null;
 
 		if (startIndex > 0) {
-			results.previous = {
+			metaDataTemp.previous = {
 				page: page - 1,
 				limit
 			};
 		}
 
-		results.current = {
+		metaDataTemp.current = {
 			page: page,
 			limit
 		};
 
 		if (endIndex < totalRecords) {
-			results.next = {
+			metaDataTemp.next = {
 				page: page + 1,
 				limit
 			};
@@ -90,16 +104,18 @@ const query = async (searchQuery, model) => {
 
 		results.results = await model
 			.find(newRegExQuery)
-			.select('-password')
+			.select('-password -createdAt -updatedAt -__v')
 			.limit(limit)
 			.skip(startIndex)
 			.sort(sort)
 			.exec();
 
+		results.metaData.push(metaDataTemp);
+
 		return results;
 	} catch (err) {
 		logger.error(err);
-		return { error: true, message: err.message };
+		return { metaData: [{ error: true }], message: err.message };
 	}
 };
 

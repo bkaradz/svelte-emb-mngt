@@ -31,12 +31,16 @@
 				isActive: boolean;
 			}
 		];
-		totalRecords: number;
-		totalPages: number;
-		limit: number;
-		previous: { page: number; limit: number };
-		current: { page: number; limit: number };
-		next: { page: number; limit: number };
+		metaData: [
+			{
+				totalRecords: number;
+				totalPages: number;
+				limit: number;
+				previous: { page: number; limit: number };
+				current: { page: number; limit: number };
+				next: { page: number; limit: number };
+			}
+		];
 	}
 
 	interface getContactsInterface {
@@ -95,7 +99,6 @@
 	};
 
 	const heandleSearchSelection = (e) => {
-		console.log('select value', e.target.name);
 		searchOption = e.target.name;
 		searchInputValue = '';
 	};

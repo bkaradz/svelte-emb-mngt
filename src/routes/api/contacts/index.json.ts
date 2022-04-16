@@ -1,16 +1,17 @@
 // import type { RequestHandler } from '@sveltejs/kit'
-import ContactsModel, { type ContactsDocument } from '$lib/models/contacts.model';
+import ContactsModel from '$lib/models/contacts.model';
 import omit from 'lodash/omit';
 import logger from '$lib/utility/logger';
-import query from '$lib/services/query.services';
+// import query from '$lib/services/query.services';
+import aggregateQuery from '$lib/services/aggregateQuery.services';
 
 export const get = async ({ url }) => {
 	try {
 		const queryParams = Object.fromEntries(url.searchParams);
-		console.log('🚀 ~ file: index.json.ts ~ line 10 ~ get ~ queryParams', queryParams);
 
-		const contacts = await query(queryParams, ContactsModel);
-		// console.log('🚀 ~ file: index.json.ts ~ line 13 ~ get ~ contacts', contacts);
+		let contacts = await aggregateQuery(queryParams, ContactsModel);
+
+		contacts = { ...contacts, ...contacts.metaData[0] };
 
 		return {
 			status: 200,
