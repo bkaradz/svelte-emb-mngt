@@ -36,7 +36,12 @@ const aggregateQuery = async (searchQuery, model) => {
 		let newRegExQuery = {};
 
 		objectKeys.forEach((name) => {
-			newRegExQuery = { ...newRegExQuery, [name]: { $regex: finalQuery[name], $options: 'ig' } };
+			if (name === 'isCorporate' || name === 'isUser' || name === 'isActive') {
+				finalQuery[name] = finalQuery[name] === 'true' ? true : false;
+				newRegExQuery = { ...newRegExQuery, [name]: finalQuery[name] };
+			} else {
+				newRegExQuery = { ...newRegExQuery, [name]: { $regex: finalQuery[name], $options: 'ig' } };
+			}
 		});
 
 		limit = parseInt(limit) < 1 ? 1 : parseInt(limit);
@@ -61,6 +66,14 @@ const aggregateQuery = async (searchQuery, model) => {
 
 		const aggregateFilter = [
 			{
+				$lookup: {
+					from: 'contacts',
+					localField: 'organizationID',
+					foreignField: '_id',
+					as: 'organization'
+				}
+			},
+			{
 				$addFields: {
 					balanceDue: {
 						$toString: '$balanceDue'
@@ -78,6 +91,7 @@ const aggregateQuery = async (searchQuery, model) => {
 					name: 1
 				}
 			},
+
 			{
 				$facet: {
 					metaData: [

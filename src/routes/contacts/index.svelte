@@ -55,6 +55,9 @@
 		vatNo?: string;
 		balanceDue?: string;
 		state?: string;
+		isCorporate?: boolean;
+		isActive?: boolean;
+		isUser?: boolean;
 	}
 
 	let contacts: ContentIterface;

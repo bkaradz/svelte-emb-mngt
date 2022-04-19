@@ -1,25 +1,27 @@
-import ContactsModel from '$lib/models/contacts.model'
-import omit from 'lodash/omit'
+import ContactsModel from '$lib/models/contacts.model';
 
 /** @type {import('./[id]').RequestHandler} */
 export async function get({ params }) {
-  let contact = await ContactsModel.findOne({ _id: params.id })
+	const contact = await ContactsModel.findOne(
+		{ _id: params.id },
+		{ password: 0, createdAt: 0, updatedAt: 0, __v: 0 }
+	)
+		.populate('organizationID')
+		.exec();
 
-  contact = omit(contact.toJSON(), 'password')
+	if (!contact) {
+		return {
+			status: 404,
+			body: {
+				message: 'Customer not found'
+			}
+		};
+	}
 
-  if (!contact) {
-    return {
-      status: 404,
-      body: {
-        message: 'Customer not found',
-      },
-    }
-  }
-
-  return {
-    status: 200,
-    body: {
-      contact,
-    },
-  }
+	return {
+		status: 200,
+		body: {
+			contact
+		}
+	};
 }

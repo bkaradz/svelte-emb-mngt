@@ -146,6 +146,12 @@
 				class="mx-4 mb-4 flex flex-col items-start border border-royal-blue-100 bg-pickled-bluewood-50"
 			>
 				<div class="p-2">
+					<p class="p-2 text-sm font-semibold text-pickled-bluewood-500">Organisation</p>
+					<p class="p-2 text-sm text-pickled-bluewood-500">
+						{contact?.organizationID?.name ? contact?.organizationID?.name : '...'}
+					</p>
+				</div>
+				<div class="p-2">
 					<p class="p-2 text-sm font-semibold text-pickled-bluewood-500">Phone</p>
 					<p class="p-2 text-sm text-pickled-bluewood-500">
 						{contact.phone ? contact.phone : '...'}

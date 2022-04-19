@@ -23,17 +23,22 @@ export const post: RequestHandler = async ({ request, locals }) => {
 		const jsonFile = await parseCSV(request);
 
 		interface contactInterface {
-			Name: string;
-			Email: string;
-			Phone: string;
+			name: string;
+			email: string;
+			phone: string;
+			notes: string;
+			address: string;
+			vatOrBpNo: string;
+			isCorporate: boolean;
+			balanceDue: number;
+			totalReceipts: number;
 			Organization: string;
 			isActive: string;
 		}
 		jsonFile.forEach(async (element) => {
+			let { name, email, phone }: contactInterface = element;
 			const {
-				Name,
-				Email,
-				Phone,
+				isCorporate,
 				balanceDue,
 				totalReceipts,
 				notes,
@@ -41,9 +46,10 @@ export const post: RequestHandler = async ({ request, locals }) => {
 				vatOrBpNo
 			}: contactInterface = element;
 
-			const name = Name.replace(/Emb$/gm, '').trim();
-			const email = Email.trim();
-			const phone = Phone.split(',')[0].trim().replace(/ /g, '');
+			// const name = Name.replace(/Emb$/gm, '').trim();
+			name = name.trim();
+			email = email.trim();
+			phone = phone.split(',')[0].trim().replace(/ /g, '');
 
 			const contact = {
 				name,
@@ -54,6 +60,7 @@ export const post: RequestHandler = async ({ request, locals }) => {
 				userID: userId,
 				totalReceipts,
 				balanceDue,
+				isCorporate,
 				notes,
 				address,
 				vatOrBpNo

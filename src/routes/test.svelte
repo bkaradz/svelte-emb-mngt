@@ -1,74 +1,190 @@
 <script lang="ts">
-	import { svgCheck, svgSelector } from '$lib/utility/svgLogos';
-	import {
-		Listbox,
-		ListboxButton,
-		ListboxOptions,
-		ListboxOption
-	} from '@rgossiaux/svelte-headlessui';
+	import { onMount } from 'svelte';
+	import logger from '$lib/utility/logger';
+	import { clickOutside } from '$lib/utility/clickOutside';
 
-	const searchValues = [
-		{ id: 1, name: 'Name', value: 'name', unavailable: false },
-		{ id: 2, name: 'Organistion', unavailable: false },
-		{ id: 3, name: 'Phone', unavailable: false },
-		{ id: 4, name: 'Email', unavailable: false },
-		{ id: 5, name: 'Vat Number', unavailable: false },
-		{ id: 6, name: 'Balance Due', unavailable: false },
-		{ id: 7, name: 'State', unavailable: false }
-	];
+	interface getContactsInterface {
+		limit: number;
+		page: number;
+		sort?: string;
+		query?: string;
+		name?: string;
+		organisation?: string;
+		phone?: string;
+		email?: string;
+		vatNo?: string;
+		balanceDue?: string;
+		state?: string;
+		isCorporate?: boolean;
+		isActive?: boolean;
+		isUser?: boolean;
+	}
 
-	let selectedSearchValue = searchValues[0];
+	let corporateSearch = { name: null };
+
+	let showList = false;
+	let selected = -1;
+
+	function handleShowList() {
+		if (showList) {
+			showList = false;
+		}
+	}
+
+	let defaultGlobalParams: getContactsInterface = {
+		limit: 15,
+		page: 1,
+		sort: 'name'
+	};
+	let currentGlobalParams: getContactsInterface = defaultGlobalParams;
+	let contacts;
+	let error;
+
+	onMount(() => {
+		getCorporateContacts(currentGlobalParams);
+	});
+
+	const getCorporateContacts = async (paramsObj: getContactsInterface) => {
+		try {
+			let searchParams = new URLSearchParams(paramsObj);
+			const res = await fetch('/api/contacts.json?' + searchParams.toString());
+			contacts = await res.json();
+		} catch (err) {
+			logger.error(err.message);
+			error = err.message;
+		}
+	};
+	const heandleReset = () => {
+		currentGlobalParams = defaultGlobalParams;
+		getCorporateContacts(currentGlobalParams);
+		corporateSearch = { name: null };
+		highlightIndex = -1;
+	};
+
+	let highlightIndex = -1;
+
+	async function handleKeyDown(e) {
+		const listLenght = contacts.results.length;
+		switch (e.key) {
+			case 'Escape':
+				showList = false;
+				break;
+			case 'Enter':
+				corporateSearch = contacts.results[highlightIndex];
+				handleShowList();
+				break;
+			case 'ArrowUp':
+				highlightIndex <= 0 ? (highlightIndex = 0) : (highlightIndex -= 1);
+				break;
+			case 'ArrowDown':
+				highlightIndex === listLenght - 1
+					? (highlightIndex = listLenght - 1)
+					: (highlightIndex += 1);
+				break;
+		}
+	}
+
+	// const makeMatchBold = (str: string) => {
+	// 	console.log('corporateSearch.name', corporateSearch.name);
+	// 	const regex = new RegExp(corporateSearch.name, 'ig');
+	// 	let MatchedWords = str.match(regex);
+	// 	if (regex === /(?:)/gi) {
+	// 		let MatchedWords = null;
+	// 	}
+	// 	console.log(`Strint: ${str} MatchedWords: ${MatchedWords} length: ${MatchedWords?.length}`);
+	// 	let makeBold = `<strong>${corporateSearch.name}</strong>`;
+	// 	let boldedMatch = str.replace(corporateSearch.name, makeBold);
+	// 	return boldedMatch;
+	// };
 </script>
 
-<div class="z-10 mt-4 flex h-14 w-full flex-row items-center justify-between bg-white">
-	<div class=" w-[160px]">
-		<Listbox
-			value={selectedSearchValue}
-			on:change={(e) => {
-				selectedSearchValue = e.detail;
-			}}
-		>
-			<ListboxButton
-				class="focus-visible:ring-offset-orange-300 relative w-full cursor-default bg-white py-1 text-left shadow-md focus:outline-none focus-visible:border-royal-blue-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 sm:text-sm"
-			>
-				<span class="pointer-events-none absolute inset-y-0 left-0 flex items-center">
-					{@html svgSelector}
-				</span>
-				<span class="ml-6 block truncate text-right text-xs">
-					Search By {selectedSearchValue.name}
-				</span>
-			</ListboxButton>
-			<ListboxOptions
-				class="ring-black absolute mt-1 w-40 overflow-auto bg-white py-1 text-base shadow-lg ring-1 ring-opacity-5 focus:outline-none sm:text-sm"
-			>
-				{#each searchValues as searchValue (searchValue.id)}
-					<!-- Use the `active` state to conditionally style the active (focused) option -->
-					<!-- Use the `selected` state to conditionally style the selected option -->
-					<ListboxOption
-						value={searchValue}
-						disabled={searchValue.unavailable}
-						class={({ active }) =>
-							`cursor-default select-none relative py-2 pl-10 pr-4 ${
-								active
-									? 'text-pickled-bluewood-900 bg-pickled-bluewood-100'
-									: 'text-pickled-bluewood-900'
-							}`}
-						let:selected
-						let:active
+<!-- ###################################################### -->
+{#if contacts}
+	<div class="min-h-screen bg-pickled-bluewood-100 p-10">
+		<div class="mx-auto max-w-md">
+			<label for="select" class="block py-2 font-semibold">Select Input:</label>
+
+			<div class="relative">
+				<div class="flex h-10 items-center border border-pickled-bluewood-200 bg-white">
+					<input
+						bind:value={corporateSearch.name}
+						on:keydown={handleKeyDown}
+						on:click|preventDefault={(e) => (showList = true)}
+						on:input|preventDefault={(e) => {
+							highlightIndex = -1;
+							currentGlobalParams = { ...currentGlobalParams, name: corporateSearch.name };
+							getCorporateContacts(currentGlobalParams);
+						}}
+						name="select"
+						id="select"
+						class="w-full appearance-none px-4 text-sm text-pickled-bluewood-600 outline-none"
+						checked
+					/>
+
+					<button
+						on:click|preventDefault={heandleReset}
+						class="cursor-pointer text-pickled-bluewood-300 outline-none transition-all hover:text-pickled-bluewood-600 focus:outline-none"
 					>
-						<span
-							class="absolute inset-y-0 left-0 flex items-center pl-3 text-pickled-bluewood-600"
+						<svg
+							class="mx-2 h-4 w-4 fill-current"
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
 						>
-							{#if selected}
-								{@html svgCheck}
-							{/if}
-						</span>
-						<span class=" text-sm">
-							{searchValue.name}
-						</span>
-					</ListboxOption>
-				{/each}
-			</ListboxOptions>
-		</Listbox>
+							<line x1="18" y1="6" x2="6" y2="18" />
+							<line x1="6" y1="6" x2="18" y2="18" />
+						</svg>
+					</button>
+					<label
+						for="show_more"
+						class="cursor-pointer border-l border-pickled-bluewood-200 text-pickled-bluewood-300 outline-none transition-all hover:text-pickled-bluewood-600 focus:outline-none"
+					>
+						<svg
+							class="mx-2 h-4 w-4 fill-current"
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<polyline points="18 15 12 9 6 15" />
+						</svg>
+					</label>
+				</div>
+
+				<input
+					type="checkbox"
+					name="show_more"
+					id="show_more"
+					class="peer hidden"
+					bind:checked={showList}
+				/>
+				<ul
+					use:clickOutside
+					on:clickOutside={handleShowList}
+					class="absolute mt-1 hidden w-full flex-col overflow-hidden border border-pickled-bluewood-200 bg-white shadow peer-checked:flex"
+				>
+					{#each contacts.results as result, index (result._id)}
+						<li class="group cursor-pointer border-t border-pickled-bluewood-200 first:border-t-0">
+							<!-- svelte-ignore a11y-missing-attribute -->
+							<a
+								on:click|preventDefault={(e) => {
+									corporateSearch = result;
+									showList = false;
+								}}
+								class="{index === highlightIndex
+									? 'border-royal-blue-600 bg-pickled-bluewood-100'
+									: ''} block border-l-4 border-transparent p-2 text-sm text-pickled-bluewood-600 group-hover:border-royal-blue-600 group-hover:bg-pickled-bluewood-100"
+								>{result.name}</a
+							>
+						</li>
+					{/each}
+				</ul>
+			</div>
+		</div>
 	</div>
-</div>
+{/if}
