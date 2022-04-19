@@ -2,12 +2,8 @@
 	import Button from '$lib/components/Button.svelte';
 	import IconButton from '$lib/components/IconButton.svelte';
 	import Input from '$lib/components/Input.svelte';
+	import { svgWaves } from '$lib/utility/svgLogos';
 	import Index from './contacts/index.svelte';
-
-	let icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="h-4 w-4">
-  <path fill-rule="evenodd" d="M5.05 3.636a1 1 0 010 1.414 7 7 0 000 9.9 1 1 0 11-1.414 1.414 9 9 0 010-12.728 1 1 0 011.414 0zm9.9 0a1 1 0 011.414 0 9 9 0 010 12.728 1 1 0 11-1.414-1.414 7 7 0 000-9.9 1 1 0 010-1.414zM7.879 6.464a1 1 0 010 1.414 3 3 0 000 4.243 1 1 0 11-1.415 1.414 5 5 0 010-7.07 1 1 0 011.415 0zm4.242 0a1 1 0 011.415 0 5 5 0 010 7.072 1 1 0 01-1.415-1.415 3 3 0 000-4.242 1 1 0 010-1.415zM10 9a1 1 0 011 1v.01a1 1 0 11-2 0V10a1 1 0 011-1z" clip-rule="evenodd"/>
-</svg>
-`;
 
 	const props = {
 		value: '',
@@ -150,60 +146,60 @@
 
 	<hr class=" my-4 border border-pickled-bluewood-600" />
 
-	<!-- Icon Buttons -->
+	<!-- svgWaves Buttons -->
 
 	<h3 class=" m-4 text-sm font-semibold uppercase tracking-wider text-pickled-bluewood-700">
 		Large
 	</h3>
 	<div class="mb-4">
-		<IconButton name="primary" size="btn-lg" type="btn-primary">{@html icon}</IconButton>
-		<IconButton name="secondary" size="btn-lg" type="btn-secondary">{@html icon}</IconButton>
-		<IconButton name="tertiary" size="btn-lg" type="btn-tertiary">{@html icon}</IconButton>
-		<IconButton name="success" size="btn-lg" type="btn-success">{@html icon}</IconButton>
-		<IconButton name="warning" size="btn-lg" type="btn-warning">{@html icon}</IconButton>
-		<IconButton name="danger" size="btn-lg" type="btn-danger">{@html icon}</IconButton>
+		<IconButton name="primary" size="btn-lg" type="btn-primary">{@html svgWaves}</IconButton>
+		<IconButton name="secondary" size="btn-lg" type="btn-secondary">{@html svgWaves}</IconButton>
+		<IconButton name="tertiary" size="btn-lg" type="btn-tertiary">{@html svgWaves}</IconButton>
+		<IconButton name="success" size="btn-lg" type="btn-success">{@html svgWaves}</IconButton>
+		<IconButton name="warning" size="btn-lg" type="btn-warning">{@html svgWaves}</IconButton>
+		<IconButton name="danger" size="btn-lg" type="btn-danger">{@html svgWaves}</IconButton>
 	</div>
 	<h3 class=" m-4 text-sm font-semibold uppercase tracking-wider text-pickled-bluewood-700">
 		Default
 	</h3>
 	<div class="mb-4">
-		<IconButton name="primary" type="btn-primary">{@html icon}</IconButton>
-		<IconButton name="secondary" type="btn-secondary">{@html icon}</IconButton>
-		<IconButton name="tertiary" type="btn-tertiary">{@html icon}</IconButton>
-		<IconButton name="success" type="btn-success">{@html icon}</IconButton>
-		<IconButton name="warning" type="btn-warning">{@html icon}</IconButton>
-		<IconButton name="danger" type="btn-danger">{@html icon}</IconButton>
+		<IconButton name="primary" type="btn-primary">{@html svgWaves}</IconButton>
+		<IconButton name="secondary" type="btn-secondary">{@html svgWaves}</IconButton>
+		<IconButton name="tertiary" type="btn-tertiary">{@html svgWaves}</IconButton>
+		<IconButton name="success" type="btn-success">{@html svgWaves}</IconButton>
+		<IconButton name="warning" type="btn-warning">{@html svgWaves}</IconButton>
+		<IconButton name="danger" type="btn-danger">{@html svgWaves}</IconButton>
 	</div>
 	<h3 class=" m-4 text-sm font-semibold uppercase tracking-wider text-pickled-bluewood-700">
 		Small
 	</h3>
 	<div class="mb-4">
-		<IconButton name="primary" size="btn-sm" type="btn-primary">{@html icon}</IconButton>
-		<IconButton name="secondary" size="btn-sm" type="btn-secondary">{@html icon}</IconButton>
-		<IconButton name="tertiary" size="btn-sm" type="btn-tertiary">{@html icon}</IconButton>
-		<IconButton name="success" size="btn-sm" type="btn-success">{@html icon}</IconButton>
-		<IconButton name="warning" size="btn-sm" type="btn-warning">{@html icon}</IconButton>
-		<IconButton name="danger" size="btn-sm" type="btn-danger">{@html icon}</IconButton>
+		<IconButton name="primary" size="btn-sm" type="btn-primary">{@html svgWaves}</IconButton>
+		<IconButton name="secondary" size="btn-sm" type="btn-secondary">{@html svgWaves}</IconButton>
+		<IconButton name="tertiary" size="btn-sm" type="btn-tertiary">{@html svgWaves}</IconButton>
+		<IconButton name="success" size="btn-sm" type="btn-success">{@html svgWaves}</IconButton>
+		<IconButton name="warning" size="btn-sm" type="btn-warning">{@html svgWaves}</IconButton>
+		<IconButton name="danger" size="btn-sm" type="btn-danger">{@html svgWaves}</IconButton>
 	</div>
 
 	<hr class=" my-4 border border-pickled-bluewood-600" />
-	<!-- Icon Only Buttons -->
+	<!-- svgWaves Only Buttons -->
 
 	<h3 class=" m-4 text-sm font-semibold uppercase tracking-wider text-pickled-bluewood-700">
 		Default
 	</h3>
 	<div class="mb-4">
-		<IconButton size="btn-md" type="btn-primary">{@html icon}</IconButton>
-		<IconButton size="btn-md" type="btn-secondary">{@html icon}</IconButton>
-		<IconButton size="btn-md" type="btn-tertiary">{@html icon}</IconButton>
-		<IconButton size="btn-md" type="btn-success">{@html icon}</IconButton>
-		<IconButton size="btn-md" type="btn-warning">{@html icon}</IconButton>
-		<IconButton size="btn-md" type="btn-danger">{@html icon}</IconButton>
+		<IconButton size="btn-md" type="btn-primary">{@html svgWaves}</IconButton>
+		<IconButton size="btn-md" type="btn-secondary">{@html svgWaves}</IconButton>
+		<IconButton size="btn-md" type="btn-tertiary">{@html svgWaves}</IconButton>
+		<IconButton size="btn-md" type="btn-success">{@html svgWaves}</IconButton>
+		<IconButton size="btn-md" type="btn-warning">{@html svgWaves}</IconButton>
+		<IconButton size="btn-md" type="btn-danger">{@html svgWaves}</IconButton>
 	</div>
 
 	<hr class=" my-4 border border-pickled-bluewood-600" />
 
-	<!-- Icon Buttons -->
+	<!-- svgWaves Buttons -->
 
 	<h3 class=" m-4 text-sm font-semibold uppercase tracking-wider text-pickled-bluewood-700">
 		Default

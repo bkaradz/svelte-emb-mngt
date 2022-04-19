@@ -1,19 +1,24 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { clickOutside } from '$lib/utility/clickOutside';
-	import suite from '$lib/validation/client/signUp.validate';
-	import logger from '$lib/utility/logger';
+	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import {
 		svgAddUser,
 		svgArrow,
 		svgPlus,
+		svgRefresh,
 		svgSelector,
 		svgUpload,
 		svgX,
+		svgXCircle,
 		svgXSmall
 	} from '$lib/utility/svgLogos';
+	import { onMount } from 'svelte';
+	import suite from '$lib/validation/client/signUp.validate';
+	import logger from '$lib/utility/logger';
 	import classnames from 'vest/classnames';
-	import { goto } from '$app/navigation';
+	import { clickOutside } from '$lib/utility/clickOutside';
+
+	const endpoint = `/api/contacts/${$page.params.id}.json`;
 
 	let result = suite.get();
 
@@ -141,17 +146,15 @@
 
 	let error: string | undefined = undefined; // TODO: Impliment Alert Notification
 
-	const resetForm = () => {
-		formData = {
-			isCorporate: false,
-			name: '',
-			email: '',
-			phone: '',
-			address: ''
-		};
-	};
+	onMount(async () => {
+		const res = await fetch(endpoint);
+		if (res.ok) {
+			const results = await res.json();
+			contacts = { ...contacts, ...results.contact };
+		}
+	});
 
-	const handleSubmit = async () => {
+	const handleUpdate = async () => {
 		try {
 			const res = await fetch('/api/contacts.json', {
 				method: 'POST',
@@ -161,8 +164,6 @@
 
 			if (res.ok) {
 				const data = await res.json();
-
-				resetForm();
 
 				suite.reset();
 			} else {
@@ -180,7 +181,7 @@
 </script>
 
 <svelte:head>
-	<title>Add Contact</title>
+	<title>Edit Contacts</title>
 </svelte:head>
 
 {#if contacts}
@@ -196,33 +197,6 @@
 					<h1 class="text-slate-700 text-2xl font-medium">Contacts</h1>
 				</div>
 				<!-- Right -->
-				<div class="flex items-center">
-					<div class="relative">
-						<button
-							class="absolute border border-royal-blue-500 bg-royal-blue-500 p-2 text-white"
-							for="uploadCSV">{@html svgUpload}</button
-						>
-						<input
-							class="w-72 border border-pickled-bluewood-300 bg-pickled-bluewood-100 text-pickled-bluewood-500 ring-royal-blue-500 file:w-10 file:p-1 file:opacity-0"
-							type="file"
-							name="UploadCSV"
-							id="uploadCSV"
-							accept=".csv, .CSV"
-						/>
-						<button
-							class="absolute right-0 border border-royal-blue-500 bg-royal-blue-500 p-2 text-white"
-							type="submit">{@html svgPlus}</button
-						>
-					</div>
-					<!-- Make the button hidden until I find use for it -->
-					<button class=" btn btn-primary ml-2 inline-flex hidden items-center justify-center px-3">
-						<span>
-							{@html svgPlus}
-						</span>
-
-						<span class="ml-2">Add Contact</span>
-					</button>
-				</div>
 			</div>
 
 			<!-- Search and View Bar -->
@@ -235,7 +209,7 @@
 		<!-- End This -->
 
 		<div class="mx-auto mt-2 h-full w-full max-w-md space-y-8">
-			<form class="mt-2 space-y-6" on:submit|preventDefault={handleSubmit}>
+			<form class="mt-2 space-y-6" on:submit|preventDefault={handleUpdate}>
 				<input type="hidden" name="userid" value="true" />
 				<div class="space-y-2 shadow-sm">
 					<div class="mb-1 flex justify-between">
@@ -417,18 +391,18 @@
 							class="group relative flex w-full justify-center  border border-transparent bg-royal-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-royal-blue-700 focus:outline-none focus:ring-2 focus:ring-royal-blue-500 focus:ring-offset-2"
 						>
 							<span class="absolute inset-y-0 left-0 flex items-center pl-3">
-								{@html svgAddUser}
+								{@html svgRefresh}
 							</span>
-							Add Contact
+							Update Contact
 						</button>
 						<button
 							type="submit"
 							class="group relative flex w-full justify-center  border border-transparent bg-royal-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-royal-blue-700 focus:outline-none focus:ring-2 focus:ring-royal-blue-500 focus:ring-offset-2"
 						>
 							<span class="absolute inset-y-0 left-0 flex items-center pl-3">
-								{@html svgX}
+								{@html svgXCircle}
 							</span>
-							Reset
+							Cancel
 						</button>
 					</div>
 				</div>
@@ -436,3 +410,6 @@
 		</div>
 	</div>
 {/if}
+
+<style>
+</style>

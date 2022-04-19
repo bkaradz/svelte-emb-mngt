@@ -60,6 +60,19 @@
 		isUser?: boolean;
 	}
 
+	const tableHeadings = [
+		{ id: 1, name: 'Customer', dbName: 'name' },
+		{ id: 2, name: 'Organization', dbName: 'organizationID' },
+		{ id: 3, name: 'Phone', dbName: 'phone' },
+		{ id: 4, name: 'Email', dbName: 'email' },
+		{ id: 5, name: 'Corporate', dbName: 'isCorporate' },
+		{ id: 6, name: 'Vat No', dbName: 'vatOrBpNo' },
+		{ id: 7, name: 'Balance Due', dbName: 'balanceDue' },
+		{ id: 8, name: 'Total Receipts', dbName: 'totalReceipts' },
+		{ id: 9, name: 'State', dbName: null },
+		{ id: 10, name: 'View', dbName: null }
+	];
+
 	let contacts: ContentIterface;
 	let error: any;
 	let limit = 15;
@@ -107,6 +120,7 @@
 	};
 
 	const heandleSearch = async (e) => {
+		currentGlobalParams.page = 1;
 		let searchWord = e.target.value;
 		currentGlobalParams = { ...currentGlobalParams, [searchOption]: searchWord };
 		getContacts(currentGlobalParams);
@@ -138,23 +152,6 @@
 			<div class="main-header flex flex-row items-center justify-between">
 				<h1 class="text-slate-700 text-2xl font-medium">Contacts</h1>
 				<div class="flex items-center">
-					<div class="relative mr-2">
-						<button
-							class="absolute bg-royal-blue-500 border border-royal-blue-500 text-white p-2"
-							for="uploadCSV">{@html svgUpload}</button
-						>
-						<input
-							class="file:opacity-0 file:p-1 file:w-10 w-72 ring-royal-blue-500 bg-pickled-bluewood-100 border border-pickled-bluewood-300 text-pickled-bluewood-500"
-							type="file"
-							name="UploadCSV"
-							id="uploadCSV"
-							accept=".csv, .CSV"
-						/>
-						<button
-							class="absolute right-0 bg-royal-blue-500 border border-royal-blue-500 text-white p-2"
-							type="submit">{@html svgPlus}</button
-						>
-					</div>
 					<button
 						on:click={gotoAddContact}
 						class="btn btn-primary inline-flex items-center justify-center px-3"
@@ -441,7 +438,6 @@
 					</div>
 				{/each}
 			{:else}
-				<!-- TODO: use this for orders list -->
 				<div class=" flex flex-1 flex-wrap gap-4">
 					<!-- Table start -->
 					<div class="w-full bg-white py-6 shadow-lg">
@@ -451,16 +447,9 @@
 									<tr
 										class=" sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
 									>
-										<th class="px-2 py-2">Customer</th>
-										<th class="px-2 py-2">Organization</th>
-										<th class="px-2 py-2">Phone</th>
-										<th class="px-2 py-2">Email</th>
-										<th class="px-2 py-2">Corporate</th>
-										<th class="px-2 py-2">VatNo</th>
-										<th class="px-2 py-2">Balance Due</th>
-										<th class="px-2 py-2">Total Receipts</th>
-										<th class="px-2 py-2">State</th>
-										<th class="px-2 py-2">View</th>
+										{#each tableHeadings as header (header.id)}
+											<th on:click={(e) => console.log(header)} class="px-2 py-2">{header.name}</th>
+										{/each}
 									</tr>
 								</thead>
 								<tbody class="overflow-y-auto">
@@ -469,7 +458,11 @@
 											class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 odd:bg-pickled-bluewood-100 even:text-pickled-bluewood-900 font-normal odd:text-pickled-bluewood-900"
 										>
 											<td class="px-2 py-1">{contact.name}</td>
-											<td class="px-2 py-1">Organization</td>
+											<td class="px-2 py-1"
+												>{contact?.organizationID[0]?.name
+													? contact?.organizationID[0]?.name
+													: '...'}</td
+											>
 											<td class="px-2 py-1">{contact.phone}</td>
 											<td class="px-2 py-1">{!contact.email ? '...' : contact.email}</td>
 

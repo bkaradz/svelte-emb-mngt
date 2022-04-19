@@ -52,9 +52,16 @@
 	const gotoContacts = async () => {
 		await goto(`/contacts`);
 	};
+	const heandleEdit = async (id) => {
+		await goto(`/contacts/edit-${id}`);
+	};
 
 	$: contact;
 </script>
+
+<svelte:head>
+	<title>Contacts Details</title>
+</svelte:head>
 
 <div class="flex flex-1 flex-col overflow-hidden">
 	<!-- Heading and Buttons -->
@@ -106,7 +113,7 @@
 						<div class="py-1" role="none">
 							<MenuItem active={true}>
 								<a
-									href="/"
+									on:click={(e) => heandleEdit($page.params.id)}
 									class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
 									role="menuitem"
 									tabindex="-1"
@@ -209,7 +216,6 @@
 							>
 								<div class="py-1" role="none">
 									<a
-										href="/"
 										class="block px-4 py-2 text-sm text-pickled-bluewood-700"
 										role="menuitem"
 										tabindex="-1"
