@@ -25,14 +25,13 @@
 </script>
 
 <script lang="ts">
-	import { session } from '$app/stores';
 	import Loading from '$lib/components/Loading.svelte';
-	import { getContext, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 
 	import { page } from '$app/stores';
-	import type { ContactsDocument } from '$lib/models/contacts.model';
+	import Toasts from '$lib/components/Toasts.svelte';
 
-	export let user;
+	// export let user;
 	let error: any;
 
 	let isPageLoading = true;
@@ -85,7 +84,7 @@
 				{/each}
 			</ul>
 		</div>
-
+		<Toasts />
 		<slot />
 	</div>
 {:else}

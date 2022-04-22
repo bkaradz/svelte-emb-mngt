@@ -17,12 +17,12 @@
 </script>
 
 <script lang="ts">
-	import { session } from '$app/stores';
-	import { toggleMenu } from '$lib/stores/sideMenuStore';
+	import { toggleMenu } from '$lib/stores/sideMenu.store';
 	import Menu from '$lib/components/Menu.svelte';
 	import SideMenu from '$lib/components/SideMenu.svelte';
 	import '../styles/app.css';
 	import { goto } from '$app/navigation';
+	import Toasts from '$lib/components/Toasts.svelte';
 
 	async function redirectToLogin() {
 		if (typeof window !== 'undefined') {
@@ -35,6 +35,7 @@
 	<SideMenu />
 	<Menu />
 	<main class="main z-0 flex flex-1 overflow-hidden bg-royal-blue-50 p-6">
+		<Toasts />
 		<slot />
 	</main>
 </div>
@@ -61,4 +62,5 @@
 	.main {
 		grid-area: main;
 	}
+	/* fixed top-20 right-4 z-50 flex flex-col opacity-50 */
 </style>

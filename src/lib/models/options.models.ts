@@ -1,7 +1,7 @@
-import { model, Schema, Document, Types } from 'mongoose';
+import mongoose, { model, Schema, Document } from 'mongoose';
 
 export interface OptionsDocument extends Document {
-	userID: Types.ObjectId;
+	userID: mongoose.Schema.Types.ObjectId;
 	group: string;
 	name: string;
 	value: string;

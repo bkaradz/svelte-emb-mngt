@@ -1,10 +1,10 @@
-import mongoose, { model, Schema, Document, Types } from 'mongoose';
+import mongoose, { model, Schema, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 import config from 'config';
 
 export interface ContactsDocument extends Document {
-	userID?: Types.ObjectId;
-	organizationID?: Types.ObjectId;
+	userID?: mongoose.Schema.Types.ObjectId;
+	organizationID?: mongoose.Schema.Types.ObjectId;
 	name: string;
 	isCorporate: boolean;
 	notes?: string;
@@ -12,8 +12,8 @@ export interface ContactsDocument extends Document {
 	email?: string;
 	phone: string;
 	address?: string;
-	balanceDue: Types.Decimal128;
-	totalReceipts: Types.Decimal128;
+	balanceDue: mongoose.Schema.Types.Decimal128;
+	totalReceipts: mongoose.Schema.Types.Decimal128;
 	isActive: boolean;
 	isUser: boolean;
 	userRole?: string;
@@ -49,16 +49,16 @@ const contactsSchema: Schema = new Schema<ContactsDocument>(
 		balanceDue: {
 			type: Schema.Types.Decimal128,
 			required: true,
-			get: (v) => v.toString(),
-			set: (v) => mongoose.Types.Decimal128.fromString((+v).toFixed(4)),
+			get: (v: number) => v.toString(),
+			set: (v: number) => mongoose.Types.Decimal128.fromString((+v).toFixed(4)),
 			default: 0
 		},
 		totalReceipts: {
 			type: Schema.Types.Decimal128,
 			required: true,
 			// get: (v) => mongoose.Types.Decimal128.fromString((+v.toString()).toFixed(2)),
-			get: (v) => v.toString(),
-			set: (v) => mongoose.Types.Decimal128.fromString((+v).toFixed(4)),
+			get: (v: number) => v.toString(),
+			set: (v: number) => mongoose.Types.Decimal128.fromString((+v).toFixed(4)),
 			default: 0
 		},
 		isActive: { type: Boolean, required: true, default: false },
@@ -79,7 +79,7 @@ const contactsSchema: Schema = new Schema<ContactsDocument>(
 		createdAt: { type: Date },
 		updatedAt: { type: Date }
 	},
-	{ timestamps: true, toJSON: { getters: true } } // , toJSON: { getters: true }
+	{ timestamps: true, toJSON: { getters: true } }
 );
 
 contactsSchema.pre('save', async function (next) {

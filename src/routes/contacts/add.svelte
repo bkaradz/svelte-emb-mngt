@@ -14,8 +14,13 @@
 	} from '$lib/utility/svgLogos';
 	import classnames from 'vest/classnames';
 	import { goto } from '$app/navigation';
+	import Loading from '$lib/components/Loading.svelte';
+	import Toast from '$lib/components/Toast.svelte';
+	import { toasts } from '$lib/stores/Toasts.store';
 
 	let result = suite.get();
+
+	let error: string | undefined = undefined; // TODO: Impliment Alert Notification
 
 	interface getContactsInterface {
 		limit: number;
@@ -139,8 +144,6 @@
 
 	$: disabled = !result.isValid();
 
-	let error: string | undefined = undefined; // TODO: Impliment Alert Notification
-
 	const resetForm = () => {
 		formData = {
 			isCorporate: false,
@@ -165,11 +168,14 @@
 				resetForm();
 
 				suite.reset();
+				toasts.add({ message: 'The Contact was added', type: 'success' });
 			} else {
 				error = 'An error has occured';
+				toasts.add({ message: 'An error has occured', type: 'danger' });
 			}
 		} catch (err) {
 			logger.error(err.messages);
+			toasts.add({ message: 'An error has occured', type: 'danger' });
 			error = 'An error has occured';
 		}
 	};
@@ -177,13 +183,43 @@
 	const gotoContacts = async () => {
 		await goto(`/contacts`);
 	};
+
+	let uploadFiles;
+
+	// const inputElement = document.getElementById('uploadCSV');
+	// console.log('🚀 ~ file: add.svelte ~ line 190 ~ handleUpload ~ inputElement', inputElement);
+	// inputElement.addEventListener('change', handleFiles, false);
+	// function handleFiles() {
+	// 	const fileList = this.files; /* now you can work with the file list */
+	// 	console.log('🚀 ~ file: add.svelte ~ line 193 ~ handleFiles ~ fileList', fileList);
+	// }
+
+	const handleUpload = (e) => {
+		const form = new FormData();
+		form.append('contacts', '/home/karadz/Downloads/MOCK_DATA (4).csv');
+	};
+
+	const makeMatchBold = (searchMatchString: string) => {
+		let MatchedWords = [];
+		if (corporateSearch.name) {
+			const regex = new RegExp(corporateSearch.name, 'ig');
+			MatchedWords = searchMatchString.trim().match(regex);
+		}
+
+		let makeBold = `<strong>${MatchedWords[0]}</strong>`;
+		let boldedStr = searchMatchString.replace(MatchedWords[0], makeBold);
+
+		return boldedStr;
+	};
 </script>
 
 <svelte:head>
 	<title>Add Contact</title>
 </svelte:head>
 
-{#if contacts}
+{#if error}
+	<h2>Error while loading the data</h2>
+{:else if contacts}
 	<div class="flex flex-1 flex-col">
 		<!-- Use This -->
 		<div>
@@ -197,23 +233,26 @@
 				</div>
 				<!-- Right -->
 				<div class="flex items-center">
-					<div class="relative">
-						<button
-							class="absolute border border-royal-blue-500 bg-royal-blue-500 p-2 text-white"
-							for="uploadCSV">{@html svgUpload}</button
-						>
-						<input
-							class="w-72 border border-pickled-bluewood-300 bg-pickled-bluewood-100 text-pickled-bluewood-500 ring-royal-blue-500 file:w-10 file:p-1 file:opacity-0"
-							type="file"
-							name="UploadCSV"
-							id="uploadCSV"
-							accept=".csv, .CSV"
-						/>
-						<button
-							class="absolute right-0 border border-royal-blue-500 bg-royal-blue-500 p-2 text-white"
-							type="submit">{@html svgPlus}</button
-						>
-					</div>
+					<form method="post" enctype="multipart/form-data" on:submit|preventDefault={handleUpload}>
+						<div class="relative">
+							<button
+								class="absolute border border-royal-blue-500 bg-royal-blue-500 p-2 text-white"
+								for="uploadCSV">{@html svgUpload}</button
+							>
+							<input
+								bind:files={uploadFiles}
+								class="w-72 border border-pickled-bluewood-300 bg-pickled-bluewood-100 text-pickled-bluewood-500 ring-royal-blue-500 file:w-10 file:p-1 file:opacity-0"
+								type="file"
+								name="UploadCSV"
+								id="uploadCSV"
+								accept=".csv, .CSV"
+							/>
+							<button
+								class="absolute right-0 border border-royal-blue-500 bg-royal-blue-500 p-2 text-white"
+								type="submit">{@html svgPlus}</button
+							>
+						</div>
+					</form>
 					<!-- Make the button hidden until I find use for it -->
 					<button class=" btn btn-primary ml-2 inline-flex hidden items-center justify-center px-3">
 						<span>
@@ -321,7 +360,7 @@
 												class="{index === highlightIndex
 													? 'border-royal-blue-600 bg-pickled-bluewood-100'
 													: ''} block border-l-4 border-transparent p-2 text-sm text-pickled-bluewood-600 group-hover:border-royal-blue-600 group-hover:bg-pickled-bluewood-100"
-												>{result.name}</a
+												>{@html makeMatchBold(result.name)}</a
 											>
 										</li>
 									{/each}
@@ -435,4 +474,6 @@
 			</form>
 		</div>
 	</div>
+{:else}
+	<Loading />
 {/if}

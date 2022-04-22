@@ -1,9 +1,9 @@
-import { model, Schema, Document, Types } from 'mongoose';
+import mongoose, { model, Schema, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 import config from 'config';
 
 export interface ProductsDocument extends Document {
-	userID: Types.ObjectId;
+	userID: mongoose.Schema.Types.ObjectId;
 	name: string;
 	productID: string;
 	title?: string;

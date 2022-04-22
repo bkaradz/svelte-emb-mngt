@@ -1,26 +1,21 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import {
-		svgAddUser,
-		svgArrow,
-		svgPlus,
-		svgRefresh,
-		svgSelector,
-		svgUpload,
-		svgX,
-		svgXCircle,
-		svgXSmall
-	} from '$lib/utility/svgLogos';
+	import { svgArrow, svgRefresh, svgSelector, svgXCircle, svgXSmall } from '$lib/utility/svgLogos';
 	import { onMount } from 'svelte';
 	import suite from '$lib/validation/client/signUp.validate';
 	import logger from '$lib/utility/logger';
 	import classnames from 'vest/classnames';
 	import { clickOutside } from '$lib/utility/clickOutside';
+	import Loading from '$lib/components/Loading.svelte';
 
 	const endpoint = `/api/contacts/${$page.params.id}.json`;
 
 	let result = suite.get();
+
+	let error: string | undefined = undefined; // TODO: Impliment Alert Notification
+
+	let editContact;
 
 	interface getContactsInterface {
 		limit: number;
@@ -62,7 +57,7 @@
 		isCorporate: true
 	};
 	let currentGlobalParams: getContactsInterface = defaultGlobalParams;
-	let contacts;
+	let corporateContacts;
 
 	onMount(() => {
 		getCorporateContacts(currentGlobalParams);
@@ -72,7 +67,7 @@
 		try {
 			let searchParams = new URLSearchParams(paramsObj);
 			const res = await fetch('/api/contacts.json?' + searchParams.toString());
-			contacts = await res.json();
+			corporateContacts = await res.json();
 		} catch (err) {
 			logger.error(err.message);
 			error = err.message;
@@ -90,13 +85,13 @@
 	let highlightIndex = -1;
 
 	async function handleKeyDown(e) {
-		const listLenght = contacts.results.length;
+		const listLenght = corporateContacts.results.length;
 		switch (e.key) {
 			case 'Escape':
 				showList = false;
 				break;
 			case 'Enter':
-				corporateSearch = contacts.results[highlightIndex];
+				corporateSearch = corporateContacts.results[highlightIndex];
 				formData.organizationID = corporateSearch?._id;
 				handleShowList();
 				break;
@@ -120,14 +115,12 @@
 		address: string;
 	}
 
-	let formData: formDataType = {
-		isCorporate: false,
-		organizationID: corporateSearch?._id,
-		name: '',
-		email: '',
-		phone: '',
-		address: ''
+	$: formData = {
+		...editContact,
+		organizationID: corporateSearch?._id
 	};
+
+	$: corporateSearch = editContact?.organizationID ? editContact?.organizationID : { name: null };
 
 	const handleInput = (event) => {
 		let name = event.target.name;
@@ -144,13 +137,11 @@
 
 	$: disabled = !result.isValid();
 
-	let error: string | undefined = undefined; // TODO: Impliment Alert Notification
-
 	onMount(async () => {
 		const res = await fetch(endpoint);
 		if (res.ok) {
 			const results = await res.json();
-			contacts = { ...contacts, ...results.contact };
+			editContact = { ...results.contact };
 		}
 	});
 
@@ -178,18 +169,33 @@
 	const gotoContacts = async () => {
 		await goto(`/contacts`);
 	};
+
+	const makeMatchBold = (searchMatchString: string) => {
+		let MatchedWords = [];
+		if (corporateSearch.name) {
+			const regex = new RegExp(corporateSearch.name, 'ig');
+			MatchedWords = searchMatchString.trim().match(regex);
+		}
+
+		let makeBold = `<strong>${MatchedWords[0]}</strong>`;
+		let boldedStr = searchMatchString.replace(MatchedWords[0], makeBold);
+
+		return boldedStr;
+	};
 </script>
 
 <svelte:head>
 	<title>Edit Contacts</title>
 </svelte:head>
-
-{#if contacts}
+{#if error}
+	<h2>Error while loading the data</h2>
+{:else if editContact && corporateContacts}
 	<div class="flex flex-1 flex-col">
 		<!-- Use This -->
 		<div>
 			<!-- Heading and Buttons Bar -->
 			<div class="main-header flex flex-row items-center justify-between">
+				<!-- Left -->
 				<div class="flex">
 					<button class="mr-3" on:click={gotoContacts}>
 						{@html svgArrow}
@@ -202,7 +208,7 @@
 			<!-- Search and View Bar -->
 			<div class="z-10 mt-4 flex h-14 w-full flex-row items-center justify-center bg-white">
 				<div>
-					<h2 class="text-center text-2xl font-bold text-pickled-bluewood-600">Add Contact</h2>
+					<h2 class="text-center text-2xl font-bold text-pickled-bluewood-600">Edit Contact</h2>
 				</div>
 			</div>
 		</div>
@@ -224,7 +230,7 @@
 						name="name"
 						placeholder="Name"
 						type="text"
-						autocomplete="off"
+						bind:value={formData.name}
 						required
 						on:input={handleInput}
 					/>
@@ -281,7 +287,7 @@
 									on:clickOutside={handleShowList}
 									class="absolute z-50 mt-1 hidden w-full flex-col overflow-hidden border border-pickled-bluewood-300 bg-white shadow peer-checked:flex"
 								>
-									{#each contacts.results as result, index (result._id)}
+									{#each corporateContacts.results as result, index (result._id)}
 										<li
 											class="group cursor-pointer border-t border-pickled-bluewood-200 first:border-t-0"
 										>
@@ -295,7 +301,7 @@
 												class="{index === highlightIndex
 													? 'border-royal-blue-600 bg-pickled-bluewood-100'
 													: ''} block border-l-4 border-transparent p-2 text-sm text-pickled-bluewood-600 group-hover:border-royal-blue-600 group-hover:bg-pickled-bluewood-100"
-												>{result.name}</a
+												>{@html makeMatchBold(result.name)}</a
 											>
 										</li>
 									{/each}
@@ -346,7 +352,7 @@
 						name="email"
 						placeholder="Email"
 						type="email"
-						autocomplete="off"
+						bind:value={formData.email}
 						required
 						on:input={handleInput}
 					/>
@@ -364,6 +370,7 @@
 						placeholder="Phone"
 						type="text"
 						autocomplete="off"
+						bind:value={formData.phone}
 						required
 						on:input={handleInput}
 					/>
@@ -381,6 +388,7 @@
 						placeholder="Address"
 						type="text"
 						autocomplete="off"
+						bind:value={formData.address}
 						required
 						on:input={handleInput}
 					/>
@@ -409,6 +417,8 @@
 			</form>
 		</div>
 	</div>
+{:else}
+	<Loading />
 {/if}
 
 <style>
