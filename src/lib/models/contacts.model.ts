@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import config from 'config';
 
 export interface ContactsDocument extends Document {
+	_id: mongoose.Schema.Types.ObjectId;
 	userID?: mongoose.Schema.Types.ObjectId;
 	organizationID?: mongoose.Schema.Types.ObjectId;
 	name: string;

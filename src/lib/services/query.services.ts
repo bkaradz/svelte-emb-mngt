@@ -104,7 +104,7 @@ const query = async (searchQuery, model) => {
 
 		results.results = await model
 			.find(newRegExQuery)
-			.select('-password -createdAt -updatedAt -__v')
+			.select('-password -createdAt -updatedAt -__v -userRole')
 			.limit(limit)
 			.skip(startIndex)
 			.sort(sort)
@@ -115,7 +115,8 @@ const query = async (searchQuery, model) => {
 		return results;
 	} catch (err) {
 		logger.error(err);
-		return { metaData: [{ error: true }], message: err.message };
+		// return { metaData: [{ error: true }], message: err.message };
+		throw new Error(err.message);
 	}
 };
 

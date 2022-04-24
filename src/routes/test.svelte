@@ -4,6 +4,7 @@
 	import { clickOutside } from '$lib/utility/clickOutside';
 	import { toasts } from '$lib/stores/Toasts.store';
 	import Toasts from '$lib/components/Toasts.svelte';
+	import Input from '$lib/components/Input.svelte';
 	// import { makeMatchBold } from '$lib/utility/makeMatchBold';
 
 	interface getContactsInterface {
@@ -99,6 +100,9 @@
 
 		return boldedStr;
 	};
+
+	let value = 'hello World';
+	$: console.log('🚀 ~ file: test.svelte ~ line 105 ~ value', value);
 </script>
 
 <!-- ###################################################### -->
@@ -193,7 +197,7 @@
 					/>
 					<ul
 						use:clickOutside
-						on:clickOutside={handleShowList}
+						on:clickOutside|preventDefault={handleShowList}
 						class="absolute mt-1 hidden w-full flex-col overflow-hidden border border-pickled-bluewood-200 bg-white shadow peer-checked:flex"
 					>
 						{#each contacts.results as result, index (result._id)}
@@ -207,9 +211,9 @@
 										showList = false;
 									}}
 									class="{index === highlightIndex
-										? 'border-royal-blue-600 bg-pickled-bluewood-100'
-										: ''} block border-l-4 border-transparent p-2 text-sm text-pickled-bluewood-600 group-hover:border-royal-blue-600 group-hover:bg-pickled-bluewood-100"
-									>{@html makeMatchBold(result.name)}</a
+										? 'block border-l-4 border-transparent border-royal-blue-600 bg-pickled-bluewood-100'
+										: ''} block border-l-4 border-transparent p-2 text-sm text-pickled-bluewood-600 hover:border-royal-blue-600 hover:bg-pickled-bluewood-100"
+									>{result.name}</a
 								>
 							</li>
 						{/each}
@@ -218,4 +222,19 @@
 			</div>
 		</div>
 	{/if}
+	<Input
+		name="confirm"
+		label="Confirm"
+		bind:value
+		pending={true}
+		onInput={(e) => console.log('event', e)}
+		messages={['Phase one test']}
+		validityClass={'confirm'}
+	/>
 </div>
+
+<style lang="postcss">
+	.btn-primary {
+		@apply bg-success;
+	}
+</style>
