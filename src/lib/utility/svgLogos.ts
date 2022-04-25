@@ -46,7 +46,7 @@ export const svgUser = `<svg
 						>`;
 
 export const svgMessages = `<svg
-			class="h-7 w-7 fill-royal-blue-300 stroke-royal-blue-600"
+			class="h-7 w-7"
 			fill="none"
 			stroke="currentColor"
 			viewBox="0 0 24 24"
@@ -60,7 +60,7 @@ export const svgMessages = `<svg
 		>`;
 
 export const svgMenu = `<svg
-				class="h-7 w-7 text-royal-blue-600 hover:text-royal-blue-700"
+				class="h-7 w-7"
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 0 20 20"
 				fill="currentColor"
@@ -74,7 +74,7 @@ export const svgMenu = `<svg
 			</svg>`;
 
 export const svgArrow = `<svg
-				class="h-7 w-7 text-royal-blue-600 hover:text-royal-blue-700"
+				class="h-7 w-7"
 				fill="none"
 				stroke="currentColor"
 				viewBox="0 0 24 24"
@@ -103,7 +103,7 @@ export const svgPlus = `<svg
 				</svg>`;
 
 export const svgSearch = `<svg
-							class="h-4 w-4 text-pickled-bluewood-600"
+							class="h-4 w-4"
 							fill="currentColor"
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 24 24"
@@ -116,7 +116,7 @@ export const svgSearch = `<svg
 						</svg>`;
 
 export const svgSelector = `<svg
-								class="text-royal-royal-blue-600 ml-2 mr-3 h-6 w-6"
+								class="h-5 w-5"
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
 								viewBox="0 0 24 24"
@@ -133,7 +133,7 @@ export const svgSelector = `<svg
 
 export const svgSort = `<svg
 								xmlns="http://www.w3.org/2000/svg"
-								class="ml-2 mr-1 h-6 w-6 text-pickled-bluewood-700"
+								class="h-6 w-6"
 								width="24"
 								height="24"
 								viewBox="0 0 24 24"><path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z" /></svg
@@ -224,7 +224,7 @@ export const svgWaves = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20
   <path fill-rule="evenodd" d="M5.05 3.636a1 1 0 010 1.414 7 7 0 000 9.9 1 1 0 11-1.414 1.414 9 9 0 010-12.728 1 1 0 011.414 0zm9.9 0a1 1 0 011.414 0 9 9 0 010 12.728 1 1 0 11-1.414-1.414 7 7 0 000-9.9 1 1 0 010-1.414zM7.879 6.464a1 1 0 010 1.414 3 3 0 000 4.243 1 1 0 11-1.415 1.414 5 5 0 010-7.07 1 1 0 011.415 0zm4.242 0a1 1 0 011.415 0 5 5 0 010 7.072 1 1 0 01-1.415-1.415 3 3 0 000-4.242 1 1 0 010-1.415zM10 9a1 1 0 011 1v.01a1 1 0 11-2 0V10a1 1 0 011-1z" clip-rule="evenodd"/>
 </svg>`;
 
-export const svgXSmall = `<svg class="mx-2 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <line x1="18" y1="6" x2="6" y2="18" /> <line x1="6" y1="6" x2="18" y2="18" /> </svg>`;
+export const svgXSmall = `<svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <line x1="18" y1="6" x2="6" y2="18" /> <line x1="6" y1="6" x2="18" y2="18" /> </svg>`;
 
 export const svgRefresh = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
   <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />

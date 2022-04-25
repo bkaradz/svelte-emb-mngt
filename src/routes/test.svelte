@@ -123,7 +123,9 @@
 		validityClass={'confirm'}
 	/>
 	<Checkbox name="checkbox" label="Yes or No" validityClass={'confirm'} bind:checked={check} />
-	<ComboBox />
+	{#if contacts}
+		<ComboBox label="Combobox Test" name="testCombo" list={contacts.results} />
+	{/if}
 </div>
 
 <style lang="postcss">

@@ -44,7 +44,7 @@
 			bind:value
 			on:input={() => onInput(name)}
 			type="text"
-			id="email-adress-icon"
+			id={name}
 			class="input"
 			autocomplete="off"
 		/>
