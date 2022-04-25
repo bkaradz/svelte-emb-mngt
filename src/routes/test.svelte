@@ -5,6 +5,8 @@
 	import { toasts } from '$lib/stores/Toasts.store';
 	import Toasts from '$lib/components/Toasts.svelte';
 	import Input from '$lib/components/Input.svelte';
+	import Checkbox from '$lib/components/Checkbox.svelte';
+	import ComboBox from '$lib/components/ComboBox.svelte';
 	// import { makeMatchBold } from '$lib/utility/makeMatchBold';
 
 	interface getContactsInterface {
@@ -103,125 +105,14 @@
 
 	let value = 'hello World';
 	$: console.log('🚀 ~ file: test.svelte ~ line 105 ~ value', value);
+	let check = false;
+	$: console.log('🚀 ~ file: test.svelte ~ line 108 ~ check', check);
 </script>
 
 <!-- ###################################################### -->
 <div class="w-full space-y-6">
 	<!-- <Toasts /> -->
-	<div class="flex space-x-2">
-		<button
-			on:click={(e) =>
-				toasts.add({
-					message:
-						'Hello Success Nullam non faucibus tortor. Quisque at leo malesuada nisl laoreet molestie. Pellentesque eleifend ullamcorper maximus. Donec vitae vestibulum nisi, in commodo tellus. Aenean congue lorem non nisi ultrices, non eleifend sem tempus',
-					type: 'success'
-				})}
-			class="btn btn-primary">Success</button
-		>
-		<button
-			on:click={(e) => toasts.add({ message: 'Hello Info', type: 'info' })}
-			class="btn btn-primary">Info</button
-		>
-		<button
-			on:click={(e) => toasts.add({ message: 'Hello Warning', type: 'warning' })}
-			class="btn btn-primary">Warning</button
-		>
-		<button
-			on:click={(e) => toasts.add({ message: 'Hello Danger', type: 'danger' })}
-			class="btn btn-primary">Danger</button
-		>
-	</div>
-	{#if contacts}
-		<div class="bg-pickled-bluewood-100 p-10">
-			<div class="mx-auto max-w-md">
-				<label for="select" class="block py-2 font-semibold">Select Input:</label>
 
-				<div class="relative">
-					<div class="flex h-10 items-center border border-pickled-bluewood-200 bg-white">
-						<input
-							bind:value={corporateSearch.name}
-							on:keydown={handleKeyDown}
-							on:click|preventDefault={(e) => (showList = true)}
-							on:input|preventDefault={(e) => {
-								highlightIndex = -1;
-								currentGlobalParams = { ...currentGlobalParams, name: corporateSearch.name };
-								getCorporateContacts(currentGlobalParams);
-							}}
-							name="select"
-							id="select"
-							class="w-full appearance-none px-4 text-sm text-pickled-bluewood-600 outline-none"
-							checked
-						/>
-
-						<button
-							on:click|preventDefault={heandleReset}
-							class="cursor-pointer text-pickled-bluewood-300 outline-none transition-all hover:text-pickled-bluewood-600 focus:outline-none"
-						>
-							<svg
-								class="mx-2 h-4 w-4 fill-current"
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<line x1="18" y1="6" x2="6" y2="18" />
-								<line x1="6" y1="6" x2="18" y2="18" />
-							</svg>
-						</button>
-						<label
-							for="show_more"
-							class="cursor-pointer border-l border-pickled-bluewood-200 text-pickled-bluewood-300 outline-none transition-all hover:text-pickled-bluewood-600 focus:outline-none"
-						>
-							<svg
-								class="mx-2 h-4 w-4 fill-current"
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<polyline points="18 15 12 9 6 15" />
-							</svg>
-						</label>
-					</div>
-
-					<input
-						type="checkbox"
-						name="show_more"
-						id="show_more"
-						class="peer hidden"
-						bind:checked={showList}
-					/>
-					<ul
-						use:clickOutside
-						on:clickOutside|preventDefault={handleShowList}
-						class="absolute mt-1 hidden w-full flex-col overflow-hidden border border-pickled-bluewood-200 bg-white shadow peer-checked:flex"
-					>
-						{#each contacts.results as result, index (result._id)}
-							<li
-								class="group cursor-pointer border-t border-pickled-bluewood-200 first:border-t-0"
-							>
-								<!-- svelte-ignore a11y-missing-attribute -->
-								<a
-									on:click|preventDefault={(e) => {
-										corporateSearch = result;
-										showList = false;
-									}}
-									class="{index === highlightIndex
-										? 'block border-l-4 border-transparent border-royal-blue-600 bg-pickled-bluewood-100'
-										: ''} block border-l-4 border-transparent p-2 text-sm text-pickled-bluewood-600 hover:border-royal-blue-600 hover:bg-pickled-bluewood-100"
-									>{result.name}</a
-								>
-							</li>
-						{/each}
-					</ul>
-				</div>
-			</div>
-		</div>
-	{/if}
 	<Input
 		name="confirm"
 		label="Confirm"
@@ -231,6 +122,8 @@
 		messages={['Phase one test']}
 		validityClass={'confirm'}
 	/>
+	<Checkbox name="checkbox" label="Yes or No" validityClass={'confirm'} bind:checked={check} />
+	<ComboBox />
 </div>
 
 <style lang="postcss">

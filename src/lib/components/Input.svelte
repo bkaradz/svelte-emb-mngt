@@ -11,7 +11,7 @@
 
 <div class:pending class={`${validityClass} form-input`}>
 	<label for={name}>
-		<span class=" text-sm">{label}</span>
+		<span class="text-sm">{label}</span>
 		{#if messages.length}
 			<span class="validation-message text-sm">{messages[0]}</span>
 		{/if}
@@ -79,7 +79,7 @@
 	}
 
 	.form-input {
-		@apply relative py-4 px-0;
+		@apply relative py-0 px-0;
 	}
 
 	.form-input label {
