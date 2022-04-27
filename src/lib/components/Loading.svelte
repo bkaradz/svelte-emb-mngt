@@ -22,7 +22,7 @@
 	</svg>
 </div>
 
-<style>
+<style lang="postcss">
 	/* .height_max {
 		height: 100vh !important;
 	} */

@@ -15,7 +15,7 @@
 	import classnames from 'vest/classnames';
 	import { goto } from '$app/navigation';
 	import Loading from '$lib/components/Loading.svelte';
-	import { toasts } from '$lib/stores/Toasts.store';
+	import { toasts } from '$lib/stores/toasts.store';
 	import type { ContactsDocument } from '$lib/models/contacts.model';
 	import type { metaDataInterface } from '$lib/services/aggregateQuery.services';
 
@@ -92,14 +92,8 @@
 				showList = false;
 				break;
 			case 'Enter':
-				console.log('Entered E');
 				corporateSearch = contacts.results[highlightIndex];
-				console.log(
-					'🚀 ~ file: add.svelte ~ line 105 ~ handleKeyDown ~ corporateSearch',
-					corporateSearch
-				);
 				formData.organizationID = corporateSearch;
-				console.log('🚀 ~ file: add.svelte ~ line 107 ~ handleKeyDown ~ formData', formData);
 				handleShowList();
 				break;
 			case 'ArrowUp':
@@ -145,7 +139,6 @@
 	});
 
 	$: disabled = !result.isValid();
-	console.log('🚀 ~ file: add.svelte ~ line 152 ~ disabled', disabled);
 
 	$: resetForm = () => {
 		formData = {
@@ -193,11 +186,9 @@
 	let uploadFiles;
 
 	// const inputElement = document.getElementById('uploadCSV');
-	// console.log('🚀 ~ file: add.svelte ~ line 190 ~ handleUpload ~ inputElement', inputElement);
 	// inputElement.addEventListener('change', handleFiles, false);
 	// function handleFiles() {
 	// 	const fileList = this.files; /* now you can work with the file list */
-	// 	console.log('🚀 ~ file: add.svelte ~ line 193 ~ handleFiles ~ fileList', fileList);
 	// }
 
 	const handleUpload = (e) => {

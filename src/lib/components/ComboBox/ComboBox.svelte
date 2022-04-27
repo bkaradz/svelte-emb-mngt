@@ -3,5 +3,5 @@
 
 export default Combobox
 
-<style>
+<style lang="postcss">
 </style>

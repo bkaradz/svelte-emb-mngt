@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import logger from '$lib/utility/logger';
 	import classnames from 'vest/classnames';
+	import { toasts } from '$lib/stores/toasts.store';
 
 	let result = suite.get();
 
@@ -66,14 +67,19 @@
 				resetForm();
 
 				suite.reset();
-
+				toasts.add({
+					message: 'Sign Up was successful, Wait for approval from the ADMIN',
+					type: 'success'
+				});
 				await goto('/auth/signIn');
-			} else {
-				error = 'An error has occured';
 			}
+			// else {
+			// 	error = 'An error has occured';
+			// }
 		} catch (err) {
 			logger.error(err.messages);
 			error = 'An error has occured';
+			toasts.add({ message: 'An error has occured', type: 'success' });
 		}
 	};
 </script>

@@ -10,7 +10,6 @@
 	export let value = { name: null };
 	export let list = [];
 
-	// $: console.log('🚀 ~ file: ComboBox.svelte ~ line 12 ~ value', value);
 	// export let pending = false;
 	// export let messages = [];
 	// export let validityClass;
@@ -73,7 +72,6 @@
 	};
 
 	let defaultChangedValue;
-	$: console.log('🚀 ~ file: ComboBox.svelte ~ line 74 ~ defaultChangedValue', defaultChangedValue);
 
 	let highlightIndex = -1;
 

@@ -41,5 +41,5 @@
 	</div>
 </nav>
 
-<style>
+<style lang="postcss">
 </style>

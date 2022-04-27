@@ -205,18 +205,18 @@
 		Default
 	</h3>
 	<div class="mb-4">
-		<Input {...props2} name="primary" />
+		<!-- <Input {...props2} name="primary" />
 		<Input {...props} name="secondary" />
 		<Input {...props} name="tertiary" />
 		<Input {...props} name="success" />
 		<Input {...props} name="warning" />
-		<Input {...props} name="danger" />
+		<Input {...props} name="danger" /> -->
 	</div>
 
 	<hr class=" my-4 border border-pickled-bluewood-600" />
 </div>
 
-<style>
+<style lang="postcss">
 	input[type='number']::-webkit-inner-spin-button,
 	input[type='number']::-webkit-outer-spin-button {
 		-webkit-appearance: none;

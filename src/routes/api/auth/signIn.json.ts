@@ -7,6 +7,7 @@ import { signJwt } from '$lib/utility/jwt.utils';
 import config from 'config';
 import logger from '$lib/utility/logger';
 import { postSuite } from '$lib/validation/server/session.validate';
+import type { ContactsDocument } from '../../../lib/models/contacts.model';
 import {
 	setSessionCookies,
 	deleteSessionCookies,
@@ -15,10 +16,20 @@ import {
 	validateSessionPassword
 } from '$lib/services/session.services';
 
+export interface signInRequestInterface {
+	email: string;
+	password: string;
+}
+
+export type signedInUserInterface = Pick<
+	ContactsDocument,
+	'_id' | 'id' | 'name' | 'email' | 'isUser' | 'isCorporate' | 'isActive' | 'userRole'
+>;
+
 export const post: RequestHandler = async ({ request }) => {
 	try {
 		// validate the user's password
-		const reqUser = await request.json();
+		const reqUser: signInRequestInterface = await request.json();
 
 		const result = postSuite(reqUser);
 
@@ -31,7 +42,7 @@ export const post: RequestHandler = async ({ request }) => {
 			};
 		}
 
-		const user = await validateSessionPassword(reqUser);
+		const user = (await validateSessionPassword(reqUser)) as signedInUserInterface | false;
 
 		if (!user) {
 			return {

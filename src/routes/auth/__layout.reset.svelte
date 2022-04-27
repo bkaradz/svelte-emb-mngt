@@ -31,7 +31,8 @@
 	import { page } from '$app/stores';
 	import Toasts from '$lib/components/Toasts.svelte';
 
-	// export let user;
+	export let user: any;
+
 	let error: any;
 
 	let isPageLoading = true;
@@ -91,7 +92,7 @@
 	<Loading />
 {/if}
 
-<style>
+<style lang="postcss">
 	.height_max {
 		height: 100vh !important;
 	}

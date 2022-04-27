@@ -61,7 +61,7 @@
 
 	<!-- warning, danger, info -->
 	<span class="flex h-12 grow items-center overflow-hidden text-ellipsis">
-		<p class="text-xs">{message}</p>
+		<p class="text-xs">{@html message}</p>
 	</span>
 
 	<span class="mr-2 flex-none">
@@ -72,13 +72,14 @@
 </div>
 
 <!-- Warning -->
-<style>
+<style lang="postcss">
 	.progress::after {
 		content: '';
-		position: absolute;
-		height: 3px;
 		width: calc(100% * var(--progress, 1));
+		/* position: absolute;
+		height: 3px;
 		bottom: 0;
-		background-color: #64748b;
+		background-color: #64748b; */
+		@apply absolute bottom-0 h-1 bg-pickled-bluewood-500;
 	}
 </style>

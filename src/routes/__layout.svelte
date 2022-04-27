@@ -10,7 +10,7 @@
 		}
 		return {
 			props: {
-				user: session.user
+				user: session
 			}
 		};
 	};
@@ -23,6 +23,8 @@
 	import '../styles/app.css';
 	import { goto } from '$app/navigation';
 	import Toasts from '$lib/components/Toasts.svelte';
+
+	export let user: any;
 
 	async function redirectToLogin() {
 		if (typeof window !== 'undefined') {
@@ -40,7 +42,7 @@
 	</main>
 </div>
 
-<style>
+<style lang="postcss">
 	.app {
 		display: grid;
 		width: 100vw;

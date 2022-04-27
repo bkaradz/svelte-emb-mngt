@@ -15,5 +15,5 @@
 	>
 </li>
 
-<style>
+<style lang="postcss">
 </style>

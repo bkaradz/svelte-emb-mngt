@@ -2,11 +2,10 @@
 	import { onMount } from 'svelte';
 	import logger from '$lib/utility/logger';
 	import { clickOutside } from '$lib/utility/clickOutside';
-	import { toasts } from '$lib/stores/Toasts.store';
-	import Toasts from '$lib/components/Toasts.svelte';
+	import { toasts } from '$lib/stores/toasts.store';
 	import Input from '$lib/components/Input.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
-	import ComboBox from '$lib/components/ComboBox.svelte';
+	import Combobox from '$lib/components/Combobox.svelte';
 	// import { makeMatchBold } from '$lib/utility/makeMatchBold';
 
 	interface getContactsInterface {
@@ -38,7 +37,7 @@
 	}
 
 	let defaultGlobalParams: getContactsInterface = {
-		limit: 3,
+		limit: 9,
 		page: 1,
 		sort: 'name'
 	};
@@ -104,9 +103,8 @@
 	};
 
 	let value = 'hello World';
-	$: console.log('🚀 ~ file: test.svelte ~ line 105 ~ value', value);
 	let check = false;
-	$: console.log('🚀 ~ file: test.svelte ~ line 108 ~ check', check);
+	let comboValue;
 </script>
 
 <!-- ###################################################### -->
@@ -124,12 +122,9 @@
 	/>
 	<Checkbox name="checkbox" label="Yes or No" validityClass={'confirm'} bind:checked={check} />
 	{#if contacts}
-		<ComboBox label="Combobox Test" name="testCombo" list={contacts.results} />
+		<Combobox label="Combobox Test" name="testCombo" list={contacts.results} value={comboValue} />
 	{/if}
 </div>
 
 <style lang="postcss">
-	.btn-primary {
-		@apply bg-success;
-	}
 </style>

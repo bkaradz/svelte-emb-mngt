@@ -53,7 +53,7 @@ export const deleteSessionCookies = () => {
 	};
 };
 
-export async function createSession(userId: string, userAgent: string) {
+export async function createSession(userId: ContactsDocument['_id'], userAgent: string) {
 	const session = await SessionsModel.create({ user: userId, userAgent });
 	return session;
 }
@@ -62,6 +62,11 @@ export async function findSessions(query: FilterQuery<SessionsDocument>) {
 	return await SessionsModel.find(query).lean();
 }
 
+export type signedInUserInterface = Pick<
+	ContactsDocument,
+	'_id' | 'id' | 'name' | 'email' | 'isUser' | 'isCorporate' | 'isActive' | 'userRole'
+>;
+
 export async function validateSessionPassword({
 	email,
 	password
@@ -69,7 +74,18 @@ export async function validateSessionPassword({
 	email: ContactsDocument['email'];
 	password: ContactsDocument['password'];
 }) {
-	const user: ContactsDocument = await ContactsModel.findOne({ email });
+	const user: ContactsDocument = await ContactsModel.findOne(
+		{ email },
+		{
+			phone: 0,
+			address: 0,
+			balanceDue: 0,
+			totalReceipts: 0,
+			createdAt: 0,
+			updatedAt: 0,
+			__v: 0
+		}
+	);
 
 	if (!user) {
 		return false;
@@ -81,16 +97,7 @@ export async function validateSessionPassword({
 		return false;
 	}
 
-	return omit(user.toJSON(), [
-		'password',
-		'phone',
-		'address',
-		'balanceDue',
-		'totalReceipts',
-		'createdAt',
-		'updatedAt',
-		'__v'
-	]);
+	return omit(user.toJSON(), ['password']);
 }
 
 export async function deleteSessions(query: FilterQuery<SessionsDocument>) {

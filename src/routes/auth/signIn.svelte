@@ -4,6 +4,7 @@
 	import logger from '$lib/utility/logger';
 	import classnames from 'vest/classnames';
 	import { goto } from '$app/navigation';
+	import { toasts } from '$lib/stores/toasts.store';
 
 	let result = suite.get();
 
@@ -54,16 +55,21 @@
 				resetForm();
 				suite.reset();
 				$session = sessionData;
+				toasts.add({
+					message: `Sign In successful <bold class="pl-1 text-danger text-base">Welcome ${sessionData.user.name}</bold>`,
+					type: 'success'
+				});
 				await goto('/');
-			} else {
-				logger.error('errors occured');
-				error = 'An error has occured';
 			}
+			// else {
+			// 	logger.error('errors occured');
+			// 	error = 'An error has occured';
+			// }
 		} catch (err) {
 			console.error(err);
-
 			logger.error(err.messages);
 			error = 'An error has occured';
+			toasts.add({ message: 'An error has occured', type: 'danger' });
 		}
 	};
 </script>
