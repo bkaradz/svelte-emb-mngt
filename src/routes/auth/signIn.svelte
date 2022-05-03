@@ -6,6 +6,7 @@
 	import { goto } from '$app/navigation';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { svgSignIn } from '$lib/utility/svgLogos';
+	import Input from '$lib/components/Input.svelte';
 
 	let result = suite.get();
 
@@ -84,37 +85,24 @@
 	<form class="mt-8 space-y-6" on:submit|preventDefault={handleSignIn}>
 		<input type="hidden" name="remember" value="true" />
 		<div class="space-y-2 shadow-sm">
-			<div class="mb-1 flex justify-between">
-				<label for="email" class="text-sm">Email</label>
-				{#if result.getErrors('email').length}
-					<span class="text-sm {cn('email')}">{result.getErrors('email')[0]}</span>
-				{/if}
-			</div>
-			<input
-				id="email"
-				class="input {cn('email')}"
+			<Input
 				name="email"
-				placeholder="Email"
+				label="Email"
+				bind:value={formData.email}
+				onInput={handleInput}
 				type="email"
-				autocomplete="email"
-				required
-				on:input={handleInput}
+				messages={result.getErrors('email')}
+				validityClass={cn('email')}
 			/>
-			<div class="mb-1 flex justify-between">
-				<label for="password" class="text-sm">Password</label>
-				{#if result.getErrors('password').length}
-					<span class="text-sm {cn('password')}">{result.getErrors('password')[0]}</span>
-				{/if}
-			</div>
-			<input
-				id="password"
-				class="input {cn('password')}"
+
+			<Input
 				name="password"
+				label="Password"
+				bind:value={formData.password}
+				onInput={handleInput}
 				type="password"
-				autocomplete="password"
-				required
-				placeholder="Password"
-				on:input={handleInput}
+				messages={result.getErrors('password')}
+				validityClass={cn('password')}
 			/>
 		</div>
 

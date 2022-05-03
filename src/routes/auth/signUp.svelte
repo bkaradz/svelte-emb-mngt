@@ -5,6 +5,8 @@
 	import classnames from 'vest/classnames';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { svgSignUp } from '$lib/utility/svgLogos';
+	import Input from '$lib/components/Input.svelte';
+	import Textarea from '$lib/components/Textarea.svelte';
 
 	let result = suite.get();
 
@@ -97,122 +99,75 @@
 	<form class="mt-8 space-y-6" on:submit|preventDefault={handleSignUp}>
 		<input type="hidden" name="remember" value="true" />
 		<div class="space-y-2 shadow-sm">
-			<div class="mb-1 flex justify-between">
-				<label for="name" class="text-sm">Name</label>
-				{#if result.getErrors('name').length}
-					<span class="text-sm {cn('name')}">{result.getErrors('name')[0]}</span>
-				{/if}
-			</div>
-			<input
-				id="name"
-				class="input {cn('name')}"
+			<Input
 				name="name"
-				placeholder="Name"
-				type="text"
-				autocomplete="name"
-				required
-				on:input={handleInput}
+				label="Name"
+				bind:value={formData.name}
+				onInput={handleInput}
+				messages={result.getErrors('name')}
+				validityClass={cn('name')}
 			/>
 
-			<div class="mb-1 flex justify-between">
-				<label for="email" class="text-sm">Email</label>
-				{#if result.getErrors('email').length}
-					<span class="text-sm {cn('email')}">{result.getErrors('email')[0]}</span>
-				{/if}
-			</div>
-			<input
-				id="email"
-				class="input {cn('email')}"
+			<Input
 				name="email"
-				placeholder="Email"
+				label="Email"
+				bind:value={formData.email}
+				onInput={handleInput}
 				type="email"
-				autocomplete="email"
-				required
-				on:input={handleInput}
+				messages={result.getErrors('email')}
+				validityClass={cn('email')}
 			/>
 
-			<div class="mb-1 flex justify-between">
-				<label for="phone" class="text-sm">Phone</label>
-				{#if result.getErrors('phone').length}
-					<span class="text-sm {cn('phone')}">{result.getErrors('phone')[0]}</span>
-				{/if}
-			</div>
-			<input
-				id="phone"
-				class="input {cn('phone')}"
+			<Input
 				name="phone"
-				placeholder="Phone"
-				type="text"
-				autocomplete="phone"
-				required
-				on:input={handleInput}
+				label="Phone"
+				bind:value={formData.phone}
+				onInput={handleInput}
+				messages={result.getErrors('phone')}
+				validityClass={cn('phone')}
 			/>
 
-			<div class="mb-1 flex justify-between">
-				<label for="address" class="text-sm">Address</label>
-				{#if result.getErrors('address').length}
-					<span class="text-sm {cn('address')}">{result.getErrors('address')[0]}</span>
-				{/if}
-			</div>
-			<textarea
-				id="address"
-				class="input {cn('address')}"
+			<Textarea
 				name="address"
-				placeholder="Address"
-				type="text"
-				autocomplete="address"
-				required
-				on:input={handleInput}
+				label="Address"
+				bind:value={formData.address}
+				onInput={handleInput}
+				messages={result.getErrors('address')}
+				validityClass={cn('address')}
 			/>
 
-			<div class="mb-1 flex justify-between">
-				<label for="password" class="text-sm">Password</label>
-				{#if result.getErrors('password').length}
-					<span class="text-sm {cn('password')}">{result.getErrors('password')[0]}</span>
-				{/if}
-			</div>
-			<input
-				id="password"
-				class="input {cn('password')}"
+			<Input
 				name="password"
-				placeholder="Password"
+				label="Password"
+				bind:value={formData.password}
+				onInput={handleInput}
 				type="password"
-				autocomplete="password"
-				required
-				on:input={handleInput}
+				messages={result.getErrors('password')}
+				validityClass={cn('password')}
 			/>
 
-			<div class="mb-1 flex justify-between">
-				<label for="confirmPassword" class="text-sm">Confirm Password</label>
-				{#if result.getErrors('confirmPassword').length}
-					<span class="text-sm {cn('confirmPassword')}"
-						>{result.getErrors('confirmPassword')[0]}</span
-					>
-				{/if}
-			</div>
-			<input
-				id="confirmPassword"
-				class="input {cn('confirmPassword')}"
+			<Input
 				name="confirmPassword"
-				placeholder="Confirm Password"
-				type="password"
-				autocomplete="confirmPassword"
-				required
-				on:input={handleInput}
+				label="Confirm Password"
+				bind:value={formData.confirmPassword}
+				onInput={handleInput}
+				type="confirmPassword"
+				messages={result.getErrors('confirmPassword')}
+				validityClass={cn('confirmPassword')}
 			/>
-		</div>
 
-		<div>
-			<button
-				{disabled}
-				type="submit"
-				class="group relative flex w-full justify-center border border-transparent  bg-royal-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-royal-blue-700 focus:outline-none focus:ring-2 focus:ring-royal-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
-			>
-				<span class="absolute inset-y-0 left-0 flex items-center pl-3">
-					{@html svgSignUp}
-				</span>
-				Register
-			</button>
+			<div>
+				<button
+					{disabled}
+					type="submit"
+					class="group relative flex w-full justify-center border border-transparent  bg-royal-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-royal-blue-700 focus:outline-none focus:ring-2 focus:ring-royal-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+				>
+					<span class="absolute inset-y-0 left-0 flex items-center pl-3">
+						{@html svgSignUp}
+					</span>
+					Register
+				</button>
+			</div>
 		</div>
 	</form>
 </div>
