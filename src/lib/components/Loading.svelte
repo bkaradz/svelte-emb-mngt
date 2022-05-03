@@ -1,5 +1,5 @@
 <script>
-	import { svgLoader } from '$lib/utility/svgLogos';
+	// import { svgLoader } from '$lib/utility/svgLogos';
 </script>
 
 <div class="loader text-center">
@@ -23,9 +23,6 @@
 </div>
 
 <style lang="postcss">
-	/* .height_max {
-		height: 100vh !important;
-	} */
 	.loader {
 		position: fixed;
 		top: 0;

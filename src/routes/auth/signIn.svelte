@@ -5,6 +5,7 @@
 	import classnames from 'vest/classnames';
 	import { goto } from '$app/navigation';
 	import { toasts } from '$lib/stores/toasts.store';
+	import { svgSignIn } from '$lib/utility/svgLogos';
 
 	let result = suite.get();
 
@@ -33,7 +34,7 @@
 
 	$: disabled = !result.isValid();
 
-	let error: string | undefined = undefined; // TODO: Impliment Alert Notification
+	let error: string | undefined = undefined;
 
 	const resetForm = () => {
 		formData = {
@@ -61,15 +62,11 @@
 				});
 				await goto('/');
 			}
-			// else {
-			// 	logger.error('errors occured');
-			// 	error = 'An error has occured';
-			// }
 		} catch (err) {
 			console.error(err);
 			logger.error(err.messages);
 			error = 'An error has occured';
-			toasts.add({ message: 'An error has occured', type: 'danger' });
+			toasts.add({ message: 'An error has occured', type: 'error' });
 		}
 	};
 </script>
@@ -128,22 +125,7 @@
 				class="relative flex w-full justify-center border border-transparent bg-royal-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-royal-blue-700 focus:outline-none focus:ring-2 focus:ring-royal-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
 			>
 				<span class="absolute inset-y-0 left-0 flex items-center pl-3">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-4 w-4 text-royal-blue-500 group-hover:text-royal-blue-400"
-						fill="none"
-						width="24"
-						height="24"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						stroke-width="2"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-						/>
-					</svg>
+					{@html svgSignIn}
 				</span>
 				Login
 			</button>

@@ -16,7 +16,7 @@
 		id="humberger"
 		bind:checked={$toggleMenu}
 	/>
-	<label for="humberger" class="absolute top-6 -right-8 hover:cursor-pointer">
+	<label for="humberger" class="absolute top-6 -right-8 text-danger hover:cursor-pointer">
 		{#if $toggleMenu}
 			{@html svgArrow}
 		{:else}

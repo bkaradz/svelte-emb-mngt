@@ -6,7 +6,6 @@
 	import Input from '$lib/components/Input.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import Combobox from '$lib/components/Combobox.svelte';
-	// import { makeMatchBold } from '$lib/utility/makeMatchBold';
 
 	interface getContactsInterface {
 		limit: number;
@@ -28,7 +27,6 @@
 	let corporateSearch = { name: null };
 
 	let showList = false;
-	let selected = -1;
 
 	function handleShowList() {
 		if (showList) {
@@ -36,17 +34,17 @@
 		}
 	}
 
-	let defaultGlobalParams: getContactsInterface = {
+	let defaultCorporateQueryParams: getContactsInterface = {
 		limit: 9,
 		page: 1,
 		sort: 'name'
 	};
-	let currentGlobalParams: getContactsInterface = defaultGlobalParams;
+	let currentCorporateQueryParams: getContactsInterface = defaultCorporateQueryParams;
 	let contacts;
 	let error;
 
 	onMount(() => {
-		getCorporateContacts(currentGlobalParams);
+		getCorporateContacts(currentCorporateQueryParams);
 	});
 
 	const getCorporateContacts = async (paramsObj: getContactsInterface) => {
@@ -59,70 +57,55 @@
 			error = err.message;
 		}
 	};
-	const heandleReset = () => {
-		currentGlobalParams = defaultGlobalParams;
-		getCorporateContacts(currentGlobalParams);
-		corporateSearch = { name: null };
-		highlightIndex = -1;
-	};
-
-	let highlightIndex = -1;
-
-	async function handleKeyDown(e) {
-		const listLenght = contacts.results.length;
-		switch (e.key) {
-			case 'Escape':
-				showList = false;
-				break;
-			case 'Enter':
-				corporateSearch = contacts.results[highlightIndex];
-				handleShowList();
-				break;
-			case 'ArrowUp':
-				highlightIndex <= 0 ? (highlightIndex = 0) : (highlightIndex -= 1);
-				break;
-			case 'ArrowDown':
-				highlightIndex === listLenght - 1
-					? (highlightIndex = listLenght - 1)
-					: (highlightIndex += 1);
-				break;
-		}
-	}
-
-	const makeMatchBold = (searchMatchString: string) => {
-		let MatchedWords = [];
-		if (corporateSearch.name) {
-			const regex = new RegExp(corporateSearch.name, 'ig');
-			MatchedWords = searchMatchString.trim().match(regex);
-		}
-
-		let makeBold = `<strong>${MatchedWords[0]}</strong>`;
-		let boldedStr = searchMatchString.replace(MatchedWords[0], makeBold);
-
-		return boldedStr;
-	};
 
 	let value = 'hello World';
 	let check = false;
-	let comboValue;
+	let comboValue: { name: '' };
+	const heandleInput = (e: any) => {
+		currentCorporateQueryParams = {
+			...currentCorporateQueryParams,
+			name: e.target.value
+		};
+		getCorporateContacts(currentCorporateQueryParams);
+	};
 </script>
 
 <!-- ###################################################### -->
 <div class="w-full space-y-6">
-	<!-- <Toasts /> -->
+	<button
+		class="btn btn-primary"
+		on:click={(e) => toasts.add({ message: 'Success', type: 'success' })}>Success</button
+	>
+	<button
+		class="btn btn-primary"
+		on:click={(e) => toasts.add({ message: 'Warning', type: 'warning' })}>Warning</button
+	>
+	<button class="btn btn-primary" on:click={(e) => toasts.add({ message: 'Info', type: 'info' })}
+		>Info</button
+	>
+	<button class="btn btn-primary" on:click={(e) => toasts.add({ message: 'Error', type: 'error' })}
+		>Error</button
+	>
 
+	<!-- <Toasts /> -->
 	<Input
 		name="confirm"
 		label="Confirm"
 		bind:value
 		pending={true}
-		onInput={(e) => console.log('event', e)}
+		onInput={(e) => console.log('event', e.target.value)}
 		messages={['Phase one test']}
 		validityClass={'confirm'}
 	/>
-	<Checkbox name="checkbox" label="Yes or No" validityClass={'confirm'} bind:checked={check} />
+	<Checkbox name="checkbox" label="Yes or No" validityClass={'error'} bind:checked={check} />
 	{#if contacts}
-		<Combobox label="Combobox Test" name="testCombo" list={contacts.results} value={comboValue} />
+		<Combobox
+			label="Combobox Test"
+			name="testCombo"
+			list={contacts.results}
+			bind:value={comboValue}
+			onInput={heandleInput}
+		/>
 	{/if}
 </div>
 

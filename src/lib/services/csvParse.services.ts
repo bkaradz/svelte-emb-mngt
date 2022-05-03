@@ -1,34 +1,35 @@
-import busboy from 'busboy'
-import { pipeline } from 'stream/promises'
-import logger from '$lib/utility/logger'
-import csv from 'csvtojson'
+import busboy from 'busboy';
+import { pipeline } from 'stream/promises';
+import logger from '$lib/utility/logger';
+import csv from 'csvtojson';
 
 export const parseCSV = async (request) => {
-  const content = request.headers.get('content-type')
+	const content = request.headers.get('content-type');
+	console.log('🚀 ~ file: csvParse.services.ts ~ line 8 ~ parseCSV ~ content', content);
 
-  const bb = busboy({
-    headers: {
-      'content-type': content,
-    },
-  })
+	const bb = busboy({
+		headers: {
+			'content-type': content
+		}
+	});
 
-  let dataV = ''
+	let dataV = '';
 
-  bb.on('file', async (name, file, info) => {
-    const { filename, encoding, mimeType } = info
+	bb.on('file', async (name, file, info) => {
+		const { filename, encoding, mimeType } = info;
 
-    file
-      .on('data', (data) => {
-        dataV = data
-      })
-      .on('close', () => {
-        logger.info(`File [${name}] done`)
-      })
-  })
+		file
+			.on('data', (data) => {
+				dataV = data;
+			})
+			.on('close', () => {
+				logger.info(`File [${name}] done`);
+			});
+	});
 
-  await pipeline(request.body as any, bb)
+	await pipeline(request.body as any, bb);
 
-  return await csv().fromString(dataV.toString())
-}
+	return await csv().fromString(dataV.toString());
+};
 
-export default parseCSV
+export default parseCSV;

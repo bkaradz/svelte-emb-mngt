@@ -8,41 +8,39 @@
 	import classnames from 'vest/classnames';
 	import { clickOutside } from '$lib/utility/clickOutside';
 	import Loading from '$lib/components/Loading.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import Checkbox from '$lib/components/Checkbox.svelte';
+	import Combobox from '$lib/components/Combobox.svelte';
+	import Textarea from '$lib/components/Textarea.svelte';
+	import type { metaDataInterface } from '$lib/services/aggregateQuery.services';
+	import type { ContactsDocument } from '$lib/models/contacts.model';
+	import { toasts } from '$lib/stores/toasts.store';
 
 	const endpoint = `/api/contacts/${$page.params.id}.json`;
 
 	let result = suite.get();
 
-	let error: string | undefined = undefined; // TODO: Impliment Alert Notification
+	let error: string | undefined = undefined;
 
 	let editContact;
+	$: console.log('🚀 ~ file: edit-[id].svelte ~ line 26 ~ editContact', editContact);
 
-	interface getContactsInterface {
+	interface contactsInterface extends metaDataInterface {
+		results: Array<Omit<ContactsDocument, 'createdAt' | 'updatedAt' | 'password' | 'userRole'>>;
+	}
+	interface corporateQueryParamsInterface {
 		limit: number;
 		page: number;
-		sort?: string;
-		query?: string;
+		sort: string;
+		isCorporate: boolean;
 		name?: string;
-		organisation?: string;
-		phone?: string;
-		email?: string;
-		vatNo?: string;
-		balanceDue?: string;
-		state?: string;
-		isCorporate?: boolean;
-		isActive?: boolean;
-		isUser?: boolean;
 	}
 
-	interface corporateSearchInterface {
-		name: string | null;
-		_id?: string | undefined;
-	}
+	type corporateSearchInterface = Partial<ContactsDocument> & { name: string; _id?: string };
 
 	let corporateSearch: corporateSearchInterface = { name: null };
 
 	let showList = false;
-	let selected = -1;
 
 	function handleShowList() {
 		if (showList) {
@@ -50,77 +48,60 @@
 		}
 	}
 
-	let defaultGlobalParams: getContactsInterface = {
-		limit: 10,
+	let defaultCorporateQueryParams: Partial<corporateQueryParamsInterface> = {
+		limit: 7,
 		page: 1,
 		sort: 'name',
 		isCorporate: true
 	};
-	let currentGlobalParams: getContactsInterface = defaultGlobalParams;
+	let currentCorporateQueryParams = defaultCorporateQueryParams;
 	let corporateContacts;
 
 	onMount(() => {
-		getCorporateContacts(currentGlobalParams);
+		getCorporateContacts(currentCorporateQueryParams);
 	});
 
-	const getCorporateContacts = async (paramsObj: getContactsInterface) => {
+	const getCorporateContacts = async (paramsObj: Partial<corporateQueryParamsInterface>) => {
 		try {
-			let searchParams = new URLSearchParams(paramsObj);
+			let searchParams = new URLSearchParams(paramsObj as string);
 			const res = await fetch('/api/contacts.json?' + searchParams.toString());
 			corporateContacts = await res.json();
 		} catch (err) {
 			logger.error(err.message);
+			toasts.add({
+				message: 'An error has occured while getting corporate contacts',
+				type: 'error'
+			});
 			error = err.message;
 		}
 	};
 
-	const heandleReset = () => {
-		currentGlobalParams = defaultGlobalParams;
-		getCorporateContacts(currentGlobalParams);
-		corporateSearch = { name: null };
-		formData.organizationID = null;
-		highlightIndex = -1;
-	};
-
-	let highlightIndex = -1;
-
-	async function handleKeyDown(e) {
-		const listLenght = corporateContacts.results.length;
-		switch (e.key) {
-			case 'Escape':
-				showList = false;
-				break;
-			case 'Enter':
-				corporateSearch = corporateContacts.results[highlightIndex];
-				formData.organizationID = corporateSearch?._id;
-				handleShowList();
-				break;
-			case 'ArrowUp':
-				highlightIndex <= 0 ? (highlightIndex = 0) : (highlightIndex -= 1);
-				break;
-			case 'ArrowDown':
-				highlightIndex === listLenght - 1
-					? (highlightIndex = listLenght - 1)
-					: (highlightIndex += 1);
-				break;
-		}
-	}
-
 	interface formDataType {
 		name: string;
-		organizationID?: string;
+		organizationID?: Partial<ContactsDocument>;
 		isCorporate: boolean;
 		email: string;
 		phone: string;
 		address: string;
 	}
 
+	// let formData: formDataType = {
+	// 	isCorporate: false,
+	// 	organizationID: corporateSearch,
+	// 	name: '',
+	// 	email: '',
+	// 	phone: '',
+	// 	address: ''
+	// };
+
 	$: formData = {
 		...editContact,
 		organizationID: corporateSearch?._id
 	};
 
-	$: corporateSearch = editContact?.organizationID ? editContact?.organizationID : { name: null };
+	$: formData;
+
+	$: corporateSearch = editContact?.organizationID ? editContact?.organizationID : { name: '' };
 
 	const handleInput = (event) => {
 		let name = event.target.name;
@@ -186,6 +167,14 @@
 	const handleCancel = async () => {
 		await goto(`/contacts/${$page.params.id}`);
 	};
+
+	const handleComboInput = (e: any) => {
+		currentCorporateQueryParams = {
+			...currentCorporateQueryParams,
+			name: e.target.value
+		};
+		getCorporateContacts(currentCorporateQueryParams);
+	};
 </script>
 
 <svelte:head>
@@ -222,179 +211,59 @@
 			<form class="mt-2 space-y-6" on:submit|preventDefault={handleUpdate}>
 				<input type="hidden" name="userid" value="true" />
 				<div class="space-y-2 shadow-sm">
-					<div class="mb-1 flex justify-between">
-						<label for="name" class="text-sm">Name</label>
-						{#if result.getErrors('name').length}
-							<span class="text-sm {cn('name')}">{result.getErrors('name')[0]}</span>
-						{/if}
-					</div>
-					<input
-						id="name"
-						class="input {cn('name')}"
+					<Input
 						name="name"
-						placeholder="Name"
-						type="text"
+						label="Name"
 						bind:value={formData.name}
-						required
-						on:input={handleInput}
+						onInput={handleInput}
+						messages={result.getErrors('name')}
+						validityClass={cn('name')}
 					/>
-					<!-- isCorporate -->
-					<div class="bg-pickled-bluewood-100">
-						<div class="mx-auto max-w-md">
-							<div class="mb-1 flex justify-between">
-								<label for="organization" class="text-sm">Organization</label>
-							</div>
-							<div class="relative">
-								<div class="flex h-10 items-center border border-pickled-bluewood-300 bg-white">
-									<!-- ComboBox Input -->
-									<input
-										bind:value={corporateSearch.name}
-										on:keydown={handleKeyDown}
-										on:click|preventDefault={(e) => (showList = true)}
-										on:input|preventDefault={(e) => {
-											highlightIndex = -1;
-											currentGlobalParams = { ...currentGlobalParams, name: corporateSearch.name };
-											getCorporateContacts(currentGlobalParams);
-										}}
-										autocomplete="off"
-										name="organization"
-										id="organization"
-										class="w-full appearance-none px-4 text-sm text-pickled-bluewood-600 outline-none"
-										checked
-									/>
-									<!-- Reset Button -->
-									<button
-										on:click|preventDefault={heandleReset}
-										class="cursor-pointer text-pickled-bluewood-300 outline-none transition-all hover:text-pickled-bluewood-600 focus:outline-none"
-									>
-										{@html svgXSmall}
-									</button>
-									<!-- Dropdown Label -->
-									<label
-										for="show_more"
-										class="mx-0 cursor-pointer border-l border-pickled-bluewood-200 px-0 text-pickled-bluewood-300 outline-none transition-all hover:text-pickled-bluewood-600 focus:outline-none"
-									>
-										{@html svgSelector}
-									</label>
-								</div>
 
-								<input
-									type="checkbox"
-									name="show_more"
-									id="show_more"
-									class="peer hidden"
-									autocomplete="off"
-									bind:checked={showList}
-								/>
-								<ul
-									use:clickOutside
-									on:clickOutside={handleShowList}
-									class="absolute z-50 mt-1 hidden w-full flex-col overflow-hidden border border-pickled-bluewood-300 bg-white shadow peer-checked:flex"
-								>
-									{#each corporateContacts.results as result, index (result._id)}
-										<li
-											class="group cursor-pointer border-t border-pickled-bluewood-200 first:border-t-0"
-										>
-											<!-- svelte-ignore a11y-missing-attribute -->
-											<a
-												on:click|preventDefault={(e) => {
-													corporateSearch = result;
-													formData.organizationID = corporateSearch?._id;
-													showList = false;
-												}}
-												class="{index === highlightIndex
-													? 'border-royal-blue-600 bg-pickled-bluewood-100'
-													: ''} block border-l-4 border-transparent p-2 text-sm text-pickled-bluewood-600 group-hover:border-royal-blue-600 group-hover:bg-pickled-bluewood-100"
-												>{@html makeMatchBold(result.name)}</a
-											>
-										</li>
-									{/each}
-								</ul>
-							</div>
-						</div>
-					</div>
-					<!-- End isCorporate -->
+					<Checkbox
+						name="isCorporate"
+						label="Individual or Corparate"
+						validityClass={cn('isCorporate')}
+						bind:checked={formData.isCorporate}
+					/>
 
-					<div class="flex flex-row justify-between">
-						<!-- Toggle A -->
-						<div class="mt-2 mb-1 flex w-full items-center">
-							<label for="toogleA" class="flex cursor-pointer items-center">
-								<!-- toggle -->
-								<div class="relative">
-									<!-- input -->
-									<input
-										id="toogleA"
-										type="checkbox"
-										class="sr-only"
-										bind:checked={formData.isCorporate}
-									/>
-									<!-- line -->
-									<div class="h-4 w-10 rounded-full bg-pickled-bluewood-400 shadow-inner" />
-									<!-- dot -->
-									<div
-										class="dot absolute -left-1 -top-1 h-6 w-6 rounded-full bg-white shadow transition"
-									/>
-								</div>
-								<!-- label -->
-								<div class="ml-3 font-medium text-pickled-bluewood-700">
-									Individual or Corparate
-								</div>
-							</label>
-						</div>
-						<div class="grow" />
-					</div>
+					{#if corporateContacts}
+						<Combobox
+							label="Organization"
+							name="organization"
+							list={corporateContacts.results}
+							bind:value={corporateSearch}
+							onInput={handleComboInput}
+							disabled={formData.isCorporate}
+						/>
+					{/if}
 
-					<div class="mb-1 flex justify-between">
-						<label for="email" class="text-sm">Email</label>
-						{#if result.getErrors('email').length}
-							<span class="text-sm {cn('email')}">{result.getErrors('email')[0]}</span>
-						{/if}
-					</div>
-					<input
-						id="email"
-						class="input {cn('email')}"
+					<Input
 						name="email"
-						placeholder="Email"
-						type="email"
+						label="Email"
 						bind:value={formData.email}
-						required
-						on:input={handleInput}
+						onInput={handleInput}
+						type="email"
+						messages={result.getErrors('email')}
+						validityClass={cn('email')}
 					/>
 
-					<div class="mb-1 flex justify-between">
-						<label for="phone" class="text-sm">Phone</label>
-						{#if result.getErrors('phone').length}
-							<span class="text-sm {cn('phone')}">{result.getErrors('phone')[0]}</span>
-						{/if}
-					</div>
-					<input
-						id="phone"
-						class="input {cn('phone')}"
+					<Input
 						name="phone"
-						placeholder="Phone"
-						type="text"
-						autocomplete="off"
+						label="Phone"
 						bind:value={formData.phone}
-						required
-						on:input={handleInput}
+						onInput={handleInput}
+						messages={result.getErrors('phone')}
+						validityClass={cn('phone')}
 					/>
 
-					<div class="mb-4 flex justify-between">
-						<label for="address" class="text-sm">Address</label>
-						{#if result.getErrors('address').length}
-							<span class="text-sm {cn('address')}">{result.getErrors('address')[0]}</span>
-						{/if}
-					</div>
-					<textarea
-						id="address"
-						class="input {cn('address')}"
+					<Textarea
 						name="address"
-						placeholder="Address"
-						type="text"
-						autocomplete="off"
+						label="Address"
 						bind:value={formData.address}
-						required
-						on:input={handleInput}
+						onInput={handleInput}
+						messages={result.getErrors('address')}
+						validityClass={cn('address')}
 					/>
 
 					<div class="mt-6 flex space-x-2">

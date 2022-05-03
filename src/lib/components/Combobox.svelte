@@ -1,39 +1,26 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import logger from '$lib/utility/logger';
+	import { selectTextOnFocus, blurOnEscape } from '$lib/utility/inputSelectDirective';
 	import { clickOutside } from '$lib/utility/clickOutside';
-	import { svgSelector, svgXSmall } from '$lib/utility/svgLogos';
+	import { svgLoaderSmall, svgSelector, svgXSmall } from '$lib/utility/svgLogos';
 
-	// export let value = {name: null};
+	interface disabledInterface {
+		disabled?: boolean;
+	}
 	export let label = '';
 	export let name = '';
-	export let value = { name: null };
-	export let list = [];
+	export let value = { name: '' };
+	export let list: Array<T | null> = [];
+	export let pending = false;
+	export let messages = [];
+	export let validityClass = '';
+	export let disabled = false;
+	export let onInput = (e) => {};
 
-	// export let pending = false;
-	// export let messages = [];
-	// export let validityClass;
-	// export let onInput = (name?: string) => {};
+	let userEnter = false;
 
-	interface getContactsInterface {
-		limit: number;
-		page: number;
-		sort?: string;
-		query?: string;
-		name?: string;
-		organisation?: string;
-		phone?: string;
-		email?: string;
-		vatNo?: string;
-		balanceDue?: string;
-		state?: string;
-		isCorporate?: boolean;
-		isActive?: boolean;
-		isUser?: boolean;
-	}
+	let highlightIndex = -1;
 
 	let showList = false;
-	let selected = -1;
 
 	function handleShowList() {
 		if (showList) {
@@ -41,55 +28,35 @@
 		}
 	}
 
-	let defaultGlobalParams: getContactsInterface = {
-		limit: 9,
-		page: 1,
-		sort: 'name'
-	};
-	let currentGlobalParams: getContactsInterface = defaultGlobalParams;
-	let contacts;
-	let error;
-
-	onMount(() => {
-		getCorporateContacts(currentGlobalParams);
-	});
-
-	const getCorporateContacts = async (paramsObj: getContactsInterface) => {
-		try {
-			let searchParams = new URLSearchParams(paramsObj);
-			const res = await fetch('/api/contacts.json?' + searchParams.toString());
-			contacts = await res.json();
-		} catch (err) {
-			logger.error(err.message);
-			error = err.message;
-		}
-	};
 	const heandleReset = () => {
-		currentGlobalParams = defaultGlobalParams;
-		getCorporateContacts(currentGlobalParams);
-		value = { name: null };
+		$: if (!userEnter) {
+			value = { name: '' };
+		}
 		highlightIndex = -1;
+		userEnter = false;
 	};
-
-	let defaultChangedValue;
-
-	let highlightIndex = -1;
 
 	async function handleKeyDown(e) {
-		const listLenght = contacts.results.length;
+		const listLenght = list.length;
 		switch (e.key) {
 			case 'Escape':
 				showList = false;
 				break;
+			case 'Backspace':
+				showList = true;
+				break;
 			case 'Enter':
-				value = contacts.results[highlightIndex];
-				handleShowList();
+				value = list[highlightIndex];
+				userEnter = true;
+				showList = false;
 				highlightIndex = -1;
 				break;
 			case 'ArrowUp':
+				showList = true;
 				highlightIndex <= 0 ? (highlightIndex = 0) : (highlightIndex -= 1);
 				break;
 			case 'ArrowDown':
+				showList = true;
 				highlightIndex === listLenght - 1
 					? (highlightIndex = listLenght - 1)
 					: (highlightIndex += 1);
@@ -112,29 +79,32 @@
 		return boldedStr;
 	};
 
-	let disabled = true;
-
-	list.length ? (disabled = false) : (disabled = true);
+	if (!disabled) {
+		list.length ? (disabled = false) : (disabled = true);
+	}
 </script>
 
 <!-- ###################################################### -->
 <div class="w-full">
 	<div class="bg-transparent">
 		<div class="mx-auto">
-			<label for={name} class="block text-sm text-pickled-bluewood-600">{label}</label>
-			<div class="input relative p-0">
-				<div class="flex items-center bg-white">
+			<label for={name} class="flex justify-between text-sm text-pickled-bluewood-600">
+				<span class="text-sm">{label}</span>
+				{#if messages.length}
+					<span class="validation-message text-sm">{messages[0]}</span>
+				{/if}
+			</label>
+			<div class={`${validityClass} input relative p-0`}>
+				<div class="flex items-center  bg-white">
 					<!-- ComboBox Input -->
 					<input
+						use:selectTextOnFocus
+						use:blurOnEscape
 						bind:value={value.name}
 						on:keydown={handleKeyDown}
 						on:focus|preventDefault={(e) => (showList = true)}
 						on:click|preventDefault={(e) => (showList = true)}
-						on:input|preventDefault={(e) => {
-							highlightIndex = -1;
-							currentGlobalParams = { ...currentGlobalParams, name: value.name };
-							getCorporateContacts(currentGlobalParams);
-						}}
+						on:input|preventDefault={onInput}
 						autocomplete="off"
 						{name}
 						id="select"
@@ -142,6 +112,12 @@
 						type="text"
 						{disabled}
 					/>
+					<!-- Loader -->
+					{#if pending}
+						<div class="icons pointer-events-none border-none">
+							{@html svgLoaderSmall}
+						</div>
+					{/if}
 					<!-- Reset Button -->
 					<button on:click|preventDefault={heandleReset} class="icons">
 						{@html svgXSmall}
@@ -161,7 +137,6 @@
 				/>
 				{#if list.length}
 					<ul
-						on:select={defaultChangedValue}
 						use:clickOutside
 						on:clickOutside|preventDefault={handleShowList}
 						class="list peer-checked:flex"
@@ -199,7 +174,7 @@
 		@apply outline-none;
 	}
 	.list {
-		@apply absolute mt-1 hidden w-full flex-col overflow-hidden border border-pickled-bluewood-200 bg-white shadow;
+		@apply absolute z-50 mt-1 hidden w-full flex-col overflow-hidden border border-pickled-bluewood-200 bg-white shadow;
 	}
 	.list--item {
 		@apply cursor-pointer border-t border-pickled-bluewood-200;

@@ -17,6 +17,14 @@ declare namespace App {
 		sessionId: SessionsDocument['_id'];
 		authenticated: string;
 	}
+
+	interface DOMAttributes<T extends EventHandler> {
+		onclickOutside?: MouseEventHandler<T> | undefined | null;
+	}
+
+	// interface HTMLProps<T> {
+	// 	onclickOutside?: (e: CustomEvent) => void;
+	// }
 	interface Locals {
 		user: userInterface;
 	}
@@ -28,8 +36,12 @@ declare namespace App {
 	interface Stuff {}
 }
 
-declare namespace svelte.JSX {
-	interface DOMAttributes<T extends EventHandler> {
-		onclickOutside?: MouseEventHandler<T> | undefined | null;
-	}
-}
+// declare namespace svelte.JSX {
+// 	interface DOMAttributes<T extends EventHandler> {
+// 		onclickOutside?: MouseEventHandler<T> | undefined | null;
+// 	}
+
+// 	interface HTMLProps<T> {
+// 		onclick_outside?: (e: CustomEvent) => void;
+// 	}
+// }

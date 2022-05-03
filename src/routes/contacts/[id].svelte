@@ -28,7 +28,7 @@
 		totalReceipts: 0
 	};
 
-	let error: string | undefined = undefined; // TODO: Impliment Alert Notification
+	let error: string | undefined = undefined;
 
 	onMount(async () => {
 		try {

@@ -8,11 +8,7 @@
 				redirect: '/auth/unauthorized'
 			};
 		}
-		return {
-			props: {
-				user: session
-			}
-		};
+		return {};
 	};
 </script>
 
@@ -23,8 +19,6 @@
 	import '../styles/app.css';
 	import { goto } from '$app/navigation';
 	import Toasts from '$lib/components/Toasts.svelte';
-
-	export let user: any;
 
 	async function redirectToLogin() {
 		if (typeof window !== 'undefined') {

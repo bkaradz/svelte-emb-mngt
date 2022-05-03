@@ -1,30 +1,25 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { clickOutside } from '$lib/utility/clickOutside';
 	import suite from '$lib/validation/client/signUp.validate';
 	import logger from '$lib/utility/logger';
-	import {
-		svgAddUser,
-		svgArrow,
-		svgPlus,
-		svgSelector,
-		svgUpload,
-		svgX,
-		svgXSmall
-	} from '$lib/utility/svgLogos';
+	import { svgAddUser, svgArrow, svgPlus, svgUpload, svgX } from '$lib/utility/svgLogos';
 	import classnames from 'vest/classnames';
 	import { goto } from '$app/navigation';
 	import Loading from '$lib/components/Loading.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { ContactsDocument } from '$lib/models/contacts.model';
 	import type { metaDataInterface } from '$lib/services/aggregateQuery.services';
+	import Input from '$lib/components/Input.svelte';
+	import Textarea from '$lib/components/Textarea.svelte';
+	import Checkbox from '$lib/components/Checkbox.svelte';
+	import Combobox from '$lib/components/Combobox.svelte';
 
 	let result = suite.get();
 
-	let error: string | undefined = undefined; // TODO: Impliment Alert Notification
+	let error: string | undefined = undefined;
 
 	interface contactsInterface extends metaDataInterface {
-		results: Omit<ContactsDocument, 'createdAt' | 'updatedAt' | 'password' | 'userRole'>[];
+		results: Array<Omit<ContactsDocument, 'createdAt' | 'updatedAt' | 'password' | 'userRole'>>;
 	}
 
 	interface corporateQueryParamsInterface {
@@ -35,10 +30,11 @@
 		name?: string;
 	}
 
-	let corporateSearch: Partial<ContactsDocument> = { name: null };
+	type corporateSearchInterface = Partial<ContactsDocument> & { name: string };
+
+	let corporateSearch: corporateSearchInterface = { name: '' };
 
 	let showList = false;
-	let selected = -1;
 
 	function handleShowList() {
 		if (showList) {
@@ -47,7 +43,7 @@
 	}
 
 	let defaultCorporateQueryParams: Partial<corporateQueryParamsInterface> = {
-		limit: 10,
+		limit: 7,
 		page: 1,
 		sort: 'name',
 		isCorporate: true
@@ -61,51 +57,18 @@
 
 	const getCorporateContacts = async (paramsObj: Partial<corporateQueryParamsInterface>) => {
 		try {
-			let searchParams = new URLSearchParams(paramsObj);
-
+			let searchParams = new URLSearchParams(paramsObj as string);
 			const res = await fetch('/api/contacts.json?' + searchParams.toString());
 			contacts = await res.json();
 		} catch (err) {
 			logger.error(err.message);
 			toasts.add({
 				message: 'An error has occured while getting corporate contacts',
-				type: 'danger'
+				type: 'error'
 			});
 			error = err.message;
 		}
 	};
-
-	const heandleReset = () => {
-		currentCorporateQueryParams = defaultCorporateQueryParams;
-		getCorporateContacts(currentCorporateQueryParams);
-		corporateSearch = { name: null };
-		formData.organizationID = null;
-		highlightIndex = -1;
-	};
-
-	let highlightIndex = -1;
-
-	async function handleKeyDown(e) {
-		const listLenght = contacts.results.length;
-		switch (e.key) {
-			case 'Escape':
-				showList = false;
-				break;
-			case 'Enter':
-				corporateSearch = contacts.results[highlightIndex];
-				formData.organizationID = corporateSearch;
-				handleShowList();
-				break;
-			case 'ArrowUp':
-				highlightIndex <= 0 ? (highlightIndex = 0) : (highlightIndex -= 1);
-				break;
-			case 'ArrowDown':
-				highlightIndex === listLenght - 1
-					? (highlightIndex = listLenght - 1)
-					: (highlightIndex += 1);
-				break;
-		}
-	}
 
 	interface formDataType {
 		name: string;
@@ -143,12 +106,13 @@
 	$: resetForm = () => {
 		formData = {
 			isCorporate: false,
-			organizationID: { name: null },
+			organizationID: { name: '' },
 			name: '',
 			email: '',
 			phone: '',
 			address: ''
 		};
+		corporateSearch = { name: '' };
 		suite.reset();
 		result = suite.get();
 	};
@@ -168,13 +132,9 @@
 				resetForm();
 				toasts.add({ message: 'The Contact was added', type: 'success' });
 			}
-			// else {
-			// 	error = 'An error has occured';
-			// 	toasts.add({ message: 'An error has occured', type: 'danger' });
-			// }
 		} catch (err) {
 			logger.error(err.messages);
-			toasts.add({ message: 'An error has occured while adding the contact', type: 'danger' });
+			toasts.add({ message: 'An error has occured while adding the contact', type: 'error' });
 			error = 'An error has occured';
 		}
 	};
@@ -184,16 +144,30 @@
 	};
 
 	let uploadFiles;
+	let uploadCSVFiles;
 
-	// const inputElement = document.getElementById('uploadCSV');
-	// inputElement.addEventListener('change', handleFiles, false);
-	// function handleFiles() {
-	// 	const fileList = this.files; /* now you can work with the file list */
-	// }
+	const handleUpload = async (e) => {
+		console.log('🚀 ~ file: add.svelte ~ line 147 ~ uploadFiles', uploadFiles);
 
-	const handleUpload = (e) => {
-		const form = new FormData();
-		form.append('contacts', '/home/karadz/Downloads/MOCK_DATA (4).csv');
+		const formData = new FormData();
+		// dataArray.append('contacts', uploadCSVFiles);
+		formData.append('contacts', uploadCSVFiles);
+		console.log('🚀 ~ file: add.svelte ~ line 153 ~ handleUpload ~ dataArray', formData);
+
+		try {
+			const res = await fetch('/api/contacts/upload.json', {
+				method: 'POST',
+				// headers: { 'Content-Type': 'multipart/form-data' },
+				body: formData
+			});
+			if (res.ok) {
+				toasts.add({ message: 'Contact uploaded', type: 'success' });
+			}
+		} catch (err) {
+			logger.error(err.messages);
+			toasts.add({ message: 'An error has occured while uploading contact', type: 'error' });
+			error = 'An error has occured';
+		}
 	};
 
 	const makeMatchBold = (searchMatchString: string) => {
@@ -208,6 +182,28 @@
 
 		return boldedStr;
 	};
+
+	const handleComboInput = (e: any) => {
+		currentCorporateQueryParams = {
+			...currentCorporateQueryParams,
+			name: e.target.value
+		};
+		getCorporateContacts(currentCorporateQueryParams);
+	};
+
+	function onFileSelected(e) {
+		let csvFile = e.target.files[0];
+		console.log('🚀 ~ file: add.svelte ~ line 195 ~ onFileSelected ~ csvFile', csvFile);
+		let reader = new FileReader();
+		reader.onload = (e) => {
+			uploadCSVFiles = e.target.result;
+			console.log(
+				'🚀 ~ file: add.svelte ~ line 198 ~ onFileSelected ~ uploadCSVFiles',
+				uploadCSVFiles
+			);
+		};
+		reader.readAsBinaryString(csvFile);
+	}
 </script>
 
 <svelte:head>
@@ -238,6 +234,7 @@
 							>
 							<input
 								bind:files={uploadFiles}
+								on:change={onFileSelected}
 								class="w-72 border border-pickled-bluewood-300 bg-pickled-bluewood-100 text-pickled-bluewood-500 ring-royal-blue-500 file:w-10 file:p-1 file:opacity-0"
 								type="file"
 								name="UploadCSV"
@@ -274,185 +271,59 @@
 			<form class="mt-2 space-y-6" on:submit|preventDefault={handleSubmit}>
 				<input type="hidden" name="userid" value="true" />
 				<div class="space-y-2 shadow-sm">
-					<div class="mb-1 flex justify-between">
-						<label for="name" class="text-sm">Name</label>
-						{#if result.getErrors('name').length}
-							<span class="text-sm {cn('name')}">{result.getErrors('name')[0]}</span>
-						{/if}
-					</div>
-					<input
-						id="name"
-						class="input {cn('name')}"
+					<Input
 						name="name"
-						placeholder="Name"
-						type="text"
-						autocomplete="off"
+						label="Name"
 						bind:value={formData.name}
-						required
-						on:input={handleInput}
+						onInput={handleInput}
+						messages={result.getErrors('name')}
+						validityClass={cn('name')}
 					/>
-					<!-- isCorporate -->
-					<div class="bg-pickled-bluewood-100">
-						<div class="mx-auto max-w-md">
-							<div class="mb-1 flex justify-between">
-								<label for="organization" class="text-sm">Organization</label>
-							</div>
-							<div class="relative">
-								<div class="flex h-10 items-center border border-pickled-bluewood-300 bg-white">
-									<!-- ComboBox Input -->
-									<input
-										bind:value={formData.organizationID.name}
-										on:keydown={handleKeyDown}
-										on:focus|preventDefault={(e) => (showList = true)}
-										on:click|preventDefault={(e) => (showList = true)}
-										on:input|preventDefault={(e) => {
-											highlightIndex = -1;
-											currentCorporateQueryParams = {
-												...currentCorporateQueryParams,
-												name: corporateSearch.name
-											};
-											getCorporateContacts(currentCorporateQueryParams);
-										}}
-										autocomplete="off"
-										name="organization"
-										id="organization"
-										class="w-full appearance-none px-4 text-sm text-pickled-bluewood-600 outline-none"
-										checked
-									/>
-									<!-- Reset Button -->
-									<button
-										on:click|preventDefault={heandleReset}
-										class="cursor-pointer text-pickled-bluewood-300 outline-none transition-all hover:text-pickled-bluewood-600 focus:outline-none"
-									>
-										{@html svgXSmall}
-									</button>
-									<!-- Dropdown Label -->
-									<label
-										for="show_more"
-										class="mx-0 cursor-pointer border-l border-pickled-bluewood-200 px-0 text-pickled-bluewood-300 outline-none transition-all hover:text-pickled-bluewood-600 focus:outline-none"
-									>
-										{@html svgSelector}
-									</label>
-								</div>
 
-								<input
-									type="checkbox"
-									name="show_more"
-									id="show_more"
-									class="peer hidden"
-									autocomplete="off"
-									bind:checked={showList}
-								/>
-								<ul
-									use:clickOutside
-									on:clickOutside={handleShowList}
-									class="absolute z-50 mt-1 hidden w-full flex-col overflow-hidden border border-pickled-bluewood-300 bg-white shadow peer-checked:flex"
-								>
-									{#each contacts.results as result, index (result._id)}
-										<li
-											class="group cursor-pointer border-t border-pickled-bluewood-200 first:border-t-0"
-										>
-											<!-- svelte-ignore a11y-missing-attribute -->
-											<a
-												on:click|preventDefault={(e) => {
-													corporateSearch = result;
-													formData.organizationID = corporateSearch;
-													showList = false;
-												}}
-												class="{index === highlightIndex
-													? 'border-l-4 border-royal-blue-600 bg-pickled-bluewood-100'
-													: ''} block border-l-4 border-transparent p-2 text-sm text-pickled-bluewood-600 group-hover:border-royal-blue-600 group-hover:bg-pickled-bluewood-100"
-												>{@html makeMatchBold(result.name)}</a
-											>
-										</li>
-									{/each}
-								</ul>
-							</div>
-						</div>
-					</div>
-					<!-- End isCorporate -->
+					<Checkbox
+						name="isCorporate"
+						label="Individual or Corparate"
+						validityClass={cn('isCorporate')}
+						bind:checked={formData.isCorporate}
+					/>
 
-					<div class="flex flex-row justify-between">
-						<!-- Toggle A -->
-						<div class="mt-2 mb-1 flex w-full items-center">
-							<label for="toogleA" class="flex cursor-pointer items-center">
-								<!-- toggle -->
-								<div class="relative">
-									<!-- input -->
-									<input
-										id="toogleA"
-										type="checkbox"
-										class="sr-only"
-										bind:checked={formData.isCorporate}
-									/>
-									<!-- line -->
-									<div class="h-4 w-10 rounded-full bg-pickled-bluewood-400 shadow-inner" />
-									<!-- dot -->
-									<div
-										class="dot absolute -left-1 -top-1 h-6 w-6 rounded-full bg-white shadow transition"
-									/>
-								</div>
-								<!-- label -->
-								<div class="ml-3 font-medium text-pickled-bluewood-700">
-									Individual or Corparate
-								</div>
-							</label>
-						</div>
-						<div class="grow" />
-					</div>
+					{#if contacts}
+						<Combobox
+							label="Organization"
+							name="organization"
+							list={contacts.results}
+							bind:value={corporateSearch}
+							onInput={handleComboInput}
+							disabled={formData.isCorporate}
+						/>
+					{/if}
 
-					<div class="mb-1 flex justify-between">
-						<label for="email" class="text-sm">Email</label>
-						{#if result.getErrors('email').length}
-							<span class="text-sm {cn('email')}">{result.getErrors('email')[0]}</span>
-						{/if}
-					</div>
-					<input
-						id="email"
-						class="input {cn('email')}"
+					<Input
 						name="email"
-						placeholder="Email"
-						type="email"
-						autocomplete="off"
-						required
+						label="Email"
 						bind:value={formData.email}
-						on:input={handleInput}
+						onInput={handleInput}
+						type="email"
+						messages={result.getErrors('email')}
+						validityClass={cn('email')}
 					/>
 
-					<div class="mb-1 flex justify-between">
-						<label for="phone" class="text-sm">Phone</label>
-						{#if result.getErrors('phone').length}
-							<span class="text-sm {cn('phone')}">{result.getErrors('phone')[0]}</span>
-						{/if}
-					</div>
-					<input
-						id="phone"
-						class="input {cn('phone')}"
+					<Input
 						name="phone"
-						placeholder="Phone"
-						type="text"
-						autocomplete="off"
-						required
+						label="Phone"
 						bind:value={formData.phone}
-						on:input={handleInput}
+						onInput={handleInput}
+						messages={result.getErrors('phone')}
+						validityClass={cn('phone')}
 					/>
 
-					<div class="mb-4 flex justify-between">
-						<label for="address" class="text-sm">Address</label>
-						{#if result.getErrors('address').length}
-							<span class="text-sm {cn('address')}">{result.getErrors('address')[0]}</span>
-						{/if}
-					</div>
-					<textarea
-						id="address"
-						class="input {cn('address')}"
+					<Textarea
 						name="address"
-						placeholder="Address"
-						type="text"
-						autocomplete="off"
-						required
+						label="Address"
 						bind:value={formData.address}
-						on:input={handleInput}
+						onInput={handleInput}
+						messages={result.getErrors('address')}
+						validityClass={cn('address')}
 					/>
 
 					<div class="mt-6 flex space-x-2">

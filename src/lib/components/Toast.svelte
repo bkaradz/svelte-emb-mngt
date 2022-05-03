@@ -1,10 +1,13 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
 	import {
 		svgCheckCircle,
 		svgExclamationCircle,
+		svgExclamation,
 		svgInfo,
 		svgXCircle,
-		svgXSmall
+		svgXSmall,
+		svgShieldExclamation
 	} from '$lib/utility/svgLogos';
 	export let type: string;
 	export let message: string;
@@ -35,12 +38,12 @@
 	let icon = `${svgCheckCircle}`;
 	let style = 'bg-success';
 
-	if (type === 'danger') {
-		icon = `${svgXCircle}`;
-		style = 'bg-danger';
+	if (type === 'error') {
+		icon = `${svgShieldExclamation}`;
+		style = 'bg-error';
 	}
 	if (type === 'warning') {
-		icon = `${svgExclamationCircle}`;
+		icon = `${svgExclamation}`;
 		style = 'bg-warning';
 	}
 	if (type === 'info') {
@@ -52,14 +55,15 @@
 <!-- Info -->
 
 <div
+	transition:fade={{ duration: 2000 }}
 	style="--progress: {progress}"
-	class="{style} progress relative m-1 flex h-16 w-[700px] items-center justify-between  text-white"
+	class="{style} progress relative m-1 flex h-16 w-[700px] items-center justify-between overflow-hidden text-white"
 >
 	<span class="mx-2 flex-none">
 		{@html icon}
 	</span>
 
-	<!-- warning, danger, info -->
+	<!-- success, warning, error, info -->
 	<span class="flex h-12 grow items-center overflow-hidden text-ellipsis">
 		<p class="text-xs">{@html message}</p>
 	</span>
@@ -76,10 +80,6 @@
 	.progress::after {
 		content: '';
 		width: calc(100% * var(--progress, 1));
-		/* position: absolute;
-		height: 3px;
-		bottom: 0;
-		background-color: #64748b; */
 		@apply absolute bottom-0 h-1 bg-pickled-bluewood-500;
 	}
 </style>

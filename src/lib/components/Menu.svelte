@@ -2,7 +2,13 @@
 	import { clickOutside } from '$lib/utility/clickOutside';
 	import logger from '$lib/utility/logger';
 	import { goto } from '$app/navigation';
-	import { svgLogout, svgMessages, svgSettings, svgUser } from '$lib/utility/svgLogos';
+	import {
+		svgBellSolid,
+		svgLogout,
+		svgMessages,
+		svgSettings,
+		svgUser
+	} from '$lib/utility/svgLogos';
 	import { Menu, MenuItems, MenuItem, MenuButton, Transition } from '@rgossiaux/svelte-headlessui';
 	import { session } from '$app/stores';
 
@@ -46,8 +52,8 @@
 <div
 	class="menu z-10 flex flex-row items-center justify-end  bg-gradient-to-tl from-royal-blue-500 to-royal-blue-200 drop-shadow-md"
 >
-	<span class="relative mr-8 inline-block">
-		{@html svgMessages}
+	<span class="relative mr-8 inline-block text-info">
+		{@html svgBellSolid}
 		<span
 			class="absolute top-0 right-0 inline-flex translate-x-1/2 -translate-y-1/2 transform items-center justify-center rounded-full  bg-success px-2 py-1 text-xs font-bold leading-none text-white"
 			>122</span
@@ -65,7 +71,7 @@
 		</MenuButton>
 
 		<MenuItems
-			class=" absolute right-0 top-9 z-10 mt-2 w-40 origin-top-right divide-y divide-pickled-bluewood-100 rounded-md bg-white shadow-lg ring-1 ring-royal-blue-300 focus:outline-none"
+			class=" absolute right-0 top-9 z-10 mt-2 w-40 origin-top-right divide-y divide-pickled-bluewood-100 bg-white shadow-lg ring-1 ring-royal-blue-300 focus:outline-none"
 			role="menu"
 			aria-orientation="vertical"
 			aria-labelledby="menu-button"

@@ -2,25 +2,13 @@
 	import type { Load } from '@sveltejs/kit';
 
 	export const load: Load = async ({ session }) => {
-		try {
-			if (session?.user?.authenticated) {
-				return {
-					status: 302,
-					redirect: '/'
-				};
-			}
+		if (session?.user?.authenticated) {
 			return {
-				props: {
-					user: session
-				}
-			};
-		} catch (err) {
-			return {
-				props: {
-					error: err.message
-				}
+				status: 302,
+				redirect: '/'
 			};
 		}
+		return {};
 	};
 </script>
 
@@ -30,14 +18,15 @@
 
 	import { page } from '$app/stores';
 	import Toasts from '$lib/components/Toasts.svelte';
-
-	export let user: any;
+	import { svgSignIn, svgSignUp } from '$lib/utility/svgLogos';
 
 	let error: any;
 
 	let isPageLoading = true;
 
 	onMount(() => {
+		// isPageLoading = false;
+
 		setTimeout(function () {
 			isPageLoading = false;
 		}, 450);
@@ -47,16 +36,12 @@
 		{
 			url: '/auth/signIn',
 			name: 'Sign In',
-			icon: `<svg xmlns="http://www.w3.org/2000/svg" class=" inline-block h-6 w-6" fill="none" width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-</svg>`
+			icon: svgSignIn
 		},
 		{
 			url: '/auth/signUp',
 			name: 'Sign Up',
-			icon: `<svg xmlns="http://www.w3.org/2000/svg" class=" inline-block h-6 w-6" fill="none" width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-</svg>`
+			icon: svgSignUp
 		}
 	];
 </script>
@@ -72,14 +57,15 @@
 				{#each navList as tag (tag.name)}
 					<li>
 						<a
-							class="relative m-1 block appearance-none border  bg-transparent px-3 py-2  font-semibold
+							class="m-1 flex appearance-none border bg-transparent px-3 py-2 font-semibold
 						{$page.url.pathname === tag.url
 								? `border-royal-blue-600 text-royal-blue-600 hover:border-success hover:text-success`
 								: `border-pickled-bluewood-600 text-pickled-bluewood-600 hover:border-success hover:text-success`}
 						"
 							href={tag.url}
 						>
-							<span>{@html tag.icon}</span> <span class="ml-1">{tag.name}</span>
+							<span class="">{@html tag.icon}</span>
+							<span class="ml-1">{tag.name}</span>
 						</a>
 					</li>
 				{/each}

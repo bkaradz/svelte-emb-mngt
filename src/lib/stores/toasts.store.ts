@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export interface toastInterface {
 	message: string;
-	type: 'success' | 'info' | 'warning' | 'danger';
+	type: 'success' | 'info' | 'warning' | 'error';
 	id: string;
 }
 
@@ -14,7 +14,10 @@ function createToast() {
 
 	return {
 		subscribe,
-		add: ({ message, type = 'info' }: Pick<toastInterface, 'message' | 'type'>) => {
+		add: ({
+			message = 'Default message',
+			type = 'info'
+		}: Pick<toastInterface, 'message' | 'type'>) => {
 			const id = uuidv4();
 			update((allToasts: toastInterface[]) => [{ id, message, type }, ...allToasts]);
 		},

@@ -40,7 +40,7 @@
 
 	$: disabled = !result.isValid();
 
-	let error: string | undefined = undefined; // TODO: Impliment Alert Notification
+	let error: string | undefined = undefined;
 
 	const resetForm = () => {
 		formData = {
@@ -243,22 +243,7 @@
 					class="group relative flex w-full justify-center  border border-transparent bg-royal-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-royal-blue-700 focus:outline-none focus:ring-2 focus:ring-royal-blue-500 focus:ring-offset-2"
 				>
 					<span class="absolute inset-y-0 left-0 flex items-center pl-3">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="h-5 w-5 text-royal-blue-500 group-hover:text-royal-blue-400"
-							fill="none"
-							width="24"
-							height="24"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-							stroke-width="2"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-							/>
-						</svg>
+						{@html svgPlus}
 					</span>
 					Add Product
 				</button>

@@ -8,7 +8,12 @@ import logger from '$lib/utility/logger';
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const post: RequestHandler = async ({ request, locals }) => {
+	console.log(
+		'🚀 ~ file: upload.json.ts ~ line 11 ~ constpost:RequestHandler= ~ request',
+		await request.formData()
+	);
 	try {
+		console.log('JSON', await parseCSV(request));
 		if (!locals?.user?._id) {
 			return {
 				status: 401,
