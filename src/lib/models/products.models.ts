@@ -20,7 +20,7 @@ export interface ProductsDocument extends Document {
 
 const productsSchema: Schema = new Schema<ProductsDocument>(
 	{
-		userID: { type: Schema.Types.ObjectId, ref: 'Products' },
+		userID: { type: Schema.Types.ObjectId, ref: 'Products', required: true },
 		name: { type: String, required: true },
 		productID: {
 			// of the form xxx-xxx-xxxx /^([0-9]{3}-){2}[0-9]{4}$/

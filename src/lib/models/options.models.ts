@@ -13,7 +13,7 @@ export interface OptionsDocument extends Document {
 
 const optionsSchema: Schema = new Schema<OptionsDocument>(
 	{
-		userID: { type: Schema.Types.ObjectId, ref: 'Contacts' },
+		userID: { type: Schema.Types.ObjectId, ref: 'Contacts', required: true },
 		group: {
 			type: String,
 			required: true
