@@ -151,7 +151,7 @@
 				label="Confirm Password"
 				bind:value={formData.confirmPassword}
 				onInput={handleInput}
-				type="confirmPassword"
+				type="password"
 				messages={result.getErrors('confirmPassword')}
 				validityClass={cn('confirmPassword')}
 			/>

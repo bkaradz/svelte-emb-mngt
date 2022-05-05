@@ -3,7 +3,6 @@
 	import { svgArrow, svgMenu } from '$lib/utility/svgLogos';
 	import { toggleMenu, anchorList } from '$lib/stores/sideMenu.store';
 	let src = '../../static/small_logo.png';
-	$: console.log('url', $page.url.pathname);
 </script>
 
 <nav
