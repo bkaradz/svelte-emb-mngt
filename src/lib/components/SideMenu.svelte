@@ -3,6 +3,7 @@
 	import { svgArrow, svgMenu } from '$lib/utility/svgLogos';
 	import { toggleMenu, anchorList } from '$lib/stores/sideMenu.store';
 	let src = '../../static/small_logo.png';
+	$: console.log('url', $page.url.pathname);
 </script>
 
 <nav
@@ -25,11 +26,13 @@
 	</label>
 	<div>
 		<ul class="flex flex-col pl-1">
-			{#each $anchorList as tag}
+			{#each $anchorList as tag (tag.id)}
 				<li class="mt-2 flex w-full">
 					<a
 						href={tag.url}
-						class="flex w-full flex-row rounded-l-lg p-4 {$page.url.pathname === tag.url
+						class="flex w-full flex-row rounded-l-lg p-4 {($page.url.pathname.includes(tag.url) &&
+							tag.id !== 1) ||
+						($page.url.pathname === '/' && tag.id === 1)
 							? `bg-royal-blue-50 text-royal-blue-600 hover:bg-royal-blue-100 hover:text-royal-blue-700 font-bold`
 							: `bg-royal-blue-300 text-royal-blue-700 hover:bg-royal-blue-400 hover:text-royal-blue-800 font-bold`}"
 					>
