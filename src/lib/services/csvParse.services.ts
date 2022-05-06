@@ -5,7 +5,7 @@ import csv from 'csvtojson';
 
 export const parseCSV = async (request) => {
 	const content = request.headers.get('content-type');
-	console.log('🚀 ~ file: csvParse.services.ts ~ line 8 ~ parseCSV ~ content', content);
+	console.log('Entered parseCSV');
 
 	const bb = busboy({
 		headers: {
@@ -23,7 +23,7 @@ export const parseCSV = async (request) => {
 				dataV = data;
 			})
 			.on('close', () => {
-				logger.info(`File [${name}] done`);
+				// logger.info(`File [${name}] done`);
 			});
 	});
 

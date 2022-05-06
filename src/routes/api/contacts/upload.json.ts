@@ -8,12 +8,11 @@ import logger from '$lib/utility/logger';
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const post: RequestHandler = async ({ request, locals }) => {
-	console.log(
-		'🚀 ~ file: upload.json.ts ~ line 11 ~ constpost:RequestHandler= ~ request',
-		await request.formData()
-	);
+	// console.log(
+	// 	'🚀 ~ file: upload.json.ts ~ line 11 ~ constpost:RequestHandler= ~ request',
+	// 	await request.formData()
+	// );
 	try {
-		console.log('JSON', await parseCSV(request));
 		if (!locals?.user?._id) {
 			return {
 				status: 401,
@@ -26,6 +25,7 @@ export const post: RequestHandler = async ({ request, locals }) => {
 		const userId = locals.user._id;
 
 		const jsonFile = await parseCSV(request);
+		console.log('Exited parseCSV');
 
 		interface contactInterface {
 			name: string;
@@ -97,7 +97,7 @@ export const post: RequestHandler = async ({ request, locals }) => {
 			}
 		};
 	} catch (err) {
-		logger.error('Error', err.message);
+		logger.error('Error', err);
 		return {
 			status: 500,
 			body: {
