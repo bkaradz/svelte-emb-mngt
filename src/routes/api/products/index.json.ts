@@ -1,7 +1,6 @@
 import type { RequestHandler } from '@sveltejs/kit'
-import omit from 'lodash/omit'
 import logger from '$lib/utility/logger'
-import query from '$lib/services/query.services'
+import ProductsModel from '$lib/models/products.models'
 
 export const get: RequestHandler = async ({ request }) => {
   try {
@@ -19,12 +18,33 @@ export const get: RequestHandler = async ({ request }) => {
   }
 }
 
-export const post = async ({ request }) => {
+export const post = async ({ request, locals }) => {
   try {
+    if (!locals?.user?._id) {
+      return {
+        status: 401,
+        body: {
+          message: 'Unauthorized',
+        },
+      }
+    }
+
+    const userId = locals.user._id
+
+    const reqProduct = await request.json()
+
+    const newProduct = new ProductsModel(reqProduct)
+
+    newProduct.userID = userId
+
+    console.log('getCurrentProductID', await newProduct.getCurrentProductID())
+
+    await newProduct.save()
+
     return {
       status: 200,
       body: {
-        message: {},
+        message: newProduct,
       },
     }
   } catch (err) {
