@@ -1,14 +1,15 @@
 import mongoose, { model, Schema, Document } from 'mongoose';
 
 export interface OptionsDocument extends Document {
-	userID: mongoose.Schema.Types.ObjectId;
+	_id: mongoose.Schema.Types.ObjectId | string;
+	userID: mongoose.Schema.Types.ObjectId | string;
 	group: string;
 	name: string;
 	value: string;
 	isActive: boolean;
 	isDefault: boolean;
-	createdAt: Date;
-	updatedAt: Date;
+	createdAt: Date | string;
+	updatedAt: Date | string;
 }
 
 const optionsSchema: Schema = new Schema<OptionsDocument>(
