@@ -44,7 +44,7 @@
 	];
 	$: console.log('🚀 ~ file: OptionsTable.svelte ~ line 45 ~ optionsList', optionsList);
 
-	const heandleEditable = (e: any, id: any, editable: boolean) => {
+	const heandleEditable = (id: any, editable: boolean) => {
 		// console.log('Event', e.currentTarget);
 		optionsList.forEach((list) => {
 			if (list._id === id && editable === false) {
@@ -76,7 +76,7 @@
 		optionsList = optionsList.filter((list) => list._id !== id);
 	};
 
-	const heandleInput = (e, id) => {
+	const heandleInput = (e: any, id: any) => {
 		console.log('id', id);
 		console.log('input', e.target.innerText);
 		console.log('name', e.target.id);
@@ -95,7 +95,7 @@
 					class=" sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
 				>
 					{#each tableHeadings as header (header)}
-						<th on:click={(e) => console.log(header)} class="px-2 py-2">{header}</th>
+						<th on:click={() => console.log(header)} class="px-2 py-2">{header}</th>
 					{/each}
 				</tr>
 			</thead>
@@ -137,14 +137,14 @@
 							class="px-2 py-1">{isDefault}</td
 						>
 						<td class="p-1 text-center ">
-							<button class=" m-0 p-0" on:click={(e) => heandleEditable(e, _id, editable)}
+							<button class=" m-0 p-0" on:click={() => heandleEditable(_id, editable)}
 								><span class="fill-current text-pickled-bluewood-500"
 									>{@html editable ? svgLockClosed : svgPencil}</span
 								></button
 							>
 						</td>
 						<td class="p-1 text-center ">
-							<button class=" m-0 p-0" on:click={(e) => heandleDelete(_id)}
+							<button class=" m-0 p-0" on:click={() => heandleDelete(_id)}
 								><span class="fill-current text-pickled-bluewood-500">{@html svgXSmall}</span
 								></button
 							>

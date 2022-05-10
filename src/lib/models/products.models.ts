@@ -87,6 +87,10 @@ productsSchema.pre('validate', async function (next) {
   const product = this as ProductsDocument
   console.log('🚀 ~ file: products.models.ts ~ line 88 ~ product', product)
 
+  if (product.isModified()) {
+    return next()
+  }
+
   const oldProductID = await getCurrentProductID()
   const currentProductID = incProductID(oldProductID)
 
