@@ -87,6 +87,9 @@ productsSchema.pre('validate', async function (next) {
   const product = this as ProductsDocument
   console.log('🚀 ~ file: products.models.ts ~ line 88 ~ product', product)
 
+  /**
+   * TODO: test this when updating a product, The productID must not Change
+   */
   if (product.isModified()) {
     return next()
   }
