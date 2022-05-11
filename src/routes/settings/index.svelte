@@ -2,7 +2,9 @@
 	import OptionsTable from '$lib/components/OptionsTable.svelte';
 </script>
 
-<OptionsTable />
+<div>
+	<OptionsTable />
+</div>
 
 <style>
 </style>

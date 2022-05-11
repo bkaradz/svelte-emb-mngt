@@ -21,7 +21,7 @@
 			userID: '6273d47f151da98833523d0a',
 			group: 'embroideryPosition',
 			isActive: true,
-			isDefault: true,
+			isDefault: false,
 			name: 'frontLeft',
 			value: 'Front Left',
 			_id: '6274ef3ccb27bd312215e3c8',
@@ -33,16 +33,24 @@
 			userID: '6273d47f151da98833523d0b',
 			group: 'embroideryPosition',
 			isActive: true,
-			isDefault: true,
-			name: 'frontLeft',
-			value: 'Front Left',
+			isDefault: false,
+			name: 'frontRight',
+			value: 'Front Right',
 			_id: '6274ef3ccb27bd312215e3c9',
 			createdAt: '2022-05-06T09:49:48.544Z',
 			updatedAt: '2022-05-06T09:49:48.544Z',
 			__v: 0
 		}
 	];
+
 	$: console.log('🚀 ~ file: OptionsTable.svelte ~ line 45 ~ optionsList', optionsList);
+
+	let groupList;
+
+	$: if (optionsList.length) {
+		groupList = new Set(optionsList.map((list) => list.group));
+		console.log('🚀 ~ file: OptionsTable.svelte ~ line 52 ~ groupList', groupList);
+	}
 
 	const heandleEditable = (id: any, editable: boolean) => {
 		// console.log('Event', e.currentTarget);
@@ -62,11 +70,11 @@
 			...optionsList,
 			{
 				_id: id,
-				group: 'Group',
-				name: 'Name',
-				value: 'name',
+				group: 'Edit...',
+				name: 'Edit...',
+				value: 'Edit...',
 				isActive: true,
-				isDefault: true,
+				isDefault: false,
 				editable: true
 			}
 		];
@@ -88,6 +96,11 @@
 
 <!-- Table start -->
 <div class="w-full bg-white p-2 shadow-lg">
+	<div>
+		{#each [...groupList] as list, index (index)}
+			<button class="btn btn-tertiary mx-1 mb-3 mt-2 rounded-full px-3 py-1">{list}</button>
+		{/each}
+	</div>
 	<div class=" block ">
 		<table class="relative w-full rounded-lg text-left text-sm">
 			<thead>
@@ -110,14 +123,18 @@
 							id="group"
 							contenteditable={editable}
 							on:input={(e) => heandleInput(e, _id)}
-							class="px-2 py-1">{group}</td
+							class="px-2 py-1"
 						>
+							{group}
+						</td>
 						<td
 							id="name"
 							contenteditable={editable}
 							on:input={(e) => heandleInput(e, _id)}
-							class="px-2 py-1">{name}</td
+							class="px-2 py-1"
 						>
+							{name}
+						</td>
 						<td
 							id="value"
 							contenteditable={editable}
@@ -128,26 +145,29 @@
 							id="isActive"
 							contenteditable={editable}
 							on:input={(e) => heandleInput(e, _id)}
-							class="px-2 py-1">{isActive}</td
+							class="px-2 py-1"
 						>
+							<input disabled type="checkbox" name="isActive" on:change={(e) => console.log(e)} />
+						</td>
 						<td
 							id="isDefault"
 							contenteditable={editable}
 							on:input={(e) => heandleInput(e, _id)}
-							class="px-2 py-1">{isDefault}</td
+							class="px-2 py-1"
 						>
-						<td class="p-1 text-center ">
-							<button class=" m-0 p-0" on:click={() => heandleEditable(_id, editable)}
-								><span class="fill-current text-pickled-bluewood-500"
-									>{@html editable ? svgLockClosed : svgPencil}</span
-								></button
-							>
+							<input type="checkbox" name="isActive" bind:checked={isDefault} />
 						</td>
 						<td class="p-1 text-center ">
-							<button class=" m-0 p-0" on:click={() => heandleDelete(_id)}
-								><span class="fill-current text-pickled-bluewood-500">{@html svgXSmall}</span
-								></button
-							>
+							<button class=" m-0 p-0" on:click={() => heandleEditable(_id, editable)}>
+								<span class="fill-current text-pickled-bluewood-500">
+									{@html editable ? svgLockClosed : svgPencil}
+								</span>
+							</button>
+						</td>
+						<td class="p-1 text-center ">
+							<button class=" m-0 p-0" on:click={() => heandleDelete(_id)}>
+								<span class="fill-current text-pickled-bluewood-500">{@html svgXSmall}</span>
+							</button>
 						</td>
 					</tr>
 				{/each}
@@ -158,8 +178,12 @@
 					<td class="px-2 py-1">Group</td>
 					<td class="px-2 py-1">Name</td>
 					<td class="px-2 py-1">value</td>
-					<td class="px-2 py-1">Active</td>
-					<td class="px-2 py-1">Default</td>
+					<td class="px-2 py-1">
+						<input type="checkbox" name="isActive" checked={true} />
+					</td>
+					<td class="px-2 py-1">
+						<input type="checkbox" name="isActive" checked={true} />
+					</td>
 					<td class="px-2 py-1" />
 					<td class="p-1 text-center ">
 						<button class=" m-0 p-0" on:click={heandleAddRow()}
