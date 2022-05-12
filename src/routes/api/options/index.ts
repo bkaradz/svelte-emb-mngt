@@ -1,12 +1,11 @@
 import OptionsModel from '$lib/models/options.models'
 import { postSuite } from '$lib/validation/server/options.validate'
-import type { OptionsDocument } from '$lib/models/options.models'
 import logger from '$lib/utility/logger'
 
 /**
  * @type {import('@sveltejs/kit').RequestHandler}
  */
-export const post = async ({ request, locals }): Promise<{ body: OptionsDocument | string }> => {
+export const post = async ({ request, locals }) => {
   try {
     if (!locals?.user?._id) {
       return {
