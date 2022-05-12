@@ -113,59 +113,72 @@
 				</tr>
 			</thead>
 			<tbody class="overflow-y-auto">
-				{#each optionsList as { _id, group, name, value, isActive, isDefault, editable = false } (_id)}
+				{#each optionsList as list (list._id)}
 					<tr
 						class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
 						on:dblclick={(e) => console.log(e.currentTarget)}
 					>
-						<!-- <td use:editableAction class="px-2 py-1" bind:innerHTML={group} /> -->
 						<td
 							id="group"
-							contenteditable={editable}
-							on:input={(e) => heandleInput(e, _id)}
+							contenteditable={list.editable}
+							on:input={(e) => heandleInput(e, list._id)}
 							class="px-2 py-1"
 						>
-							{group}
+							{list.group}
 						</td>
 						<td
 							id="name"
-							contenteditable={editable}
-							on:input={(e) => heandleInput(e, _id)}
+							contenteditable={list.editable}
+							on:input={(e) => heandleInput(e, list._id)}
 							class="px-2 py-1"
 						>
-							{name}
+							{list.name}
 						</td>
 						<td
 							id="value"
-							contenteditable={editable}
-							on:input={(e) => heandleInput(e, _id)}
-							class="px-2 py-1">{value}</td
-						>
-						<td
-							id="isActive"
-							contenteditable={editable}
-							on:input={(e) => heandleInput(e, _id)}
+							contenteditable={list.editable}
+							on:input={(e) => heandleInput(e, list._id)}
 							class="px-2 py-1"
 						>
-							<input disabled type="checkbox" name="isActive" on:change={(e) => console.log(e)} />
+							{list.value}
+						</td>
+						<td
+							id="isActive"
+							contenteditable={list.editable}
+							on:input={(e) => heandleInput(e, list._id)}
+							class="px-2 py-1"
+						>
+							<input
+								disabled={!list.editable}
+								bind:checked={list.isActive}
+								type="checkbox"
+								name="isActive"
+								on:change={(e) => console.log(e)}
+							/>
 						</td>
 						<td
 							id="isDefault"
-							contenteditable={editable}
-							on:input={(e) => heandleInput(e, _id)}
+							contenteditable={list.editable}
+							on:input={(e) => heandleInput(e, list._id)}
 							class="px-2 py-1"
 						>
-							<input type="checkbox" name="isActive" bind:checked={isDefault} />
+							<input
+							  bind:checked={list.isDefault}
+								disabled={!list.editable}
+								type="checkbox"
+								name="isDefault"
+								on:change={(e) => console.log(e)}
+							/>
 						</td>
 						<td class="p-1 text-center ">
-							<button class=" m-0 p-0" on:click={() => heandleEditable(_id, editable)}>
+							<button class=" m-0 p-0" on:click={() => heandleEditable(list._id, list.editable)}>
 								<span class="fill-current text-pickled-bluewood-500">
-									{@html editable ? svgLockClosed : svgPencil}
+									{@html list.editable ? svgLockClosed : svgPencil}
 								</span>
 							</button>
 						</td>
 						<td class="p-1 text-center ">
-							<button class=" m-0 p-0" on:click={() => heandleDelete(_id)}>
+							<button class=" m-0 p-0" on:click={() => heandleDelete(list._id)}>
 								<span class="fill-current text-pickled-bluewood-500">{@html svgXSmall}</span>
 							</button>
 						</td>
