@@ -5,7 +5,6 @@ import csv from 'csvtojson';
 
 export const parseCSV = async (request) => {
 	const content = request.headers.get('content-type');
-	console.log('Entered parseCSV');
 
 	const bb = busboy({
 		headers: {
@@ -16,7 +15,7 @@ export const parseCSV = async (request) => {
 	let dataV = '';
 
 	bb.on('file', async (name, file, info) => {
-		const { filename, encoding, mimeType } = info;
+		// const { filename, encoding, mimeType } = info;
 
 		file
 			.on('data', (data) => {
@@ -27,9 +26,16 @@ export const parseCSV = async (request) => {
 			});
 	});
 
-	await pipeline(request.body as any, bb);
+	await pipeline(request.body, bb);
 
-	return await csv().fromString(dataV.toString());
+	return await csv()
+		.preFileLine((fileLine, idx) => {
+			if (idx === 0) {
+				return fileLine.toLowerCase();
+			}
+			return fileLine;
+		})
+		.fromString(dataV.toString());
 };
 
 export default parseCSV;

@@ -31,16 +31,12 @@
 				isActive: boolean;
 			}
 		];
-		metaData: [
-			{
-				totalRecords: number;
-				totalPages: number;
-				limit: number;
-				previous: { page: number; limit: number };
-				current: { page: number; limit: number };
-				next: { page: number; limit: number };
-			}
-		];
+		totalRecords: number;
+		totalPages: number;
+		limit: number;
+		previous: { page: number; limit: number };
+		current: { page: number; limit: number };
+		next: { page: number; limit: number };
 	}
 
 	interface getContactsInterface {
@@ -127,7 +123,7 @@
 	};
 
 	// Input must be of the form {limit, page, sort, query}
-	const getContacts = async (paramsObj: getContactsInterface) => {
+	const getContacts = async (paramsObj) => {
 		try {
 			let searchParams = new URLSearchParams(paramsObj);
 			const res = await fetch('/api/contacts.json?' + searchParams.toString());

@@ -147,12 +147,9 @@
 	let uploadCSVFiles;
 
 	const handleUpload = async (e) => {
-		console.log('🚀 ~ file: add.svelte ~ line 147 ~ uploadFiles', uploadFiles);
-
 		const formData = new FormData();
 		// dataArray.append('contacts', uploadCSVFiles);
 		formData.append('contacts', uploadCSVFiles);
-		console.log('🚀 ~ file: add.svelte ~ line 153 ~ handleUpload ~ dataArray', formData);
 
 		try {
 			const res = await fetch('/api/contacts/upload.json', {
@@ -193,14 +190,9 @@
 
 	function onFileSelected(e) {
 		let csvFile = e.target.files[0];
-		console.log('🚀 ~ file: add.svelte ~ line 195 ~ onFileSelected ~ csvFile', csvFile);
 		let reader = new FileReader();
 		reader.onload = (e) => {
 			uploadCSVFiles = e.target.result;
-			console.log(
-				'🚀 ~ file: add.svelte ~ line 198 ~ onFileSelected ~ uploadCSVFiles',
-				uploadCSVFiles
-			);
 		};
 		reader.readAsBinaryString(csvFile);
 	}

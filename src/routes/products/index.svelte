@@ -12,20 +12,21 @@
 	} from '$lib/utility/svgLogos';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import dayjs from 'dayjs';
+	import logger from '$lib/utility/logger';
+	import { Menu, MenuButton, MenuItems, MenuItem } from '@rgossiaux/svelte-headlessui';
 
-	interface ContentIterface {
+	interface productIterface {
 		results: [
 			{
+				_id: string;
 				name: string;
-				isCorporate: boolean;
-				notes: string;
-				vatOrBpNo: string;
-				email: string;
-				phone: string;
-				address: string;
-				balanceDue: number;
-				totalReceipts: number;
+				productID: string;
+				title: string;
+				description: string;
+				unitPrice: string;
+				category: string;
+				stitches: string;
+				quantity: string;
 				isActive: boolean;
 			}
 		];
@@ -37,9 +38,14 @@
 		next: { page: number; limit: number };
 	}
 
-	let products: ContentIterface;
+	let products: productIterface;
 	let error: any;
-	let limit = 20;
+	let limit = 15;
+	let currentGlobalParams = {
+		limit,
+		page: 1,
+		sort: 'name'
+	};
 
 	const checkValue = () => {
 		if (limit < 1) {
@@ -47,24 +53,8 @@
 		}
 	};
 
-	const getProducts = async (values?: object) => {
-		try {
-			let paramsObj = {
-				limit,
-				page: 1,
-				sort: 'name',
-				...values
-			};
-			let searchParams = new URLSearchParams(paramsObj);
-			const res = await fetch('/api/products.json?' + searchParams.toString());
-			products = await res.json();
-		} catch (err) {
-			error = error.message;
-		}
-	};
-
 	onMount(() => {
-		getProducts();
+		getProducts(currentGlobalParams);
 	});
 
 	const viewProducts = async (id: string) => {
@@ -76,6 +66,42 @@
 	};
 
 	let gridView = false;
+	let searchInputValue = '';
+	let searchOption = 'name';
+
+	const searchNamesOptions = {
+		name: 'Name',
+		stitches: 'Stitches',
+		productID: 'Product ID',
+		title: 'Title',
+		description: 'Description',
+		unitPrice: 'Unit Price',
+		quantity: 'Quantity',
+		category: 'Category'
+	};
+
+	const heandleSearchSelection = (e) => {
+		searchOption = e.target.name;
+		searchInputValue = '';
+	};
+
+	const heandleSearch = async (e) => {
+		currentGlobalParams.page = 1;
+		let searchWord = e.target.value;
+		currentGlobalParams = { ...currentGlobalParams, [searchOption]: searchWord };
+		getProducts(currentGlobalParams);
+	};
+
+	const getProducts = async (paramsObj) => {
+		try {
+			let searchParams = new URLSearchParams(paramsObj);
+			const res = await fetch('/api/products.json?' + searchParams.toString());
+			products = await res.json();
+		} catch (err) {
+			logger.error(err.message);
+			error = err.message;
+		}
+	};
 </script>
 
 <svelte:head>
@@ -107,95 +133,139 @@
 			<div class="z-10 mt-4 flex h-14 w-full flex-row items-center justify-between bg-white">
 				<div>
 					<div class="relative flex flex-row items-center text-left">
-						<div>
-							<button
-								class="btn focus:ring-royal-royal-royal-blue-500 inline-flex w-full items-center justify-center px-2 py-2 text-sm text-pickled-bluewood-500 hover:bg-pickled-bluewood-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-pickled-bluewood-100"
+						<Menu as="div" class="relative">
+							<MenuButton
+								class="btn inline-flex w-full items-center justify-center px-2 py-2 text-xs text-pickled-bluewood-500 hover:bg-pickled-bluewood-50 focus:outline-none focus:ring-royal-blue-50 focus:ring-offset-transparent"
 								id="menu-button"
 								aria-expanded="true"
 								aria-haspopup="true"
 							>
-								<span>
-									{@html svgSort}
-								</span>
-
-								Sort by Name
+								Search by {searchNamesOptions[searchOption]}
 								<span>
 									{@html svgSelector}
 								</span>
-							</button>
+							</MenuButton>
 
-							<div
-								class="ring-black absolute left-0 top-9 z-10 mt-2 hidden w-56 origin-top-right divide-y divide-pickled-bluewood-100 rounded-md bg-white shadow-lg ring-1 ring-opacity-5 focus:outline-none"
+							<MenuItems
+								class=" absolute left-2 top-9 z-10 mt-2 w-40 origin-top-right divide-y divide-pickled-bluewood-100 bg-white shadow-lg ring-1 ring-royal-blue-300 focus:outline-none"
 								role="menu"
 								aria-orientation="vertical"
 								aria-labelledby="menu-button"
 								tabindex="-1"
 							>
 								<div class="py-1" role="none">
-									<a
-										href="/"
-										class="block px-4 py-2 text-sm text-pickled-bluewood-700"
-										role="menuitem"
-										tabindex="-1"
-										id="menu-item-0">Edit</a
-									>
-									<a
-										href="/"
-										class="block px-4 py-2 text-sm text-pickled-bluewood-700"
-										role="menuitem"
-										tabindex="-1"
-										id="menu-item-1">Duplicate</a
-									>
+									<MenuItem let:active let:disabled>
+										<a
+											on:click={heandleSearchSelection}
+											name="name"
+											class={`${
+												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
+											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
+											role="menuitem"
+											tabindex="-1"
+											id="menu-item-0"
+										>
+											Name
+										</a>
+									</MenuItem>
+									<MenuItem let:active let:disabled>
+										<a
+											on:click={heandleSearchSelection}
+											name="productID"
+											class={`${
+												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
+											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
+											role="menuitem"
+											tabindex="-1"
+											id="menu-item-1">Product ID</a
+										>
+									</MenuItem>
+
+									<MenuItem let:active let:disabled>
+										<a
+											on:click={heandleSearchSelection}
+											name="title"
+											class={`${
+												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
+											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
+											role="menuitem"
+											tabindex="-1"
+											id="menu-item-2">Title</a
+										>
+									</MenuItem>
+									<MenuItem let:active let:disabled>
+										<a
+											on:click={heandleSearchSelection}
+											name="description"
+											class={`${
+												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
+											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
+											role="menuitem"
+											tabindex="-1"
+											id="menu-item-3">Description</a
+										>
+									</MenuItem>
+
+									<MenuItem let:active let:disabled>
+										<a
+											on:click={heandleSearchSelection}
+											name="unitPrice"
+											class={`${
+												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
+											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
+											role="menuitem"
+											tabindex="-1"
+											id="menu-item-4">Unit Price</a
+										>
+									</MenuItem>
+									<MenuItem let:active let:disabled>
+										<a
+											on:click={heandleSearchSelection}
+											name="category"
+											class={`${
+												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
+											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
+											role="menuitem"
+											tabindex="-1"
+											id="menu-item-5">Category</a
+										>
+									</MenuItem>
+
+									<MenuItem let:active let:disabled>
+										<a
+											on:click={heandleSearchSelection}
+											name="stitches"
+											class={`${
+												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
+											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
+											role="menuitem"
+											tabindex="-1"
+											id="menu-item-6">Stitches</a
+										>
+									</MenuItem>
+									<MenuItem let:active let:disabled>
+										<a
+											on:click={heandleSearchSelection}
+											name="quantity"
+											class={`${
+												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
+											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
+											role="menuitem"
+											tabindex="-1"
+											id="menu-item-6">Quantity</a
+										>
+									</MenuItem>
 								</div>
-								<div class="py-1" role="none">
-									<a
-										href="/"
-										class="block px-4 py-2 text-sm text-pickled-bluewood-700"
-										role="menuitem"
-										tabindex="-1"
-										id="menu-item-2">Archive</a
-									>
-									<a
-										href="/"
-										class="block px-4 py-2 text-sm text-pickled-bluewood-700"
-										role="menuitem"
-										tabindex="-1"
-										id="menu-item-3">Move</a
-									>
-								</div>
-								<div class="py-1" role="none">
-									<a
-										href="/"
-										class="block px-4 py-2 text-sm text-pickled-bluewood-700"
-										role="menuitem"
-										tabindex="-1"
-										id="menu-item-4">Share</a
-									>
-									<a
-										href="/"
-										class="block px-4 py-2 text-sm text-pickled-bluewood-700"
-										role="menuitem"
-										tabindex="-1"
-										id="menu-item-5">Add to favorites</a
-									>
-								</div>
-								<div class="py-1" role="none">
-									<a
-										href="/"
-										class="block px-4 py-2 text-sm text-pickled-bluewood-700"
-										role="menuitem"
-										tabindex="-1"
-										id="menu-item-6">Delete</a
-									>
-								</div>
-							</div>
-						</div>
+							</MenuItems>
+						</Menu>
 
 						<div class="relative text-pickled-bluewood-100">
 							<input
 								class="input focus:shadow-outline h-10 w-full pl-8 pr-3 text-base placeholder-pickled-bluewood-400"
 								type="text"
 								placeholder="Search..."
+								bind:value={searchInputValue}
+								on:input={heandleSearch}
 							/>
 							<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-2">
 								{@html svgSearch}
@@ -220,7 +290,14 @@
 										name="limit"
 										id="limit"
 										bind:value={limit}
-										on:change={getProducts({ ...products.current, limit })}
+										on:change={(e) => {
+											currentGlobalParams = {
+												...currentGlobalParams,
+												...products.current,
+												limit: limit
+											};
+											getProducts(currentGlobalParams);
+										}}
 										on:input={checkValue}
 									/>
 
@@ -230,7 +307,10 @@
 							<li>
 								<button
 									disabled={!products.previous}
-									on:click|preventDefault={(e) => getProducts(products.previous)}
+									on:click|preventDefault={(e) => {
+										currentGlobalParams = { ...currentGlobalParams, ...products.previous };
+										getProducts(currentGlobalParams);
+									}}
 									class="{!products.previous
 										? 'hidden'
 										: ''} btn border border-r-0 border-pickled-bluewood-300 bg-white px-4 text-pickled-bluewood-500 hover:bg-pickled-bluewood-200 disabled:bg-pickled-bluewood-200"
@@ -240,7 +320,10 @@
 							<li>
 								<button
 									disabled={!products.previous}
-									on:click|preventDefault={(e) => getProducts(products.previous)}
+									on:click|preventDefault={(e) => {
+										currentGlobalParams = { ...currentGlobalParams, ...products.previous };
+										getProducts(currentGlobalParams);
+									}}
 									class="{!products.previous
 										? 'hidden'
 										: ''} btn border border-r-0 border-pickled-bluewood-300 bg-white px-4 text-pickled-bluewood-500 hover:bg-pickled-bluewood-200 disabled:bg-pickled-bluewood-200"
@@ -257,7 +340,10 @@
 							<li>
 								<button
 									disabled={!products.next}
-									on:click|preventDefault={(e) => getProducts(products.next)}
+									on:click|preventDefault={(e) => {
+										currentGlobalParams = { ...currentGlobalParams, ...products.next };
+										getProducts(currentGlobalParams);
+									}}
 									class="{!products.next
 										? 'hidden'
 										: ''} btn border border-l-0 border-pickled-bluewood-300 bg-white px-4 text-pickled-bluewood-500 hover:bg-pickled-bluewood-200 disabled:bg-pickled-bluewood-200"
@@ -267,7 +353,10 @@
 							<li>
 								<button
 									disabled={!products.next}
-									on:click|preventDefault={(e) => getProducts(products.next)}
+									on:click|preventDefault={(e) => {
+										currentGlobalParams = { ...currentGlobalParams, ...products.next };
+										getProducts(currentGlobalParams);
+									}}
 									class=" {!products.next
 										? 'hidden'
 										: ''} btn border border-l-0 border-pickled-bluewood-300 bg-white px-4 text-pickled-bluewood-500 hover:bg-pickled-bluewood-200 disabled:bg-pickled-bluewood-200"
@@ -306,22 +395,35 @@
 								{product.name}
 							</h4>
 						</div>
-						<div
-							class="mx-4 mb-4 flex h-full items-center justify-evenly border  border-royal-blue-100 bg-pickled-bluewood-50"
-						>
-							<div class="p-1">
-								<p class="p-1 text-xs font-semibold text-pickled-bluewood-500">BALANCE DUE</p>
-								<span class="p-1 text-base font-bold text-pickled-bluewood-500">
-									${product.balanceDue}
-								</span>
+						{#if product.category === 'embLogo'}
+							<div
+								class="mx-4 mb-4 flex h-full items-center justify-evenly border  border-royal-blue-100 bg-pickled-bluewood-50"
+							>
+								<div class="p-1">
+									<p class="p-1 text-xs font-semibold text-pickled-bluewood-500">STITCHES</p>
+									<span class="p-1 text-base font-bold text-pickled-bluewood-500">
+										{product.stitches}
+									</span>
+								</div>
 							</div>
-							<div class="p-1">
-								<p class="p-1 text-xs font-semibold text-pickled-bluewood-500">TOTAL INVOICED</p>
-								<span class="p-1 text-base font-bold text-pickled-bluewood-500">
-									${product.totalReceipts}
-								</span>
+						{:else}
+							<div
+								class="mx-4 mb-4 flex h-full items-center justify-evenly border  border-royal-blue-100 bg-pickled-bluewood-50"
+							>
+								<div class="p-1">
+									<p class="p-1 text-xs font-semibold text-pickled-bluewood-500">QUANTITY</p>
+									<span class="p-1 text-base font-bold text-pickled-bluewood-500">
+										${product.quantity}
+									</span>
+								</div>
+								<div class="p-1">
+									<p class="p-1 text-xs font-semibold text-pickled-bluewood-500">UNIT PRICE</p>
+									<span class="p-1 text-base font-bold text-pickled-bluewood-500">
+										${product.unitPrice}
+									</span>
+								</div>
 							</div>
-						</div>
+						{/if}
 					</div>
 				{/each}
 			{:else}
@@ -330,48 +432,52 @@
 					<!-- Table start -->
 					<div class="w-full bg-white py-6 shadow-lg">
 						<div class="mx-6 block ">
-							<table class="relative w-full rounded-lg text-left">
+							<table class="relative w-full rounded-lg text-left text-sm">
 								<thead>
 									<tr
 										class=" sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
 									>
-										<th class="px-4 py-2">Customer</th>
-										<th class="px-4 py-2">Organization</th>
-										<th class="px-4 py-2">Phone</th>
-										<th class="px-4 py-2">Email</th>
-										<th class="px-4 py-2">Corporate</th>
-										<th class="px-4 py-2">VatNo</th>
-										<th class="px-4 py-2">Balance Due</th>
-										<th class="px-4 py-2">Total Receipts</th>
-										<th class="px-4 py-2">State</th>
-										<th class="px-4 py-2">View</th>
+										<th class="px-2 py-2">Name</th>
+										<th class="px-2 py-2">Product ID</th>
+										<th class="px-2 py-2">Stitches</th>
+										<th class="px-2 py-2">Title</th>
+										<th class="px-2 py-2">Description</th>
+										<th class="px-2 py-2">Quantity</th>
+										<th class="px-2 py-2">Unit Price</th>
+										<th class="px-2 py-2">State Used</th>
+										<th class="px-2 py-2">View</th>
 									</tr>
 								</thead>
 								<tbody class="overflow-y-auto">
 									{#each products.results as product (product._id)}
 										<tr
-											class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 odd:bg-pickled-bluewood-100 even:text-pickled-bluewood-500 font-light odd:text-pickled-bluewood-500"
+											class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 odd:bg-pickled-bluewood-100 even:text-pickled-bluewood-900 font-normal odd:text-pickled-bluewood-900"
 										>
-											<td class="px-4 py-2">{product.name}</td>
-											<td class="px-4 py-2">Organization</td>
-											<td class="px-4 py-2">{product.phone}</td>
-											<td class="px-4 py-2">{!product.email ? '...' : product.email}</td>
+											<td class="px-2 py-1">{product.name}</td>
+											<td class="px-2 py-1">{product.productID}</td>
+											<td class="px-2 py-1">{product.stitches}</td>
+											<td class="px-2 py-1">{product.title}</td>
 
-											<td class="px-4 py-2">
-												<input type="checkbox" name="" id="" bind:checked={product.isCorporate} />
+											<td class="px-2 py-1">
+												{!product.description ? '...' : product.description}
 											</td>
-											<td class="px-4 py-2">
-												{!product.vatOrBpNo ? '...' : product.vatOrBpNo}
+											<td class="px-2 py-1">
+												{!product.quantity ? '...' : product.quantity}
 											</td>
-											<td class="px-4 py-2 text-right">${product.balanceDue}</td>
-											<td class="px-4 py-2 text-right">${product.totalReceipts}</td>
-											<td class="px-4 py-2">
-												<span class="rounded-full bg-success px-3 py-1 text-xs font-bold text-white"
-													>Invoiced</span
+											<td class="px-2 py-1 text-right"
+												>{!product.unitPrice ? '...' : product.unitPrice}</td
+											>
+
+											<td class="px-2 py-1">
+												<span
+													class="rounded-full bg-success px-3 py-1 text-xs font-bold text-white whitespace-nowrap"
+													>10 times</span
 												>
 											</td>
-											<td class="py-2 text-center">
-												<button on:click={async (e) => await goto(`/products/${product._id}`)}
+											<td class="py-1 text-center">
+												<button
+													class=" m-0 p-0"
+													on:click={async (e) => await goto(`/products/${product._id}`)}
 													><span class="fill-current text-pickled-bluewood-500"
 														>{@html svgView}</span
 													></button

@@ -25,13 +25,13 @@
 	</label>
 	<div>
 		<ul class="flex flex-col pl-1">
-			{#each $anchorList as tag (tag.id)}
+			{#each $anchorList as tag, index (tag.id)}
 				<li class="mt-2 flex w-full">
 					<a
 						href={tag.url}
 						class="flex w-full flex-row rounded-l-lg p-4 {($page.url.pathname.includes(tag.url) &&
-							tag.id !== 1) ||
-						($page.url.pathname === '/' && tag.id === 1)
+							index !== 0) ||
+						($page.url.pathname === '/' && index === 0)
 							? `bg-royal-blue-50 text-royal-blue-600 hover:bg-royal-blue-100 hover:text-royal-blue-700 font-bold`
 							: `bg-royal-blue-300 text-royal-blue-700 hover:bg-royal-blue-400 hover:text-royal-blue-800 font-bold`}"
 					>

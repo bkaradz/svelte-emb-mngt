@@ -23,7 +23,6 @@
 	let error: string | undefined = undefined;
 
 	let editContact;
-	$: console.log('🚀 ~ file: edit-[id].svelte ~ line 26 ~ editContact', editContact);
 
 	interface contactsInterface extends metaDataInterface {
 		results: Array<Omit<ContactsDocument, 'createdAt' | 'updatedAt' | 'password' | 'userRole'>>;

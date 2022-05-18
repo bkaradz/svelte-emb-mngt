@@ -425,7 +425,8 @@
 
 										<td class="px-4 py-2">{dayjs('2019-01-25').format('DD/MM/YYYY')}</td>
 										<td class="px-4 py-2">
-											<span class="rounded-full bg-success px-3 py-1 text-xs font-bold text-white"
+											<span
+												class="rounded-full bg-success px-3 py-1 text-xs font-bold text-white whitespace-nowrap"
 												>Invoiced</span
 											>
 										</td>
@@ -448,7 +449,8 @@
 
 										<td class="px-4 py-2">{dayjs('2019-01-25').format('DD/MM/YYYY')}</td>
 										<td class="px-4 py-2">
-											<span class="rounded-full bg-warning px-3 py-1 text-xs font-bold text-white"
+											<span
+												class="rounded-full bg-warning px-3 py-1 text-xs font-bold text-white whitespace-nowrap"
 												>Date Due</span
 											>
 										</td>
@@ -471,7 +473,8 @@
 
 										<td class="px-4 py-2">{dayjs('2019-01-25').format('DD/MM/YYYY')}</td>
 										<td class="px-4 py-2 ">
-											<span class="rounded-full bg-danger px-3 py-1 text-xs font-bold text-white"
+											<span
+												class="rounded-full bg-danger px-3 py-1 text-xs font-bold text-white whitespace-nowrap"
 												>Paid</span
 											>
 										</td>
@@ -493,8 +496,9 @@
 										<td class="px-4 py-2 text-right">$0.00</td>
 
 										<td class="px-4 py-2">{dayjs('2019-01-25').format('DD/MM/YYYY')}</td>
-										<td class="px-4 py-2 ">
-											<span class="rounded-full bg-danger px-3 py-1 text-xs font-bold text-white"
+										<td class="px-4 py-2">
+											<span
+												class="rounded-full bg-danger px-3 py-1 text-xs font-bold text-white whitespace-nowrap"
 												>Overdue</span
 											>
 										</td>

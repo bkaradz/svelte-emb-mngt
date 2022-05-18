@@ -1,6 +1,5 @@
 <script>
 	import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@rgossiaux/svelte-headlessui';
-	import OptionsTable from '$lib/components/OptionsTable.svelte';
 </script>
 
 <TabGroup class="flex h-full flex-col">
