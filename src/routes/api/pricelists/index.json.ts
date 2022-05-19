@@ -1,6 +1,37 @@
-import PricelistsModel from '$lib/models/Pricelists.model';
+import PricelistsModel from '$lib/models/pricelists.model';
 import { postSuite } from '$lib/validation/server/pricelists.validate';
 import logger from '$lib/utility/logger';
+
+/**
+ * @type {import('@sveltejs/kit').RequestHandler}
+ */
+export const get = async ({ locals }) => {
+	try {
+		if (!locals?.user?._id) {
+			return {
+				status: 401,
+				body: {
+					message: 'Unauthorized'
+				}
+			};
+		}
+
+		const pricelists = await PricelistsModel.find();
+
+		return {
+			status: 200,
+			body: pricelists
+		};
+	} catch (err) {
+		logger.error(err);
+		return {
+			status: 500,
+			body: {
+				error: `A server error occurred ${err}`
+			}
+		};
+	}
+};
 
 /**
  * @type {import('@sveltejs/kit').RequestHandler}

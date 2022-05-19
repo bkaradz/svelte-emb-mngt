@@ -3,6 +3,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import logger from '$lib/utility/logger';
 	import { svgLockClosed, svgPencil, svgPlus, svgXSmall } from '$lib/utility/svgLogos';
+	import { onMount } from 'svelte';
 	import { v4 as uuidv4 } from 'uuid';
 
 	export let tableHeadings = [
@@ -18,32 +19,8 @@
 	interface optionListInterface extends OptionsDocument {
 		editable: boolean;
 	}
-	export let optionsList: Array<Partial<optionListInterface>> = [
-		{
-			userID: '6273d47f151da98833523d0a',
-			group: 'embroideryPosition',
-			isActive: true,
-			isDefault: false,
-			name: 'frontLeft',
-			value: 'Front Left',
-			_id: '6274ef3ccb27bd312215e3c8',
-			createdAt: '2022-05-06T09:49:48.544Z',
-			updatedAt: '2022-05-06T09:49:48.544Z',
-			__v: 0
-		},
-		{
-			userID: '6273d47f151da98833523d0b',
-			group: 'embroideryPosition',
-			isActive: true,
-			isDefault: false,
-			name: 'frontRight',
-			value: 'Front Right',
-			_id: '6274ef3ccb27bd312215e3c9',
-			createdAt: '2022-05-06T09:49:48.544Z',
-			updatedAt: '2022-05-06T09:49:48.544Z',
-			__v: 0
-		}
-	];
+	let optionsList: Array<Partial<optionListInterface>> = [];
+	console.log('🚀 ~ file: OptionsTable.svelte ~ line 23 ~ optionsList', optionsList);
 
 	let groupList;
 
@@ -115,116 +92,134 @@
 		 * TODO: Add fetch DELETE logic
 		 */
 	};
+
+	const getOptions = async () => {
+		try {
+			// let searchParams = new URLSearchParams(paramsObj);
+			const res = await fetch('/api/options.json?');
+			optionsList = await res.json();
+		} catch (err) {
+			logger.error(err.message);
+			// error = err.message;
+		}
+	};
+
+	onMount(() => {
+		getOptions();
+	});
 </script>
 
-<!-- Table start -->
-<div class="w-full bg-white p-2 shadow-lg">
-	<div>
-		{#each [...groupList] as list, index (index)}
-			<button class="btn btn-tertiary mx-1 mb-3 mt-2 rounded-full px-3 py-1">{list}</button>
-		{/each}
-	</div>
-	<div class=" block ">
-		<table class="relative w-full rounded-lg text-left text-sm">
-			<thead>
-				<tr
-					class=" sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
-				>
-					{#each tableHeadings as header (header)}
-						<th on:click={() => console.log(header)} class="px-2 py-2">{header}</th>
+{#if optionsList.length}
+	<!-- Table start -->
+	<div class="w-full bg-white p-2 shadow-lg">
+		<div>
+			{#each [...groupList] as list, index (index)}
+				<button class="btn btn-tertiary mx-1 mb-3 mt-2 rounded-full px-3 py-1">{list}</button>
+			{/each}
+		</div>
+		<div class=" block ">
+			<table class="relative w-full rounded-lg text-left text-sm">
+				<thead>
+					<tr
+						class=" sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
+					>
+						{#each tableHeadings as header (header)}
+							<th on:click={() => console.log(header)} class="px-2 py-2">{header}</th>
+						{/each}
+					</tr>
+				</thead>
+				<tbody class="overflow-y-auto">
+					{#each optionsList as list (list._id)}
+						<tr
+							class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
+						>
+							<td class="px-2 py-1">
+								<input
+									class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
+									type="text"
+									name="group"
+									disabled={!list.editable}
+									bind:value={list.group}
+								/>
+							</td>
+							<td class="px-2 py-1">
+								<input
+									class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
+									type="text"
+									name="name"
+									disabled={!list.editable}
+									bind:value={list.name}
+								/>
+							</td>
+							<td class="px-2 py-1">
+								<input
+									class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
+									type="text"
+									name="value"
+									disabled={!list.editable}
+									bind:value={list.value}
+								/>
+							</td>
+							<td class="px-2 py-1">
+								<input
+									bind:checked={list.isActive}
+									disabled={!list.editable}
+									type="checkbox"
+									name="isActive"
+								/>
+							</td>
+							<td class="px-2 py-1">
+								<input
+									bind:checked={list.isDefault}
+									disabled={!list.editable}
+									type="checkbox"
+									name="isDefault"
+								/>
+							</td>
+							<td class="p-1 text-center ">
+								<button class=" m-0 p-0" on:click={() => heandleEditable(list._id, list.editable)}>
+									<span class="fill-current text-pickled-bluewood-500">
+										{@html list.editable ? svgLockClosed : svgPencil}
+									</span>
+								</button>
+							</td>
+							<td class="p-1 text-center ">
+								<button class=" m-0 p-0" on:click={() => heandleDelete(list._id)}>
+									<span class="fill-current text-pickled-bluewood-500">{@html svgXSmall}</span>
+								</button>
+							</td>
+						</tr>
 					{/each}
-				</tr>
-			</thead>
-			<tbody class="overflow-y-auto">
-				{#each optionsList as list (list._id)}
+
 					<tr
 						class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
 					>
+						<td class="px-2 py-1">Group</td>
+						<td class="px-2 py-1">Name</td>
+						<td class="px-2 py-1">value</td>
 						<td class="px-2 py-1">
-							<input
-								class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
-								type="text"
-								name="group"
-								disabled={!list.editable}
-								bind:value={list.group}
-							/>
+							<input disabled type="checkbox" name="isActive" checked={false} />
 						</td>
 						<td class="px-2 py-1">
-							<input
-								class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
-								type="text"
-								name="name"
-								disabled={!list.editable}
-								bind:value={list.name}
-							/>
+							<input disabled type="checkbox" name="isActive" checked={true} />
 						</td>
-						<td class="px-2 py-1">
-							<input
-								class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
-								type="text"
-								name="value"
-								disabled={!list.editable}
-								bind:value={list.value}
-							/>
-						</td>
-						<td class="px-2 py-1">
-							<input
-								bind:checked={list.isActive}
-								disabled={!list.editable}
-								type="checkbox"
-								name="isActive"
-							/>
-						</td>
-						<td class="px-2 py-1">
-							<input
-								bind:checked={list.isDefault}
-								disabled={!list.editable}
-								type="checkbox"
-								name="isDefault"
-							/>
-						</td>
+						<td class="px-2 py-1" />
 						<td class="p-1 text-center ">
-							<button class=" m-0 p-0" on:click={() => heandleEditable(list._id, list.editable)}>
-								<span class="fill-current text-pickled-bluewood-500">
-									{@html list.editable ? svgLockClosed : svgPencil}
-								</span>
-							</button>
-						</td>
-						<td class="p-1 text-center ">
-							<button class=" m-0 p-0" on:click={() => heandleDelete(list._id)}>
-								<span class="fill-current text-pickled-bluewood-500">{@html svgXSmall}</span>
-							</button>
+							<button class=" m-0 p-0" on:click={heandleAddRow()}
+								><span class="fill-current text-pickled-bluewood-500">{@html svgPlus}</span></button
+							>
 						</td>
 					</tr>
-				{/each}
-
-				<tr
-					class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
-				>
-					<td class="px-2 py-1">Group</td>
-					<td class="px-2 py-1">Name</td>
-					<td class="px-2 py-1">value</td>
-					<td class="px-2 py-1">
-						<input disabled type="checkbox" name="isActive" checked={false} />
-					</td>
-					<td class="px-2 py-1">
-						<input disabled type="checkbox" name="isActive" checked={true} />
-					</td>
-					<td class="px-2 py-1" />
-					<td class="p-1 text-center ">
-						<button class=" m-0 p-0" on:click={heandleAddRow()}
-							><span class="fill-current text-pickled-bluewood-500">{@html svgPlus}</span></button
-						>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-	<pre class="text-xs text-royal-blue-900">
+				</tbody>
+			</table>
+		</div>
+		<pre class="text-xs text-royal-blue-900">
 {JSON.stringify(optionsList, null, 1)}
 </pre>
-</div>
+	</div>
 
-<!-- Table End -->
+	<!-- Table End -->
+{/if}
+
 <style>
 </style>

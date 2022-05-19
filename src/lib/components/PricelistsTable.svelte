@@ -1,47 +1,114 @@
 <script lang="ts">
-	import type { OptionsDocument } from '$lib/models/options.models';
+	import type { PricelistsDocument } from '$lib/models/pricelists.model';
 	import { toasts } from '$lib/stores/toasts.store';
 	import logger from '$lib/utility/logger';
 	import { svgLockClosed, svgPencil, svgPlus, svgXSmall } from '$lib/utility/svgLogos';
+	import { onMount } from 'svelte';
 	import { v4 as uuidv4 } from 'uuid';
 
-	export let tableHeadings = [
-		'Group',
-		'name',
-		'value',
-		'Active',
-		'Default',
-		'Edit/Save',
-		'Delete & Add Row'
-	];
+	export let tableHeadings = ['name', 'Active', 'Default', 'Edit', 'Delete'];
 
-	interface optionListInterface extends OptionsDocument {
-		editable: boolean;
-	}
-	export let optionsList: Array<Partial<optionListInterface>> = [
+	export let optionsList = [
 		{
-			userID: '6273d47f151da98833523d0a',
-			group: 'embroideryPosition',
+			_id: '6284f6caf696648109d7438c',
+			userID: '62742949262c74d4ae15e567',
+			name: 'pricelist1',
 			isActive: true,
-			isDefault: false,
-			name: 'frontLeft',
-			value: 'Front Left',
-			_id: '6274ef3ccb27bd312215e3c8',
-			createdAt: '2022-05-06T09:49:48.544Z',
-			updatedAt: '2022-05-06T09:49:48.544Z',
-			__v: 0
-		},
-		{
-			userID: '6273d47f151da98833523d0b',
-			group: 'embroideryPosition',
-			isActive: true,
-			isDefault: false,
-			name: 'frontRight',
-			value: 'Front Right',
-			_id: '6274ef3ccb27bd312215e3c9',
-			createdAt: '2022-05-06T09:49:48.544Z',
-			updatedAt: '2022-05-06T09:49:48.544Z',
-			__v: 0
+			isDefault: true,
+			pricelists: [
+				{
+					minimumPrice: {
+						$numberDecimal: '1.0000'
+					},
+					pricePerThousandStitches: {
+						$numberDecimal: '0.2000'
+					},
+					maximumQuantity: 3,
+					embroideryType: 'flat',
+					_id: '6284f6caf696648109d7438d'
+				},
+				{
+					minimumPrice: {
+						$numberDecimal: '0.7500'
+					},
+					pricePerThousandStitches: {
+						$numberDecimal: '0.1600'
+					},
+					maximumQuantity: 30,
+					embroideryType: 'flat',
+					_id: '6284f6caf696648109d7438e'
+				},
+				{
+					minimumPrice: {
+						$numberDecimal: '0.6750'
+					},
+					pricePerThousandStitches: {
+						$numberDecimal: '0.1500'
+					},
+					maximumQuantity: 50,
+					embroideryType: 'flat',
+					_id: '6284f6caf696648109d7438f'
+				},
+				{
+					minimumPrice: {
+						$numberDecimal: '0.6000'
+					},
+					pricePerThousandStitches: {
+						$numberDecimal: '0.1400'
+					},
+					maximumQuantity: 100000,
+					embroideryType: 'flat',
+					_id: '6284f6caf696648109d74390'
+				},
+				{
+					minimumPrice: {
+						$numberDecimal: '1.5000'
+					},
+					pricePerThousandStitches: {
+						$numberDecimal: '0.2000'
+					},
+					maximumQuantity: 50,
+					embroideryType: 'cap',
+					_id: '6284f6caf696648109d74391'
+				},
+				{
+					minimumPrice: {
+						$numberDecimal: '1.0000'
+					},
+					pricePerThousandStitches: {
+						$numberDecimal: '0.1750'
+					},
+					maximumQuantity: 100000,
+					embroideryType: 'cap',
+					_id: '6284f6caf696648109d74392'
+				},
+				{
+					minimumPrice: {
+						$numberDecimal: '1.2500'
+					},
+					pricePerThousandStitches: {
+						$numberDecimal: '0.2000'
+					},
+					maximumQuantity: 50,
+					embroideryType: 'applique',
+					_id: '6284f6caf696648109d74393'
+				},
+				{
+					minimumPrice: {
+						$numberDecimal: '1.0000'
+					},
+					pricePerThousandStitches: {
+						$numberDecimal: '0.1750'
+					},
+					maximumQuantity: 100000,
+					embroideryType: 'applique',
+					_id: '6284f6caf696648109d74394'
+				}
+			],
+			createdAt: '2022-05-18T13:38:18.175Z',
+			updatedAt: '2022-05-18T13:38:18.175Z',
+			__v: 0,
+			id: '6284f6caf696648109d7438c'
 		}
 	];
 
@@ -98,9 +165,7 @@
 			...optionsList,
 			{
 				_id: id,
-				group: 'Edit...',
 				name: 'Edit...',
-				value: 'Edit...',
 				isActive: true,
 				isDefault: false,
 				editable: true
@@ -115,6 +180,19 @@
 		 * TODO: Add fetch DELETE logic
 		 */
 	};
+
+	const getPricelists = async () => {
+		try {
+			const res = await fetch('/api/pricelists.json?');
+			const pricelists = await res.json();
+		} catch (err) {
+			logger.error(err.message);
+		}
+	};
+
+	onMount(() => {
+		getPricelists();
+	});
 </script>
 
 <!-- Table start -->
@@ -144,29 +222,12 @@
 							<input
 								class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
 								type="text"
-								name="group"
-								disabled={!list.editable}
-								bind:value={list.group}
-							/>
-						</td>
-						<td class="px-2 py-1">
-							<input
-								class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
-								type="text"
 								name="name"
 								disabled={!list.editable}
 								bind:value={list.name}
 							/>
 						</td>
-						<td class="px-2 py-1">
-							<input
-								class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
-								type="text"
-								name="value"
-								disabled={!list.editable}
-								bind:value={list.value}
-							/>
-						</td>
+
 						<td class="px-2 py-1">
 							<input
 								bind:checked={list.isActive}
@@ -201,9 +262,7 @@
 				<tr
 					class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
 				>
-					<td class="px-2 py-1">Group</td>
 					<td class="px-2 py-1">Name</td>
-					<td class="px-2 py-1">value</td>
 					<td class="px-2 py-1">
 						<input disabled type="checkbox" name="isActive" checked={false} />
 					</td>

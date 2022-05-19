@@ -21,32 +21,41 @@ export function postSuite(data) {
 			enforce(data.isDefault).isBoolean();
 		});
 
-		each(data.pricelists, (field) => {
-			test(field.minimumPrice, 'minimumPrice is required', () => {
-				enforce(field.minimumPrice).isNotBlank();
-			});
-			test(field.minimumPrice, 'minimumPrice must be a number', () => {
-				enforce(field.minimumPrice).isNumeric();
-			});
-			test(field.pricePerThousandStitches, 'pricePerThousandStitches is required', () => {
-				enforce(field.pricePerThousandStitches).isNotBlank();
-			});
-			test(field.pricePerThousandStitches, 'pricePerThousandStitches must be a number', () => {
-				enforce(field.pricePerThousandStitches).isNumeric();
-			});
-			test(field.maximumQuantity, 'maximumQuantity is required', () => {
-				enforce(field.maximumQuantity).isNotBlank();
-			});
-			test(field.maximumQuantity, 'maximumQuantity must be a number', () => {
-				enforce(field.maximumQuantity).isNumeric();
-			});
-			test(field.embroideryType, 'embroideryType is required', () => {
-				enforce(field.embroideryType).isNotBlank();
-			});
-			test(field.embroideryType, 'embroideryType must be a string', () => {
-				enforce(field.embroideryType).isString();
-			});
-		});
+		each(
+			data.pricelists,
+			(field: {
+				minimumPrice: number;
+				pricePerThousandStitches: number;
+				maximumQuantity: number;
+				embroideryType: string;
+			}) => {
+				console.log('🚀 ~ file: pricelists.validate.ts ~ line 26 ~ each ~ field', field);
+				test('minimumPrice', 'minimumPrice is required', () => {
+					enforce(field.minimumPrice).isNotBlank();
+				});
+				test('minimumPrice', 'minimumPrice must be a number', () => {
+					enforce(field.minimumPrice).isNumeric();
+				});
+				test('pricePerThousandStitches', 'pricePerThousandStitches is required', () => {
+					enforce(field.pricePerThousandStitches).isNotBlank();
+				});
+				test('pricePerThousandStitches', 'pricePerThousandStitches must be a number', () => {
+					enforce(field.pricePerThousandStitches).isNumeric();
+				});
+				test('maximumQuantity', 'maximumQuantity is required', () => {
+					enforce(field.maximumQuantity).isNotBlank();
+				});
+				test('maximumQuantity', 'maximumQuantity must be a number', () => {
+					enforce(field.maximumQuantity).isNumeric();
+				});
+				test('embroideryType', 'embroideryType is required', () => {
+					enforce(field.embroideryType).isNotBlank();
+				});
+				test('embroideryType', 'embroideryType must be a string', () => {
+					enforce(field.embroideryType).isString();
+				});
+			}
+		);
 	})();
 	// Note that we're immediately invoking our suite
 	// so what we return is actually the suite result
