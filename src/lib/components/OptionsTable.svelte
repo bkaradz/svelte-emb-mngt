@@ -26,6 +26,8 @@
 
 	$: groupList;
 
+	let isEditableID = null;
+
 	$: if (optionsList.length) {
 		groupList = new Set(optionsList.map((list) => list.group));
 	} else {
@@ -50,20 +52,13 @@
 		}
 	};
 
-	const heandleEditable = (id: any, editable: boolean) => {
-		optionsList.forEach((list) => {
-			if (list._id === id && editable === true) {
-				/**
-				 * TODO: Add fetch POST logic
-				 */
-			}
-			if (list._id === id && editable === false) {
-				list.editable = true;
-			} else {
-				list.editable = false;
-			}
-		});
-		optionsList = optionsList;
+	const heandleEditable = (list) => {
+		if (isEditableID === null) {
+			isEditableID = list._id;
+		} else {
+			// await getUpdateUser(list);
+			isEditableID = null;
+		}
 	};
 
 	let idToRemove = [];
@@ -138,7 +133,7 @@
 									class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
 									type="text"
 									name="group"
-									disabled={!list.editable}
+									disabled={!(isEditableID === list._id)}
 									bind:value={list.group}
 								/>
 							</td>
@@ -147,7 +142,7 @@
 									class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
 									type="text"
 									name="name"
-									disabled={!list.editable}
+									disabled={!(isEditableID === list._id)}
 									bind:value={list.name}
 								/>
 							</td>
@@ -156,14 +151,14 @@
 									class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
 									type="text"
 									name="value"
-									disabled={!list.editable}
+									disabled={!(isEditableID === list._id)}
 									bind:value={list.value}
 								/>
 							</td>
 							<td class="px-2 py-1">
 								<input
 									bind:checked={list.isActive}
-									disabled={!list.editable}
+									disabled={!(isEditableID === list._id)}
 									type="checkbox"
 									name="isActive"
 								/>
@@ -171,15 +166,15 @@
 							<td class="px-2 py-1">
 								<input
 									bind:checked={list.isDefault}
-									disabled={!list.editable}
+									disabled={!(isEditableID === list._id)}
 									type="checkbox"
 									name="isDefault"
 								/>
 							</td>
 							<td class="p-1 text-center ">
-								<button class=" m-0 p-0" on:click={() => heandleEditable(list._id, list.editable)}>
+								<button class=" m-0 p-0" on:click={() => heandleEditable(list)}>
 									<span class="fill-current text-pickled-bluewood-500">
-										{@html list.editable ? svgLockClosed : svgPencil}
+										{@html isEditableID === list._id ? svgLockClosed : svgPencil}
 									</span>
 								</button>
 							</td>
@@ -192,7 +187,7 @@
 					{/each}
 
 					<tr
-						class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
+						class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 bg-royal-blue-300 font-normal text-white"
 					>
 						<td class="px-2 py-1">Group</td>
 						<td class="px-2 py-1">Name</td>
@@ -204,9 +199,9 @@
 							<input disabled type="checkbox" name="isActive" checked={true} />
 						</td>
 						<td class="px-2 py-1" />
-						<td class="p-1 text-center ">
+						<td class="p-1 text-center">
 							<button class=" m-0 p-0" on:click={heandleAddRow()}
-								><span class="fill-current text-pickled-bluewood-500">{@html svgPlus}</span></button
+								><span class="flex fill-current text-white">{@html svgPlus} Add Row</span></button
 							>
 						</td>
 					</tr>

@@ -2,6 +2,10 @@
 	import OptionsTable from '$lib/components/OptionsTable.svelte';
 </script>
 
+<svelte:head>
+	<title>Settings: Options</title>
+</svelte:head>
+
 <div>
 	<div class="mb-2 bg-white p-4">
 		<h1>Options</h1>
