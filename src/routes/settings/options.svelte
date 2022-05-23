@@ -3,6 +3,9 @@
 </script>
 
 <div>
+	<div class="mb-2 bg-white p-4">
+		<h1>Options</h1>
+	</div>
 	<OptionsTable />
 </div>
 

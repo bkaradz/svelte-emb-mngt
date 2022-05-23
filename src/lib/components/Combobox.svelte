@@ -29,7 +29,7 @@
 	}
 
 	const heandleReset = () => {
-		$: if (!userEnter) {
+		if (!userEnter) {
 			value = { name: '' };
 		}
 		highlightIndex = -1;

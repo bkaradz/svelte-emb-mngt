@@ -6,118 +6,21 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 
-	export let tableHeadings = ['name', 'Active', 'Default', 'Edit', 'Delete'];
+	export let tableHeadings = ['Name', 'isActive', 'isDefault', 'Edit', 'Delete'];
 
-	export let optionsList = [
-		{
-			_id: '6284f6caf696648109d7438c',
-			userID: '62742949262c74d4ae15e567',
-			name: 'pricelist1',
-			isActive: true,
-			isDefault: true,
-			pricelists: [
-				{
-					minimumPrice: {
-						$numberDecimal: '1.0000'
-					},
-					pricePerThousandStitches: {
-						$numberDecimal: '0.2000'
-					},
-					maximumQuantity: 3,
-					embroideryType: 'flat',
-					_id: '6284f6caf696648109d7438d'
-				},
-				{
-					minimumPrice: {
-						$numberDecimal: '0.7500'
-					},
-					pricePerThousandStitches: {
-						$numberDecimal: '0.1600'
-					},
-					maximumQuantity: 30,
-					embroideryType: 'flat',
-					_id: '6284f6caf696648109d7438e'
-				},
-				{
-					minimumPrice: {
-						$numberDecimal: '0.6750'
-					},
-					pricePerThousandStitches: {
-						$numberDecimal: '0.1500'
-					},
-					maximumQuantity: 50,
-					embroideryType: 'flat',
-					_id: '6284f6caf696648109d7438f'
-				},
-				{
-					minimumPrice: {
-						$numberDecimal: '0.6000'
-					},
-					pricePerThousandStitches: {
-						$numberDecimal: '0.1400'
-					},
-					maximumQuantity: 100000,
-					embroideryType: 'flat',
-					_id: '6284f6caf696648109d74390'
-				},
-				{
-					minimumPrice: {
-						$numberDecimal: '1.5000'
-					},
-					pricePerThousandStitches: {
-						$numberDecimal: '0.2000'
-					},
-					maximumQuantity: 50,
-					embroideryType: 'cap',
-					_id: '6284f6caf696648109d74391'
-				},
-				{
-					minimumPrice: {
-						$numberDecimal: '1.0000'
-					},
-					pricePerThousandStitches: {
-						$numberDecimal: '0.1750'
-					},
-					maximumQuantity: 100000,
-					embroideryType: 'cap',
-					_id: '6284f6caf696648109d74392'
-				},
-				{
-					minimumPrice: {
-						$numberDecimal: '1.2500'
-					},
-					pricePerThousandStitches: {
-						$numberDecimal: '0.2000'
-					},
-					maximumQuantity: 50,
-					embroideryType: 'applique',
-					_id: '6284f6caf696648109d74393'
-				},
-				{
-					minimumPrice: {
-						$numberDecimal: '1.0000'
-					},
-					pricePerThousandStitches: {
-						$numberDecimal: '0.1750'
-					},
-					maximumQuantity: 100000,
-					embroideryType: 'applique',
-					_id: '6284f6caf696648109d74394'
-				}
-			],
-			createdAt: '2022-05-18T13:38:18.175Z',
-			updatedAt: '2022-05-18T13:38:18.175Z',
-			__v: 0,
-			id: '6284f6caf696648109d7438c'
-		}
-	];
+	let pricelists = [];
+	$: console.log('🚀 ~ file: PricelistsTable.svelte ~ line 12 ~ pricelists', pricelists.length);
 
 	const heandleDelete = (id: any) => {};
 
 	const getPricelists = async () => {
 		try {
 			const res = await fetch('/api/pricelists.json?');
-			const pricelists = await res.json();
+			pricelists = await res.json();
+			console.log(
+				'🚀 ~ file: PricelistsTable.svelte ~ line 19 ~ getPricelists ~ pricelists',
+				pricelists
+			);
 		} catch (err) {
 			logger.error(err.message);
 		}
@@ -132,59 +35,64 @@
 	};
 </script>
 
-<!-- Table start -->
-<div class="w-full bg-white p-2 shadow-lg">
-	<div class=" block ">
-		<table class="relative w-full rounded-lg text-left text-sm">
-			<thead>
-				<tr
-					class=" sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
-				>
-					{#each tableHeadings as header (header)}
-						<th on:click={() => console.log(header)} class="px-2 py-2">{header}</th>
-					{/each}
-				</tr>
-			</thead>
-			<tbody class="overflow-y-auto">
-				{#each optionsList as list (list._id)}
-					<tr
-						class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
-					>
-						<td class="px-2 py-1">
-							<input
-								class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
-								type="text"
-								name="name"
-								bind:value={list.name}
-							/>
-						</td>
-
-						<td class="px-2 py-1">
-							<input bind:checked={list.isActive} type="checkbox" name="isActive" />
-						</td>
-						<td class="px-2 py-1">
-							<input bind:checked={list.isDefault} type="checkbox" name="isDefault" />
-						</td>
-						<td class="p-1 text-center ">
-							<button class=" m-0 p-0" on:click={() => viewPricelist(list._id)}>
-								<span class="fill-current text-pickled-bluewood-500">
-									{@html svgView}
-								</span>
-							</button>
-						</td>
-						<td class="p-1 text-center ">
-							<button class=" m-0 p-0" on:click={() => heandleDelete(list._id)}>
-								<span class="fill-current text-pickled-bluewood-500">{@html svgXSmall}</span>
-							</button>
-						</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
+{#if pricelists.length}
+	<div class="mb-2 bg-white p-4">
+		<h1>Pricelists</h1>
 	</div>
-	<pre class="text-xs text-royal-blue-900" />
-</div>
+	<!-- Table start -->
+	<div class="w-full bg-white p-2 shadow-lg">
+		<div class=" block ">
+			<table class="relative w-full rounded-lg text-left text-sm">
+				<thead>
+					<tr
+						class=" sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
+					>
+						{#each tableHeadings as header (header)}
+							<th on:click={() => console.log(header)} class="px-2 py-2">{header}</th>
+						{/each}
+					</tr>
+				</thead>
+				<tbody class="overflow-y-auto">
+					{#each pricelists as list (list._id)}
+						<tr
+							class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
+						>
+							<td class="px-2 py-1">
+								<input
+									class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
+									type="text"
+									name="name"
+									bind:value={list.name}
+								/>
+							</td>
 
-<!-- Table End -->
+							<td class="px-2 py-1">
+								<input bind:checked={list.isActive} type="checkbox" name="isActive" />
+							</td>
+							<td class="px-2 py-1">
+								<input bind:checked={list.isDefault} type="checkbox" name="isDefault" />
+							</td>
+							<td class="p-1 text-center ">
+								<button class=" m-0 p-0" on:click={() => viewPricelist(list._id)}>
+									<span class="fill-current text-pickled-bluewood-500">
+										{@html svgView}
+									</span>
+								</button>
+							</td>
+							<td class="p-1 text-center ">
+								<button class=" m-0 p-0" on:click={() => heandleDelete(list._id)}>
+									<span class="fill-current text-pickled-bluewood-500">{@html svgXSmall}</span>
+								</button>
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
+		<pre class="text-xs text-royal-blue-900" />
+	</div>
+	<!-- Table End -->
+{/if}
+
 <style>
 </style>

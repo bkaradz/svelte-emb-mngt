@@ -4,8 +4,17 @@ import logger from '$lib/utility/logger';
 import aggregateQuery from '$lib/services/aggregateQuery.services';
 import { postSuite } from '$lib/validation/server/contacts.validate';
 
-export const get = async ({ url }) => {
+export const get = async ({ url, locals }) => {
 	try {
+		if (!locals?.user?._id) {
+			return {
+				status: 401,
+				body: {
+					message: 'Unauthorized'
+				}
+			};
+		}
+
 		const queryParams = Object.fromEntries(url.searchParams);
 
 		let { limit = 15, page = 1 } = queryParams;

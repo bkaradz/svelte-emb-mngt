@@ -16,18 +16,24 @@
 	}
 </script>
 
-<!-- <label for={name} class={`form-checkbox ${validityClass}`}>
-	<input type="checkbox" {name} bind:checked on:change={onChange} />
-	<span>{label}</span>
-</label> -->
-
-<label for={name} class={`relative inline-flex items-center cursor-pointer ${validityClass}`}>
-	<input type="checkbox" bind:checked on:change={onChange} id={name} {name} class="peer sr-only" />
-	<div
-		class={`toggle peer peer-checked:bg-royal-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-royal-blue-500 dark:border-pickled-bluewood-600 dark:bg-pickled-bluewood-700 dark:peer-focus:ring-royal-blue-800 ${style}`}
-	/>
-	<span class={`ml-3 text-sm font-medium text-pickled-bluewood-600 ${validityClass}`}>{label}</span>
-</label>
+<div>
+	<label for={name} class={`relative inline-flex items-center cursor-pointer ${validityClass}`}>
+		<input
+			type="checkbox"
+			bind:checked
+			on:change={onChange}
+			id={name}
+			{name}
+			class="peer sr-only"
+		/>
+		<div
+			class={`toggle peer peer-checked:bg-royal-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-royal-blue-500 dark:border-pickled-bluewood-600 dark:bg-pickled-bluewood-700 dark:peer-focus:ring-royal-blue-800 ${style}`}
+		/>
+		<span class={`ml-3 text-sm font-medium text-pickled-bluewood-600 ${validityClass}`}
+			>{label}</span
+		>
+	</label>
+</div>
 
 <style lang="postcss">
 	.toggle {
