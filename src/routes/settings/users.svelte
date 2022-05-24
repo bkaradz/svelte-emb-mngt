@@ -45,10 +45,10 @@
 		}
 	};
 
-	const getUpdateUser = async (finalData: any) => {
+	const updateUser = async (finalData: any) => {
 		try {
 			// let searchParams = new URLSearchParams(paramsObj as string);
-			const res = await fetch('/api/auth.json?', {
+			const res = await fetch('/api/auth.json', {
 				method: 'PUT',
 				body: JSON.stringify(finalData),
 				headers: { 'Content-Type': 'application/json' }
@@ -71,10 +71,10 @@
 			error = err.message;
 		}
 	};
-	const getDeleteUser = async (finalData: any) => {
+	const deleteUser = async (finalData: any) => {
 		try {
 			// let searchParams = new URLSearchParams(paramsObj as string);
-			const res = await fetch('/api/auth.json?', {
+			const res = await fetch('/api/auth.json', {
 				method: 'DELETE',
 				body: JSON.stringify(finalData),
 				headers: { 'Content-Type': 'application/json' }
@@ -82,7 +82,7 @@
 			if (res.ok) {
 				const user = await res.json();
 				toasts.add({
-					message: `${user.name} was updated`,
+					message: `${user.name} was deleted`,
 					type: 'success'
 				});
 				getUsers();
@@ -106,13 +106,13 @@
 		if (isEditableID === null) {
 			isEditableID = list._id;
 		} else {
-			await getUpdateUser(list);
+			await updateUser(list);
 			isEditableID = null;
 		}
 	};
 
 	const heandleDelete = async (list) => {
-		await getDeleteUser(list);
+		await deleteUser(list);
 	};
 </script>
 

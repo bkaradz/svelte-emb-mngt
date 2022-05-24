@@ -56,7 +56,7 @@
 		if (isEditableID === null) {
 			isEditableID = list._id;
 		} else {
-			// await getUpdateUser(list);
+			await updateOrAddOptions(list);
 			isEditableID = null;
 		}
 	};
@@ -80,12 +80,76 @@
 		];
 	};
 
-	const heandleDelete = (id: any) => {
-		optionsList = optionsList.filter((list) => list._id !== id);
-		idToRemove = idToRemove.filter((list) => list !== id);
-		/**
-		 * TODO: Add fetch DELETE logic
-		 */
+	const deleteOption = async (finalData: any) => {
+		try {
+			// let searchParams = new URLSearchParams(paramsObj as string);
+			const res = await fetch('/api/options.json', {
+				method: 'DELETE',
+				body: JSON.stringify(finalData),
+				headers: { 'Content-Type': 'application/json' }
+			});
+			if (res.ok) {
+				const user = await res.json();
+				toasts.add({
+					message: `${user.name} was deleted`,
+					type: 'success'
+				});
+				getOptions();
+			}
+		} catch (err) {
+			logger.error(err.message);
+			toasts.add({
+				message: 'An error has occured while updating user',
+				type: 'error'
+			});
+			// error = err.message;
+		}
+	};
+
+	const heandleDelete = (finalData: any) => {
+		idToRemove = idToRemove.filter((list) => list !== finalData._id);
+		deleteOption(finalData);
+	};
+
+	const updateOrAddOptions = async (finalData: any) => {
+		try {
+			// let searchParams = new URLSearchParams(paramsObj as string);
+			if (idToRemove.includes(finalData._id)) {
+				// Remove _id
+				finalData.delete('_id');
+				idToRemove = idToRemove.filter((list) => list !== finalData._id);
+
+				const res = await fetch('/api/options.json', {
+					method: 'POST',
+					body: JSON.stringify(finalData),
+					headers: { 'Content-Type': 'application/json' }
+				});
+				if (res.ok) {
+					const option = await res.json();
+					console.log('🚀 ~ file: users.svelte ~ line 57 ~ getUpdateUser ~ user', option);
+					toasts.add({ message: `${option.name} was added`, type: 'success' });
+				}
+			} else {
+				const res = await fetch('/api/options.json', {
+					method: 'PUT',
+					body: JSON.stringify(finalData),
+					headers: { 'Content-Type': 'application/json' }
+				});
+				if (res.ok) {
+					const option = await res.json();
+					console.log('🚀 ~ file: users.svelte ~ line 57 ~ getUpdateUser ~ user', option);
+					toasts.add({ message: `${option.name} was updated`, type: 'success' });
+				}
+				getOptions();
+			}
+		} catch (err) {
+			logger.error(err.message);
+			toasts.add({
+				message: 'An error has occured while updating user',
+				type: 'error'
+			});
+			// error = err.message;
+		}
 	};
 
 	const getOptions = async () => {

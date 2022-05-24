@@ -62,15 +62,16 @@
 									class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
 									type="text"
 									name="name"
+									disabled
 									bind:value={list.name}
 								/>
 							</td>
 
 							<td class="px-2 py-1">
-								<input bind:checked={list.isActive} type="checkbox" name="isActive" />
+								<input disabled bind:checked={list.isActive} type="checkbox" name="isActive" />
 							</td>
 							<td class="px-2 py-1">
-								<input bind:checked={list.isDefault} type="checkbox" name="isDefault" />
+								<input disabled bind:checked={list.isDefault} type="checkbox" name="isDefault" />
 							</td>
 							<td class="p-1 text-center ">
 								<button class=" m-0 p-0" on:click={() => viewPricelist(list._id)}>
