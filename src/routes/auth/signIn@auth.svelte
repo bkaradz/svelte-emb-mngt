@@ -7,6 +7,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { svgSignIn } from '$lib/utility/svgLogos';
 	import Input from '$lib/components/Input.svelte';
+	import small_logo from '$lib/assets/small_logo.png';
 
 	let result = suite.get();
 
@@ -78,7 +79,7 @@
 
 <div class="h-full w-full max-w-md space-y-8">
 	<div>
-		<img class="mx-auto h-12 w-auto" src="../../../static/small_logo.png" alt="Lilian Logo" />
+		<img class="mx-auto h-12 w-auto" src={small_logo} alt="Lilian Logo" />
 		<h2 class="mt-6 text-center text-3xl font-bold text-pickled-bluewood-900">Login</h2>
 	</div>
 

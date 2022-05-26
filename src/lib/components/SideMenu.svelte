@@ -2,13 +2,13 @@
 	import { page } from '$app/stores';
 	import { svgArrow, svgMenu } from '$lib/utility/svgLogos';
 	import { toggleMenu, anchorList } from '$lib/stores/sideMenu.store';
-	let src = '../../static/small_logo.png';
+	import small_logo from '$lib/assets/small_logo.png';
 </script>
 
 <nav
 	class="sidebar relative z-40 flex flex-col bg-gradient-to-tl from-royal-blue-900 to-royal-blue-700"
 >
-	<img {src} class="h-16 object-scale-down p-1 pt-3" alt="Company Logo" />
+	<img src={small_logo} class="h-16 object-scale-down p-1 pt-3" alt="Company Logo" />
 	<input
 		type="checkbox"
 		class="hidden"

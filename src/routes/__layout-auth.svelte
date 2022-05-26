@@ -19,6 +19,7 @@
 	import { page } from '$app/stores';
 	import Toasts from '$lib/components/Toasts.svelte';
 	import { svgSignIn, svgSignUp } from '$lib/utility/svgLogos';
+	import logo from '$lib/assets/logo.ico';
 
 	let error: any;
 
@@ -45,6 +46,11 @@
 		}
 	];
 </script>
+
+<svelte:head>
+	<!-- <link rel="icon" type="image/svg" href={icon-path} /> -->
+	<link rel="icon" href={logo} />
+</svelte:head>
 
 {#if error}
 	<h2>Error while loading the data</h2>
