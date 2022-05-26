@@ -54,15 +54,15 @@ export const post: RequestHandler = async ({ request }) => {
 		const allUsers = await ContactsModel.find({
 			isUser: true,
 			isActive: true,
-			userRole: 'admin'
+			userRole: 'ADMIN'
 		}).select('-password');
 
 		/**
-		 * If the database has no admin create one,
-		 * other users are activated by the first admin
+		 * If the database has no ADMIN create one,
+		 * other users are activated by the first ADMIN
 		 */
 		if (allUsers.length === 0) {
-			contacts.userRole = 'admin';
+			contacts.userRole = 'ADMIN';
 			contacts.isActive = true;
 		}
 

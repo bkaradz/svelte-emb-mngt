@@ -9,7 +9,7 @@ const constants = {
 	ACCOUNTS_STATUS: 'accountsStatus',
 	MANUFACTURING_STATUS: 'manufacturingStatus',
 	// Default values
-	DEF_USER_ROLE: 'user',
+	DEF_USER_ROLE: 'USER',
 	DEF_PRODUCT_CATEGORY: 'embLogo',
 	DEF_EMBROIDERY_TYPE: 'Flat',
 	DEF_GARMENT_POSITION: 'Front Left',

@@ -26,12 +26,14 @@ declare namespace App {
 	// 	onclickOutside?: (e: CustomEvent) => void;
 	// }
 	interface Locals {
-		user: userInterface;
+		user?: userInterface;
 	}
 
 	interface Platform {}
 
-	interface Session {}
+	interface Session {
+		user?: userInterface;
+	}
 
 	interface Stuff {}
 }

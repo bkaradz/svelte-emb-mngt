@@ -2,7 +2,7 @@
 	import type { OptionsDocument } from '$lib/models/options.models';
 	import { toasts } from '$lib/stores/toasts.store';
 	import logger from '$lib/utility/logger';
-	import { svgLockClosed, svgPencil, svgPlus, svgXSmall } from '$lib/utility/svgLogos';
+	import { svgDocumentAdd, svgPencil, svgPlus, svgXSmall } from '$lib/utility/svgLogos';
 	import { onMount } from 'svelte';
 	import { v4 as uuidv4 } from 'uuid';
 
@@ -20,7 +20,10 @@
 		editable: boolean;
 	}
 	let optionsList: Array<Partial<optionListInterface>> = [];
-	console.log('🚀 ~ file: OptionsTable.svelte ~ line 23 ~ optionsList', optionsList);
+	$: console.log('🚀 ~ file: OptionsTable.svelte ~ line 23 ~ optionsList', optionsList);
+
+	let selectedGroup = null;
+	$: console.log('🚀 ~ file: OptionsTable.svelte ~ line 26 ~ selectedGroup', selectedGroup);
 
 	let groupList;
 
@@ -52,7 +55,7 @@
 		}
 	};
 
-	const heandleEditable = (list) => {
+	const heandleEditable = async (list) => {
 		if (isEditableID === null) {
 			isEditableID = list._id;
 		} else {
@@ -65,12 +68,13 @@
 
 	$: heandleAddRow = () => {
 		const id = uuidv4();
+		isEditableID = id;
 		idToRemove.push(id);
 		optionsList = [
 			...optionsList,
 			{
 				_id: id,
-				group: 'Edit...',
+				group: selectedGroup,
 				name: 'Edit...',
 				value: 'Edit...',
 				isActive: true,
@@ -116,7 +120,7 @@
 			// let searchParams = new URLSearchParams(paramsObj as string);
 			if (idToRemove.includes(finalData._id)) {
 				// Remove _id
-				finalData.delete('_id');
+				delete finalData._id;
 				idToRemove = idToRemove.filter((list) => list !== finalData._id);
 
 				const res = await fetch('/api/options.json', {
@@ -173,7 +177,13 @@
 	<div class="w-full bg-white p-2 shadow-lg">
 		<div>
 			{#each [...groupList] as list, index (index)}
-				<button class="btn btn-tertiary mx-1 mb-3 mt-2 rounded-full px-3 py-1">{list}</button>
+				<button
+					on:click|preventDefault={(e) => (selectedGroup = list)}
+					class="mx-1 mb-3 mt-2 justify-center rounded-full border border-transparent px-3 py-1 text-sm font-medium text-white {selectedGroup ===
+					list
+						? `btn-primary`
+						: `btn-tertiary`}">{list}</button
+				>
 			{/each}
 		</div>
 		<div class=" block ">
@@ -238,7 +248,7 @@
 							<td class="p-1 text-center ">
 								<button class=" m-0 p-0" on:click={() => heandleEditable(list)}>
 									<span class="fill-current text-pickled-bluewood-500">
-										{@html isEditableID === list._id ? svgLockClosed : svgPencil}
+										{@html isEditableID === list._id ? svgDocumentAdd : svgPencil}
 									</span>
 								</button>
 							</td>
@@ -272,9 +282,6 @@
 				</tbody>
 			</table>
 		</div>
-		<pre class="text-xs text-royal-blue-900">
-{JSON.stringify(optionsList, null, 1)}
-</pre>
 	</div>
 
 	<!-- Table End -->

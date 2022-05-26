@@ -26,7 +26,7 @@ export type signedInUserInterface = Pick<
 	'_id' | 'id' | 'name' | 'email' | 'isUser' | 'isCorporate' | 'isActive' | 'userRole'
 >;
 
-export const post: RequestHandler = async ({ request }) => {
+export const post: RequestHandler = async ({ request }): Promise<unknown> => {
 	try {
 		// validate the user's password
 		const reqUser: signInRequestInterface = await request.json();
@@ -104,7 +104,7 @@ export const post: RequestHandler = async ({ request }) => {
 	}
 };
 
-export const get: RequestHandler = async ({ locals }) => {
+export const get: RequestHandler = async ({ locals }): Promise<unknown> => {
 	try {
 		const userId = lodashGet(locals.user, '_id', null);
 
@@ -145,7 +145,7 @@ export const get: RequestHandler = async ({ locals }) => {
 	}
 };
 
-export const del: RequestHandler = async ({ request, locals }) => {
+export const del: RequestHandler = async ({ locals }): Promise<unknown> => {
 	const sessionId = locals.user.sessionId;
 
 	if (sessionId) {

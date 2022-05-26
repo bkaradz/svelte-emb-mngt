@@ -11,10 +11,6 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	const accessToken = cookies.accessToken;
 
-	// if (!accessToken) {
-	//   return await resolve(event)
-	// }
-
 	const { decoded } = verifyJwt(accessToken);
 
 	if (decoded) {
