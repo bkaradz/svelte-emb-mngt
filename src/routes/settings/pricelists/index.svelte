@@ -8,5 +8,5 @@
 
 <PricelistsTable />
 
-<style>
-</style>
+<!-- <style>
+</style> -->
