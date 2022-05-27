@@ -6,7 +6,8 @@
 	import logger from '$lib/utility/logger';
 	import Input from '$lib/components/Input.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
-	import { svgXSmall } from '$lib/utility/svgLogos';
+	import { svgDocumentAdd, svgPencil, svgPlus, svgXSmall } from '$lib/utility/svgLogos';
+	import { v4 as uuidv4 } from 'uuid';
 
 	let result = suite.get();
 
@@ -15,21 +16,33 @@
 		'Minimum Price',
 		'Maximum Quantity',
 		'Price per 1000 stitches',
-		'Delete'
+		'Edit/Update',
+		'Delete/Add Row'
 	];
 
 	const endpoint = `/api/pricelists/${$page.params.id}.json`;
-	$: console.log('🚀 ~ file: [id].svelte ~ line 4 ~ endpoint', endpoint);
 
 	let pricelist;
-	$: console.log('🚀 ~ file: [id].svelte ~ line 10 ~ pricelist', pricelist);
+
+	let selectedGroup = 'all';
+
+	let groupList = new Set(['all']);
+
+	$: groupList;
+
+	let isEditableID = null;
+
+	$: if (pricelist?.pricelists?.length) {
+		pricelist.pricelists.forEach((list) => {
+			groupList.add(list.embroideryType);
+		});
+	}
 
 	onMount(async () => {
 		try {
 			const res = await fetch(endpoint);
 			if (res.ok) {
 				pricelist = await res.json();
-				console.log('🚀 ~ file: [id].svelte ~ line 17 ~ onMount ~ pricelist', pricelist);
 			}
 		} catch (err) {
 			logger.error(err.message);
@@ -42,9 +55,43 @@
 		valid: 'success'
 	});
 
+	const heandleEditable = async (list) => {
+		if (isEditableID === null) {
+			isEditableID = list._id;
+		} else {
+			// await updateOrAddOptions(list);
+			isEditableID = null;
+		}
+	};
+
 	const handleInput = () => {};
 
-	const heandleDelete = () => {};
+	const heandleDelete = (finalData: any) => {
+		idToRemove = idToRemove.filter((list) => list !== finalData._id);
+		pricelist.pricelists = pricelist.pricelists.filter((list) => list._id !== finalData._id);
+		// deleteOption(finalData);
+	};
+
+	let idToRemove = [];
+
+	$: heandleAddRow = () => {
+		const id = uuidv4();
+
+		isEditableID = id;
+		idToRemove.push(id);
+		pricelist.pricelists = [
+			...pricelist.pricelists,
+			{
+				_id: id,
+				embroideryType: selectedGroup,
+				minimumPrice: { $numberDecimal: 'Edit...' },
+				maximumQuantity: 'Edit...',
+				pricePerThousandStitches: { $numberDecimal: 'Edit...' },
+				isDefault: false,
+				editable: true
+			}
+		];
+	};
 </script>
 
 {#if pricelist}
@@ -82,6 +129,17 @@
 			</div>
 			<!-- Table start -->
 			<div class="w-full  ">
+				<div>
+					{#each [...groupList] as list, index (index)}
+						<button
+							on:click|preventDefault={(e) => (selectedGroup = list)}
+							class="mx-1 mb-3 mt-2 justify-center rounded-full border border-transparent px-3 py-1 text-sm font-medium text-white {selectedGroup ===
+							list
+								? `btn-primary`
+								: `btn-tertiary`}">{list}</button
+						>
+					{/each}
+				</div>
 				<div class=" block ">
 					<table class="relative w-full rounded-lg text-left text-sm">
 						<thead>
@@ -95,49 +153,82 @@
 						</thead>
 						<tbody class="overflow-y-auto">
 							{#each pricelist.pricelists as list (list._id)}
-								<tr
-									class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
-								>
-									<td class="px-2 py-1">
-										<input
-											class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
-											type="text"
-											name="embroideryType"
-											bind:value={list.embroideryType}
-										/>
-									</td>
-									<td class="px-2 py-1">
-										<input
-											class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
-											type="text"
-											name="minimumPrice"
-											bind:value={list.minimumPrice.$numberDecimal}
-										/>
-									</td>
-									<td class="px-2 py-1">
-										<input
-											class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
-											type="text"
-											name="maximumQuantity"
-											bind:value={list.maximumQuantity}
-										/>
-									</td>
-									<td class="px-2 py-1">
-										<input
-											class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
-											type="text"
-											name="pricePerThousandStitches"
-											bind:value={list.pricePerThousandStitches.$numberDecimal}
-										/>
-									</td>
+								{#if selectedGroup === list.embroideryType || selectedGroup === 'all'}
+									<tr
+										class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
+									>
+										<td class="px-2 py-1">
+											<input
+												class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
+												type="text"
+												name="embroideryType"
+												disabled={!(isEditableID === list._id)}
+												bind:value={list.embroideryType}
+											/>
+										</td>
+										<td class="px-2 py-1">
+											<input
+												class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
+												type="text"
+												name="minimumPrice"
+												disabled={!(isEditableID === list._id)}
+												bind:value={list.minimumPrice.$numberDecimal}
+											/>
+										</td>
+										<td class="px-2 py-1">
+											<input
+												class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
+												type="text"
+												name="maximumQuantity"
+												disabled={!(isEditableID === list._id)}
+												bind:value={list.maximumQuantity}
+											/>
+										</td>
+										<td class="px-2 py-1">
+											<input
+												class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
+												type="text"
+												name="pricePerThousandStitches"
+												disabled={!(isEditableID === list._id)}
+												bind:value={list.pricePerThousandStitches.$numberDecimal}
+											/>
+										</td>
+										<td class="p-1 text-center ">
+											<button
+												class=" m-0 p-0"
+												on:click|preventDefault={() => heandleEditable(list)}
+											>
+												<span class="fill-current text-pickled-bluewood-500">
+													{@html isEditableID === list._id ? svgDocumentAdd : svgPencil}
+												</span>
+											</button>
+										</td>
 
-									<td class="p-1 text-center ">
-										<button class=" m-0 p-0" on:click={() => heandleDelete(list._id)}>
-											<span class="fill-current text-pickled-bluewood-500">{@html svgXSmall}</span>
-										</button>
-									</td>
-								</tr>
+										<td class="p-1 text-center ">
+											<button class=" m-0 p-0" on:click|preventDefault={() => heandleDelete(list)}>
+												<span class="fill-current text-pickled-bluewood-500">{@html svgXSmall}</span
+												>
+											</button>
+										</td>
+									</tr>
+								{/if}
 							{/each}
+							<tr
+								class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 bg-royal-blue-300 font-normal text-white"
+							>
+								<td class="px-2 py-1">embroideryType</td>
+								<td class="px-2 py-1">minimumPrice</td>
+								<td class="px-2 py-1">maximumQuantity</td>
+								<td class="px-2 py-1">pricePerThousandStitches</td>
+
+								<td class="px-2 py-1" />
+								<td class="p-1 text-center">
+									<button class=" m-0 p-0" on:click|preventDefault={() => heandleAddRow()}
+										><span class="flex fill-current text-white">{@html svgPlus} Add Row</span
+										></button
+									>
+								</td>
+							</tr>
 						</tbody>
 					</table>
 				</div>

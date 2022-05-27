@@ -121,7 +121,6 @@ export const put: RequestHandler = async ({ request, locals }): Promise<unknown>
 		const userUpdated = await ContactsModel.findByIdAndUpdate({ _id: userUpdate._id }, userUpdate)
 			.select('-password -createdAt -updatedAt -__v -isCorporate -balanceDue -totalReceipts')
 			.lean();
-		console.log('🚀 ~ file: index.json.ts ~ line 121 ~ put ~ userUpdated', userUpdated);
 
 		return {
 			status: 200,

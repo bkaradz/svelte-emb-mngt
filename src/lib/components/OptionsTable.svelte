@@ -20,22 +20,23 @@
 		editable: boolean;
 	}
 	let optionsList: Array<Partial<optionListInterface>> = [];
-	$: console.log('🚀 ~ file: OptionsTable.svelte ~ line 23 ~ optionsList', optionsList);
 
-	let selectedGroup = null;
-	$: console.log('🚀 ~ file: OptionsTable.svelte ~ line 26 ~ selectedGroup', selectedGroup);
+	let selectedGroup = 'all';
 
-	let groupList;
+	let groupList = new Set(['all']);
 
 	$: groupList;
 
 	let isEditableID = null;
 
 	$: if (optionsList.length) {
-		groupList = new Set(optionsList.map((list) => list.group));
-	} else {
-		groupList = [];
+		optionsList.forEach((list) => {
+			groupList.add(list.group);
+		});
 	}
+	// else {
+	// 	groupList = [];
+	// }
 
 	const handleSubmit = async (option) => {
 		try {
@@ -130,7 +131,6 @@
 				});
 				if (res.ok) {
 					const option = await res.json();
-					console.log('🚀 ~ file: users.svelte ~ line 57 ~ getUpdateUser ~ user', option);
 					toasts.add({ message: `${option.name} was added`, type: 'success' });
 				}
 			} else {
@@ -141,7 +141,6 @@
 				});
 				if (res.ok) {
 					const option = await res.json();
-					console.log('🚀 ~ file: users.svelte ~ line 57 ~ getUpdateUser ~ user', option);
 					toasts.add({ message: `${option.name} was updated`, type: 'success' });
 				}
 				getOptions();
@@ -199,65 +198,67 @@
 				</thead>
 				<tbody class="overflow-y-auto">
 					{#each optionsList as list (list._id)}
-						<tr
-							class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
-						>
-							<td class="px-2 py-1">
-								<input
-									class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
-									type="text"
-									name="group"
-									disabled={!(isEditableID === list._id)}
-									bind:value={list.group}
-								/>
-							</td>
-							<td class="px-2 py-1">
-								<input
-									class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
-									type="text"
-									name="name"
-									disabled={!(isEditableID === list._id)}
-									bind:value={list.name}
-								/>
-							</td>
-							<td class="px-2 py-1">
-								<input
-									class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
-									type="text"
-									name="value"
-									disabled={!(isEditableID === list._id)}
-									bind:value={list.value}
-								/>
-							</td>
-							<td class="px-2 py-1">
-								<input
-									bind:checked={list.isActive}
-									disabled={!(isEditableID === list._id)}
-									type="checkbox"
-									name="isActive"
-								/>
-							</td>
-							<td class="px-2 py-1">
-								<input
-									bind:checked={list.isDefault}
-									disabled={!(isEditableID === list._id)}
-									type="checkbox"
-									name="isDefault"
-								/>
-							</td>
-							<td class="p-1 text-center ">
-								<button class=" m-0 p-0" on:click={() => heandleEditable(list)}>
-									<span class="fill-current text-pickled-bluewood-500">
-										{@html isEditableID === list._id ? svgDocumentAdd : svgPencil}
-									</span>
-								</button>
-							</td>
-							<td class="p-1 text-center ">
-								<button class=" m-0 p-0" on:click={() => heandleDelete(list._id)}>
-									<span class="fill-current text-pickled-bluewood-500">{@html svgXSmall}</span>
-								</button>
-							</td>
-						</tr>
+						{#if selectedGroup === list.group || selectedGroup === 'all'}
+							<tr
+								class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
+							>
+								<td class="px-2 py-1">
+									<input
+										class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
+										type="text"
+										name="group"
+										disabled={!(isEditableID === list._id)}
+										bind:value={list.group}
+									/>
+								</td>
+								<td class="px-2 py-1">
+									<input
+										class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
+										type="text"
+										name="name"
+										disabled={!(isEditableID === list._id)}
+										bind:value={list.name}
+									/>
+								</td>
+								<td class="px-2 py-1">
+									<input
+										class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
+										type="text"
+										name="value"
+										disabled={!(isEditableID === list._id)}
+										bind:value={list.value}
+									/>
+								</td>
+								<td class="px-2 py-1">
+									<input
+										bind:checked={list.isActive}
+										disabled={!(isEditableID === list._id)}
+										type="checkbox"
+										name="isActive"
+									/>
+								</td>
+								<td class="px-2 py-1">
+									<input
+										bind:checked={list.isDefault}
+										disabled={!(isEditableID === list._id)}
+										type="checkbox"
+										name="isDefault"
+									/>
+								</td>
+								<td class="p-1 text-center ">
+									<button class=" m-0 p-0" on:click|preventDefault={() => heandleEditable(list)}>
+										<span class="fill-current text-pickled-bluewood-500">
+											{@html isEditableID === list._id ? svgDocumentAdd : svgPencil}
+										</span>
+									</button>
+								</td>
+								<td class="p-1 text-center ">
+									<button class=" m-0 p-0" on:click|preventDefault={() => heandleDelete(list._id)}>
+										<span class="fill-current text-pickled-bluewood-500">{@html svgXSmall}</span>
+									</button>
+								</td>
+							</tr>
+						{/if}
 					{/each}
 
 					<tr
@@ -274,7 +275,7 @@
 						</td>
 						<td class="px-2 py-1" />
 						<td class="p-1 text-center">
-							<button class=" m-0 p-0" on:click={heandleAddRow()}
+							<button class=" m-0 p-0" on:click|preventDefault={heandleAddRow()}
 								><span class="flex fill-current text-white">{@html svgPlus} Add Row</span></button
 							>
 						</td>

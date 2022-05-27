@@ -30,7 +30,6 @@
 	];
 
 	let contacts: Array<userInterface> = [];
-	$: console.log('🚀 ~ file: users.svelte ~ line 31 ~ contacts', contacts);
 	let error: any;
 	let isEditableID = null;
 
@@ -38,7 +37,6 @@
 		try {
 			const res = await fetch('/api/auth.json');
 			contacts = await res.json();
-			console.log('🚀 ~ file: users.svelte ~ line 40 ~ getUsers ~ contacts', contacts);
 		} catch (err) {
 			logger.error(err.message);
 			error = err.message;
@@ -55,7 +53,6 @@
 			});
 			if (res.ok) {
 				const user = await res.json();
-				console.log('🚀 ~ file: users.svelte ~ line 57 ~ getUpdateUser ~ user', user);
 				toasts.add({
 					message: `${user.name} was updated`,
 					type: 'success'

@@ -9,7 +9,6 @@
 	export let tableHeadings = ['Name', 'isActive', 'isDefault', 'Edit', 'Delete'];
 
 	let pricelists = [];
-	$: console.log('🚀 ~ file: PricelistsTable.svelte ~ line 12 ~ pricelists', pricelists.length);
 
 	const heandleDelete = (id: any) => {};
 
@@ -17,10 +16,6 @@
 		try {
 			const res = await fetch('/api/pricelists.json?');
 			pricelists = await res.json();
-			console.log(
-				'🚀 ~ file: PricelistsTable.svelte ~ line 19 ~ getPricelists ~ pricelists',
-				pricelists
-			);
 		} catch (err) {
 			logger.error(err.message);
 		}

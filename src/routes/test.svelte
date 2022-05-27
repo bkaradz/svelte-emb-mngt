@@ -107,6 +107,11 @@
 			onInput={heandleInput}
 		/>
 	{/if}
+	<form method="post" enctype="multipart/form-data">
+		<label for="fileup">file</label>
+		<input class="btn btn-primary" type="file" name="upload csv" accept=".csv" id="fileup" />
+		<button class="btn btn-primary" type="submit">Submit</button>
+	</form>
 </div>
 
 <style lang="postcss">

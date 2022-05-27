@@ -29,7 +29,6 @@ export function postSuite(data) {
 				maximumQuantity: number;
 				embroideryType: string;
 			}) => {
-				console.log('🚀 ~ file: pricelists.validate.ts ~ line 26 ~ each ~ field', field);
 				test('minimumPrice', 'minimumPrice is required', () => {
 					enforce(field.minimumPrice).isNotBlank();
 				});
