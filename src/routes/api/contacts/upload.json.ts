@@ -1,13 +1,19 @@
-import parseCSV from '$lib/services/csvParse.services';
 import { postSuite } from '$lib/validation/server/contacts.validate';
-import ContactsModel from '$lib/models/contacts.model';
+import ContactsModel, { type ContactsDocument } from '$lib/models/contacts.model';
 import pickBy from 'lodash/pickBy';
 import identity from 'lodash/identity';
 import logger from '$lib/utility/logger';
-
+import csv from 'csvtojson';
 import type { RequestHandler } from '@sveltejs/kit';
 
-export const post: RequestHandler = async ({ request, locals }) => {
+/** @type {import('@sveltejs/kit').RequestHandler}*/
+export const post: RequestHandler = async ({
+	request,
+	locals
+}): Promise<{
+	status: number;
+	body: { error: string } | { message: string };
+}> => {
 	try {
 		if (!locals?.user?._id) {
 			return {
@@ -20,23 +26,23 @@ export const post: RequestHandler = async ({ request, locals }) => {
 
 		const userId = locals.user._id;
 
-		const jsonFile = await parseCSV(request);
+		const data = await request.formData();
 
-		interface contactInterface {
-			name: string;
-			email: string;
-			phone: string;
-			notes: string;
-			address: string;
-			vatOrBpNo: string;
-			isCorporate: boolean;
-			balanceDue: number;
-			totalReceipts: number;
-			Organization: string;
-			isActive: string;
-		}
-		jsonFile.forEach(async (element) => {
-			let { name, email, phone }: contactInterface = element;
+		const file = data.get('contacts');
+
+		const csvString = await file.text();
+
+		const jsonArray = await csv()
+			.preFileLine((fileLine, idx) => {
+				if (idx === 0) {
+					return fileLine.toLowerCase();
+				}
+				return fileLine;
+			})
+			.fromString(csvString);
+
+		jsonArray.forEach(async (element) => {
+			let { name, email, phone }: Partial<ContactsDocument> = element;
 			const {
 				isCorporate,
 				balanceDue,
@@ -44,14 +50,14 @@ export const post: RequestHandler = async ({ request, locals }) => {
 				notes,
 				address,
 				vatOrBpNo
-			}: contactInterface = element;
+			}: Partial<ContactsDocument> = element;
 
 			// const name = Name.replace(/Emb$/gm, '').trim();
 			name = name.trim();
 			email = email.trim();
 			phone = phone.split(',')[0].trim().replace(/ /g, '');
 
-			const contact = {
+			const contact: Partial<ContactsDocument> = {
 				name,
 				email,
 				phone,

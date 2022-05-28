@@ -100,6 +100,10 @@ export async function validateSessionPassword({
 	return omit(user.toJSON(), ['password']);
 }
 
-export async function deleteSessions(query: FilterQuery<SessionsDocument>) {
-	return await SessionsModel.findByIdAndDelete(query);
+export async function deleteSessions(userId: ContactsDocument['_id']) {
+	return await SessionsModel.findByIdAndDelete(userId);
+}
+
+export async function deleteAllSessionByUserID(userId: ContactsDocument['_id']) {
+	return await SessionsModel.deleteMany({ userID: userId });
 }

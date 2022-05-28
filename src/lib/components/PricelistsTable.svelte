@@ -30,10 +30,10 @@
 	};
 </script>
 
+<div class="mb-2 bg-white p-4">
+	<h1>Pricelists</h1>
+</div>
 {#if pricelists.length}
-	<div class="mb-2 bg-white p-4">
-		<h1>Pricelists</h1>
-	</div>
 	<!-- Table start -->
 	<div class="w-full bg-white p-2 shadow-lg">
 		<div class=" block ">

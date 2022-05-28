@@ -14,6 +14,7 @@
 	import { onMount } from 'svelte';
 	import logger from '$lib/utility/logger';
 	import { Menu, MenuButton, MenuItems, MenuItem } from '@rgossiaux/svelte-headlessui';
+	import Loading from '$lib/components/Loading.svelte';
 
 	interface productIterface {
 		results: [
@@ -108,9 +109,7 @@
 	<title>Products</title>
 </svelte:head>
 
-{#if error}
-	<h2>Error while loading the data</h2>
-{:else if products}
+{#if products}
 	<div class="flex flex-1  flex-col overflow-hidden">
 		<div>
 			<!-- Heading and Buttons Bar -->
@@ -391,7 +390,7 @@
 						class=" flex h-44 w-full max-w-xs grow flex-col border-t-4 border-royal-blue-500 bg-white shadow-lg hover:cursor-pointer hover:bg-pickled-bluewood-100 lg:w-1/6"
 					>
 						<div class="flex h-full items-center">
-							<h4 class="p-4 text-base font-medium text-pickled-bluewood-600 truncate">
+							<h4 class="truncate p-4 text-base font-medium text-pickled-bluewood-600">
 								{product.name}
 							</h4>
 						</div>
@@ -451,7 +450,7 @@
 								<tbody class="overflow-y-auto">
 									{#each products.results as product (product._id)}
 										<tr
-											class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 odd:bg-pickled-bluewood-100 even:text-pickled-bluewood-900 font-normal odd:text-pickled-bluewood-900"
+											class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
 										>
 											<td class="px-2 py-1">{product.name}</td>
 											<td class="px-2 py-1">{product.productID}</td>
@@ -470,7 +469,7 @@
 
 											<td class="px-2 py-1">
 												<span
-													class="rounded-full bg-success px-3 py-1 text-xs font-bold text-white whitespace-nowrap"
+													class="whitespace-nowrap rounded-full bg-success px-3 py-1 text-xs font-bold text-white"
 													>10 times</span
 												>
 											</td>
@@ -495,5 +494,5 @@
 		</div>
 	</div>
 {:else}
-	<h2>Loading....</h2>
+	<Loading />
 {/if}

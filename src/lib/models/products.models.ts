@@ -103,15 +103,19 @@ productsSchema.pre('validate', async function (next) {
 const ProductsModel = model<ProductsDocument>('Products', productsSchema);
 
 export default ProductsModel;
-
-export const incProductID = (productID) => {
+/**
+ * Note using Methods is too slow does not give expected results
+ */
+export const incProductID = (productID: string): string => {
 	const oldProductID = productID.replace(/-/g, ''); // remove - from string
 	const strProductID = (parseInt(oldProductID) + 1).toString(); // convert to int and add one then covert to string
 	productID = `${strProductID.slice(0, 3)}-${strProductID.slice(3, 6)}-${strProductID.slice(6)}`;
 	return productID;
 };
-
-export const getCurrentProductID = async () => {
+/**
+ * Note using Methods is too slow does not give expected results
+ */
+export const getCurrentProductID = async (): Promise<string> => {
 	try {
 		const products = await ProductsModel.find({}).sort({ _id: -1 }).limit(1).select('productID');
 		let productID = '';

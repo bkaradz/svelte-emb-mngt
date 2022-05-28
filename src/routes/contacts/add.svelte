@@ -5,7 +5,7 @@
 	import { svgAddUser, svgArrow, svgPlus, svgUpload, svgX } from '$lib/utility/svgLogos';
 	import classnames from 'vest/classnames';
 	import { goto } from '$app/navigation';
-	import Loading from '$lib/components/Loading.svelte';
+	// import Loading from '$lib/components/Loading.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { ContactsDocument } from '$lib/models/contacts.model';
 	import type { metaDataInterface } from '$lib/services/aggregateQuery.services';
@@ -16,7 +16,7 @@
 
 	let result = suite.get();
 
-	let error: string | undefined = undefined;
+	// let error: string | undefined = undefined;
 
 	interface contactsInterface extends metaDataInterface {
 		results: Array<Omit<ContactsDocument, 'createdAt' | 'updatedAt' | 'password' | 'userRole'>>;
@@ -66,7 +66,6 @@
 				message: 'An error has occured while getting corporate contacts',
 				type: 'error'
 			});
-			error = err.message;
 		}
 	};
 
@@ -135,7 +134,6 @@
 		} catch (err) {
 			logger.error(err.messages);
 			toasts.add({ message: 'An error has occured while adding the contact', type: 'error' });
-			error = 'An error has occured';
 		}
 	};
 
@@ -143,27 +141,23 @@
 		await goto(`/contacts`);
 	};
 
-	let uploadFiles;
-	let uploadCSVFiles;
-
-	const handleUpload = async (e) => {
-		const formData = new FormData();
-		// dataArray.append('contacts', uploadCSVFiles);
-		formData.append('contacts', uploadCSVFiles);
-
+	const handleUpload = async (e: SubmitEvent) => {
 		try {
+			const formElm = e.target as HTMLFormElement;
+			const formData = new FormData(formElm);
+
 			const res = await fetch('/api/contacts/upload.json', {
 				method: 'POST',
-				// headers: { 'Content-Type': 'multipart/form-data' },
 				body: formData
 			});
+
 			if (res.ok) {
-				toasts.add({ message: 'Contact uploaded', type: 'success' });
+				formElm.reset();
+				toasts.add({ message: 'Contacts uploaded', type: 'success' });
 			}
 		} catch (err) {
 			logger.error(err.messages);
-			toasts.add({ message: 'An error has occured while uploading contact', type: 'error' });
-			error = 'An error has occured';
+			toasts.add({ message: 'An error has occured while uploading contacts', type: 'error' });
 		}
 	};
 
@@ -185,163 +179,137 @@
 			...currentCorporateQueryParams,
 			name: e.target.value
 		};
-		getCorporateContacts(currentCorporateQueryParams);
+		// getCorporateContacts(currentCorporateQueryParams);
 	};
-
-	function onFileSelected(e) {
-		let csvFile = e.target.files[0];
-		let reader = new FileReader();
-		reader.onload = (e) => {
-			uploadCSVFiles = e.target.result;
-		};
-		reader.readAsBinaryString(csvFile);
-	}
 </script>
 
 <svelte:head>
 	<title>Add Contact</title>
 </svelte:head>
 
-{#if error}
-	<h2>Error while loading the data</h2>
-{:else if contacts}
-	<div class="flex flex-1 flex-col">
-		<!-- Use This -->
-		<div>
-			<!-- Heading and Buttons Bar -->
-			<div class="main-header flex flex-row items-center justify-between">
-				<div class="flex">
-					<button class="mr-3" on:click={gotoContacts}>
-						{@html svgArrow}
-					</button>
-					<h1 class="text-slate-700 text-2xl font-medium">Contacts</h1>
-				</div>
-				<!-- Right -->
-				<div class="flex items-center">
-					<form method="post" enctype="multipart/form-data" on:submit|preventDefault={handleUpload}>
-						<div class="relative">
-							<button
-								class="absolute border border-royal-blue-500 bg-royal-blue-500 p-2 text-white"
-								for="uploadCSV">{@html svgUpload}</button
-							>
-							<input
-								bind:files={uploadFiles}
-								on:change={onFileSelected}
-								class="w-72 border border-pickled-bluewood-300 bg-pickled-bluewood-100 text-pickled-bluewood-500 ring-royal-blue-500 file:w-10 file:p-1 file:opacity-0"
-								type="file"
-								name="UploadCSV"
-								id="uploadCSV"
-								accept=".csv, .CSV"
-							/>
-							<button
-								class="absolute right-0 border border-royal-blue-500 bg-royal-blue-500 p-2 text-white"
-								type="submit">{@html svgPlus}</button
-							>
-						</div>
-					</form>
-					<!-- Make the button hidden until I find use for it, inline-flex removed-->
-					<button class=" btn btn-primary ml-2 hidden items-center justify-center px-3">
-						<span>
-							{@html svgPlus}
-						</span>
-
-						<span class="ml-2">Add Contact</span>
-					</button>
-				</div>
+<div class="flex flex-1 flex-col">
+	<!-- Use This -->
+	<div>
+		<!-- Heading and Buttons Bar -->
+		<div class="main-header flex flex-row items-center justify-between">
+			<div class="flex">
+				<button class="mr-3" on:click={gotoContacts}>
+					{@html svgArrow}
+				</button>
+				<h1 class="text-slate-700 text-2xl font-medium">Contacts</h1>
 			</div>
-
-			<!-- Search and View Bar -->
-			<div class="z-10 mt-4 flex h-14 w-full flex-row items-center justify-center bg-white">
-				<div>
-					<h2 class="text-center text-2xl font-bold text-pickled-bluewood-600">Add Contact</h2>
-				</div>
+			<!-- Right -->
+			<div class="flex items-center">
+				<form on:submit|preventDefault={handleUpload}>
+					<div class="relative">
+						<button
+							class="absolute border border-royal-blue-500 bg-royal-blue-500 p-2 text-white"
+							for="uploadCSV">{@html svgUpload}</button
+						>
+						<input
+							class="w-72 border border-pickled-bluewood-300 bg-pickled-bluewood-100 text-pickled-bluewood-500 ring-royal-blue-500 file:w-10 file:p-1 file:opacity-0"
+							type="file"
+							name="contacts"
+							id="uploadCSV"
+							accept=".csv, .CSV"
+						/>
+						<button
+							class="absolute right-0 border border-royal-blue-500 bg-royal-blue-500 p-2 text-white"
+							type="submit">{@html svgPlus}</button
+						>
+					</div>
+				</form>
 			</div>
 		</div>
-		<!-- End This -->
 
-		<div class="mx-auto mt-2 h-full w-full max-w-md space-y-8">
-			<form class="mt-2 space-y-6" on:submit|preventDefault={handleSubmit}>
-				<input type="hidden" name="userid" value="true" />
-				<div class="space-y-2 shadow-sm">
-					<Input
-						name="name"
-						label="Name"
-						bind:value={formData.name}
-						onInput={handleInput}
-						messages={result.getErrors('name')}
-						validityClass={cn('name')}
-					/>
-
-					<Checkbox
-						name="isCorporate"
-						label="Individual or Corparate"
-						validityClass={cn('isCorporate')}
-						bind:checked={formData.isCorporate}
-					/>
-
-					{#if contacts}
-						<Combobox
-							label="Organization"
-							name="organization"
-							list={contacts.results}
-							bind:value={corporateSearch}
-							onInput={handleComboInput}
-							disabled={formData.isCorporate}
-						/>
-					{/if}
-
-					<Input
-						name="email"
-						label="Email"
-						bind:value={formData.email}
-						onInput={handleInput}
-						type="email"
-						messages={result.getErrors('email')}
-						validityClass={cn('email')}
-					/>
-
-					<Input
-						name="phone"
-						label="Phone"
-						bind:value={formData.phone}
-						onInput={handleInput}
-						messages={result.getErrors('phone')}
-						validityClass={cn('phone')}
-					/>
-
-					<Textarea
-						name="address"
-						label="Address"
-						bind:value={formData.address}
-						onInput={handleInput}
-						messages={result.getErrors('address')}
-						validityClass={cn('address')}
-					/>
-
-					<div class="mt-6 flex space-x-2">
-						<button
-							type="submit"
-							class="disabled:opacity-60 disabled:cursor-not-allowed group relative flex w-full justify-center border border-transparent bg-royal-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-royal-blue-700 focus:outline-none focus:ring-2 focus:ring-royal-blue-500 focus:ring-offset-2"
-						>
-							<span class="absolute inset-y-0 left-0 flex items-center pl-3">
-								{@html svgAddUser}
-							</span>
-							Add Contact
-						</button>
-						<button
-							on:click|preventDefault={(e) => resetForm()}
-							class="group relative flex w-full justify-center  border border-transparent bg-royal-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-royal-blue-700 focus:outline-none focus:ring-2 focus:ring-royal-blue-500 focus:ring-offset-2"
-						>
-							<span class="absolute inset-y-0 left-0 flex items-center pl-3">
-								{@html svgX}
-							</span>
-							Reset
-						</button>
-					</div>
-				</div>
-			</form>
+		<!-- Search and View Bar -->
+		<div class="z-10 mt-4 flex h-14 w-full flex-row items-center justify-center bg-white">
+			<div>
+				<h2 class="text-center text-2xl font-bold text-pickled-bluewood-600">Add Contact</h2>
+			</div>
 		</div>
 	</div>
-{:else}
-	<Loading />
-{/if}
+	<!-- End This -->
+
+	<div class="mx-auto mt-2 h-full w-full max-w-md space-y-8">
+		<form class="mt-2 space-y-6" on:submit|preventDefault={handleSubmit}>
+			<div class="space-y-2 shadow-sm">
+				<Input
+					name="name"
+					label="Name"
+					bind:value={formData.name}
+					onInput={handleInput}
+					messages={result.getErrors('name')}
+					validityClass={cn('name')}
+				/>
+
+				<Checkbox
+					name="isCorporate"
+					label="Individual or Corparate"
+					validityClass={cn('isCorporate')}
+					bind:checked={formData.isCorporate}
+				/>
+
+				{#if contacts}
+					<Combobox
+						label="Organization"
+						name="organization"
+						list={contacts.results}
+						bind:value={corporateSearch}
+						onInput={handleComboInput}
+						disabled={formData.isCorporate}
+					/>
+				{/if}
+
+				<Input
+					name="email"
+					label="Email"
+					bind:value={formData.email}
+					onInput={handleInput}
+					type="email"
+					messages={result.getErrors('email')}
+					validityClass={cn('email')}
+				/>
+
+				<Input
+					name="phone"
+					label="Phone"
+					bind:value={formData.phone}
+					onInput={handleInput}
+					messages={result.getErrors('phone')}
+					validityClass={cn('phone')}
+				/>
+
+				<Textarea
+					name="address"
+					label="Address"
+					bind:value={formData.address}
+					onInput={handleInput}
+					messages={result.getErrors('address')}
+					validityClass={cn('address')}
+				/>
+
+				<div class="mt-6 flex space-x-2">
+					<button
+						type="submit"
+						class="group relative flex w-full justify-center border border-transparent bg-royal-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-royal-blue-700 focus:outline-none focus:ring-2 focus:ring-royal-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+					>
+						<span class="absolute inset-y-0 left-0 flex items-center pl-3">
+							{@html svgAddUser}
+						</span>
+						Add Contact
+					</button>
+					<button
+						on:click|preventDefault={(e) => resetForm()}
+						class="group relative flex w-full justify-center  border border-transparent bg-royal-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-royal-blue-700 focus:outline-none focus:ring-2 focus:ring-royal-blue-500 focus:ring-offset-2"
+					>
+						<span class="absolute inset-y-0 left-0 flex items-center pl-3">
+							{@html svgX}
+						</span>
+						Reset
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

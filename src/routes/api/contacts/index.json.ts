@@ -1,10 +1,20 @@
-import ContactsModel from '$lib/models/contacts.model';
+import ContactsModel, { type ContactsDocument } from '$lib/models/contacts.model';
 import omit from 'lodash/omit';
 import logger from '$lib/utility/logger';
 import aggregateQuery from '$lib/services/aggregateQuery.services';
 import { postSuite } from '$lib/validation/server/contacts.validate';
+import pickBy from 'lodash/pickBy';
+import identity from 'lodash/identity';
+import type { RequestHandler } from '@sveltejs/kit';
 
-export const get = async ({ url, locals }) => {
+/** @type {import('@sveltejs/kit').RequestHandler}*/
+export const get = async ({
+	url,
+	locals
+}): Promise<{
+	status: number;
+	body: ContactsDocument | { error: string } | { message: string };
+}> => {
 	try {
 		if (!locals?.user?._id) {
 			return {
@@ -68,16 +78,16 @@ export const get = async ({ url, locals }) => {
 					as: 'organizationID'
 				}
 			},
-			{
-				$addFields: {
-					balanceDue: {
-						$toString: '$balanceDue'
-					},
-					totalReceipts: {
-						$toString: '$totalReceipts'
-					}
-				}
-			},
+			// {
+			// 	$addFields: {
+			// 		balanceDue: {
+			// 			$toString: '$balanceDue'
+			// 		},
+			// 		totalReceipts: {
+			// 			$toString: '$totalReceipts'
+			// 		}
+			// 	}
+			// },
 			{
 				$match: newRegExQuery
 			},
@@ -130,13 +140,14 @@ export const get = async ({ url, locals }) => {
 			aggregateFilter,
 			endSearchParams
 		);
+		console.log('🚀 ~ file: index.json.ts ~ line 143 ~ contacts', contacts);
 
 		contacts = { ...contacts, ...contacts.metaData[0] };
 		delete contacts.metaData;
 
 		return {
 			status: 200,
-			body: { ...contacts }
+			body: contacts
 		};
 	} catch (err) {
 		return {
@@ -148,7 +159,14 @@ export const get = async ({ url, locals }) => {
 	}
 };
 
-export const post = async ({ request, locals }) => {
+/** @type {import('@sveltejs/kit').RequestHandler}*/
+export const post: RequestHandler = async ({
+	request,
+	locals
+}): Promise<{
+	status: number;
+	body: ContactsDocument | { error: string } | { message: string };
+}> => {
 	try {
 		if (!locals?.user?._id) {
 			return {
@@ -166,6 +184,8 @@ export const post = async ({ request, locals }) => {
 		// password only allowed in signUp endpoint
 		reqContact = omit(reqContact, 'password');
 
+		reqContact.isActive = true;
+
 		const result = postSuite(reqContact);
 
 		if (result.hasErrors()) {
@@ -173,12 +193,14 @@ export const post = async ({ request, locals }) => {
 			return {
 				status: 400,
 				body: {
-					message: result.getErrors()
+					message: `${result.getErrors()}`
 				}
 			};
 		}
 
-		const contacts = new ContactsModel(reqContact);
+		const contactFiltered = pickBy(reqContact, identity);
+
+		const contacts = new ContactsModel(contactFiltered);
 
 		contacts.isUser = false;
 		contacts.userID = userId;
@@ -187,9 +209,7 @@ export const post = async ({ request, locals }) => {
 
 		return {
 			status: 200,
-			body: {
-				message: contacts
-			}
+			body: contacts
 		};
 	} catch (err) {
 		logger.error(err.message);
@@ -202,7 +222,14 @@ export const post = async ({ request, locals }) => {
 	}
 };
 
-export const put = async ({ request, locals }) => {
+/** @type {import('@sveltejs/kit').RequestHandler}*/
+export const put: RequestHandler = async ({
+	request,
+	locals
+}): Promise<{
+	status: number;
+	body: ContactsDocument | { error: string } | { message: string };
+}> => {
 	try {
 		if (!locals?.user?._id) {
 			return {

@@ -4,25 +4,6 @@ import omit from 'lodash/omit';
 import { postSuite } from '$lib/validation/server/signUp.validate';
 import logger from '$lib/utility/logger';
 
-export const get: RequestHandler = async () => {
-	try {
-		const contacts = await ContactsModel.find({ isUser: true, isActive: true }).select('-password');
-		return {
-			status: 200,
-			body: {
-				contacts
-			}
-		};
-	} catch (err) {
-		return {
-			status: 500,
-			body: {
-				error: `A server error occurred ${err}`
-			}
-		};
-	}
-};
-
 export const post: RequestHandler = async ({ request }) => {
 	try {
 		const reqUser = await request.json();
@@ -64,6 +45,9 @@ export const post: RequestHandler = async ({ request }) => {
 		if (allUsers.length === 0) {
 			contacts.userRole = 'ADMIN';
 			contacts.isActive = true;
+		} else {
+			contacts.userRole = 'USER';
+			contacts.isActive = false;
 		}
 
 		contacts.isUser = true;
@@ -87,24 +71,43 @@ export const post: RequestHandler = async ({ request }) => {
 	}
 };
 
-export const put: RequestHandler = async ({ request }) => {
-	try {
-		return {
-			status: 200,
-			body: {
-				status: 'Success'
-			}
-		};
-	} catch (err) {
-		return {
-			status: 500,
-			body: {
-				error: `A server error occurred ${err}`
-			}
-		};
-	}
-};
+// export const get: RequestHandler = async () => {
+// 	try {
+// 		const contacts = await ContactsModel.find({ isUser: true, isActive: true }).select('-password');
+// 		return {
+// 			status: 200,
+// 			body: {
+// 				contacts
+// 			}
+// 		};
+// 	} catch (err) {
+// 		return {
+// 			status: 500,
+// 			body: {
+// 				error: `A server error occurred ${err}`
+// 			}
+// 		};
+// 	}
+// };
 
-export const del: RequestHandler = async ({ request }) => {
-	return;
-};
+// export const put: RequestHandler = async ({ request }) => {
+// 	try {
+// 		return {
+// 			status: 200,
+// 			body: {
+// 				status: 'Success'
+// 			}
+// 		};
+// 	} catch (err) {
+// 		return {
+// 			status: 500,
+// 			body: {
+// 				error: `A server error occurred ${err}`
+// 			}
+// 		};
+// 	}
+// };
+
+// export const del: RequestHandler = async ({ request }) => {
+// 	return;
+// };

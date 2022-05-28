@@ -117,10 +117,10 @@
 	<title>Settings: Users</title>
 </svelte:head>
 
-<div>
-	<div class="mb-2 bg-white p-4">
-		<h1>Users</h1>
-	</div>
+<div class="mb-2 bg-white p-4">
+	<h1>Users</h1>
+</div>
+{#if contacts}
 	<div class="w-full bg-white p-2 shadow-lg">
 		<div class=" block ">
 			<table class="relative w-full rounded-lg text-left text-sm">
@@ -217,7 +217,7 @@
 			</table>
 		</div>
 	</div>
-</div>
+{/if}
 
 <style>
 </style>

@@ -66,7 +66,6 @@ const contactsSchema: Schema = new Schema<ContactsDocument>(
 		isUser: { type: Boolean, required: true, default: false },
 		userRole: {
 			type: String,
-			default: 'USER',
 			required: function () {
 				return this.isUser === true;
 			}

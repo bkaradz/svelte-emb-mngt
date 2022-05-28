@@ -8,8 +8,8 @@
 
 	export let tableHeadings = [
 		'Group',
-		'name',
-		'value',
+		'Name',
+		'Value',
 		'Active',
 		'Default',
 		'Edit/Save',
@@ -171,10 +171,10 @@
 	});
 </script>
 
-{#if optionsList.length}
-	<!-- Table start -->
-	<div class="w-full bg-white p-2 shadow-lg">
-		<div>
+<!-- Table start -->
+<div class="w-full bg-white p-2 shadow-lg">
+	<div>
+		{#if optionsList.length}
 			{#each [...groupList] as list, index (index)}
 				<button
 					on:click|preventDefault={(e) => (selectedGroup = list)}
@@ -184,19 +184,21 @@
 						: `btn-tertiary`}">{list}</button
 				>
 			{/each}
-		</div>
-		<div class=" block ">
-			<table class="relative w-full rounded-lg text-left text-sm">
-				<thead>
-					<tr
-						class=" sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
-					>
-						{#each tableHeadings as header (header)}
-							<th on:click={() => console.log(header)} class="px-2 py-2">{header}</th>
-						{/each}
-					</tr>
-				</thead>
-				<tbody class="overflow-y-auto">
+		{/if}
+	</div>
+	<div class=" block ">
+		<table class="relative w-full rounded-lg text-left text-sm">
+			<thead>
+				<tr
+					class=" sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
+				>
+					{#each tableHeadings as header (header)}
+						<th on:click={() => console.log(header)} class="px-2 py-2">{header}</th>
+					{/each}
+				</tr>
+			</thead>
+			<tbody class="overflow-y-auto">
+				{#if optionsList.length}
 					{#each optionsList as list (list._id)}
 						{#if selectedGroup === list.group || selectedGroup === 'all'}
 							<tr
@@ -260,33 +262,31 @@
 							</tr>
 						{/if}
 					{/each}
-
-					<tr
-						class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 bg-royal-blue-300 font-normal text-white"
-					>
-						<td class="px-2 py-1">Group</td>
-						<td class="px-2 py-1">Name</td>
-						<td class="px-2 py-1">value</td>
-						<td class="px-2 py-1">
-							<input disabled type="checkbox" name="isActive" checked={false} />
-						</td>
-						<td class="px-2 py-1">
-							<input disabled type="checkbox" name="isActive" checked={true} />
-						</td>
-						<td class="px-2 py-1" />
-						<td class="p-1 text-center">
-							<button class=" m-0 p-0" on:click|preventDefault={heandleAddRow()}
-								><span class="flex fill-current text-white">{@html svgPlus} Add Row</span></button
-							>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+				{/if}
+				<tr
+					class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 bg-royal-blue-300 font-normal text-white"
+				>
+					<td class="px-2 py-1">Group</td>
+					<td class="px-2 py-1">Name</td>
+					<td class="px-2 py-1">value</td>
+					<td class="px-2 py-1">
+						<input disabled type="checkbox" name="isActive" checked={false} />
+					</td>
+					<td class="px-2 py-1">
+						<input disabled type="checkbox" name="isActive" checked={true} />
+					</td>
+					<td class="px-2 py-1" />
+					<td class="p-1 text-center">
+						<button class=" m-0 p-0" on:click|preventDefault={heandleAddRow()}
+							><span class="flex fill-current text-white">{@html svgPlus} Add Row</span></button
+						>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
+</div>
 
-	<!-- Table End -->
-{/if}
-
+<!-- Table End -->
 <style>
 </style>

@@ -1,18 +1,12 @@
-import type { FilterQuery } from 'mongoose';
 import type { RequestHandler } from '@sveltejs/kit';
-import SessionsModel from '$lib/models/sessions.model';
-import type { SessionsDocument } from '$lib/models/sessions.model';
-import lodashGet from 'lodash/get';
 import { signJwt } from '$lib/utility/jwt.utils';
 import config from 'config';
 import logger from '$lib/utility/logger';
 import { postSuite } from '$lib/validation/server/session.validate';
-import type { ContactsDocument } from '../../../lib/models/contacts.model';
+import type { ContactsDocument } from '$lib/models/contacts.model';
 import {
 	setSessionCookies,
-	deleteSessionCookies,
 	createSession,
-	findSessions,
 	validateSessionPassword
 } from '$lib/services/session.services';
 
@@ -64,9 +58,8 @@ export const post: RequestHandler = async ({ request }): Promise<unknown> => {
 			};
 		}
 
-		/**
-		 * TODO: check if sessions exists for the user and delete, before creating a new session
-		 */
+		// delete all sessions by current user
+		// deleteAllSessionByUserID(user._id);
 
 		// create a session
 		const session = await createSession(user._id, request.headers.get('user-agent') || '');
@@ -104,67 +97,74 @@ export const post: RequestHandler = async ({ request }): Promise<unknown> => {
 	}
 };
 
-export const get: RequestHandler = async ({ locals }): Promise<unknown> => {
-	try {
-		const userId = lodashGet(locals.user, '_id', null);
+/**
+ * TODO: Refactor to remove session
+ * Session GET
+ */
+// export const get: RequestHandler = async ({ locals }): Promise<unknown> => {
+// 	try {
+// 		const userId = lodashGet(locals.user, '_id', null);
 
-		if (!userId) {
-			return {
-				status: 403,
-				body: {
-					message: `Sessions User not Found`
-				}
-			};
-		}
+// 		if (!userId) {
+// 			return {
+// 				status: 403,
+// 				body: {
+// 					message: `Sessions User not Found`
+// 				}
+// 			};
+// 		}
 
-		const sessionsFound = await findSessions({ user: userId, valid: true });
+// 		const sessionsFound = await findSessions({ user: userId, valid: true });
 
-		if (!sessionsFound) {
-			return {
-				status: 403,
-				body: {
-					message: `Sessions not Found`
-				}
-			};
-		}
+// 		if (!sessionsFound) {
+// 			return {
+// 				status: 403,
+// 				body: {
+// 					message: `Sessions not Found`
+// 				}
+// 			};
+// 		}
 
-		return {
-			status: 200,
-			body: {
-				message: sessionsFound
-			}
-		};
-	} catch (err) {
-		logger.error(err.message);
-		return {
-			status: 500,
-			body: {
-				error: `A server error occurred ${err}`
-			}
-		};
-	}
-};
+// 		return {
+// 			status: 200,
+// 			body: {
+// 				message: sessionsFound
+// 			}
+// 		};
+// 	} catch (err) {
+// 		logger.error(err.message);
+// 		return {
+// 			status: 500,
+// 			body: {
+// 				error: `A server error occurred ${err}`
+// 			}
+// 		};
+// 	}
+// };
 
-export const del: RequestHandler = async ({ locals }): Promise<unknown> => {
-	const sessionId = locals.user.sessionId;
+// /**
+//  * Session DELETE
+//  */
+// export const del: RequestHandler = async ({ locals }): Promise<unknown> => {
+// 	const sessionId = locals.user.sessionId;
 
-	if (sessionId) {
-		deleteSessions(sessionId);
-	}
+// 	if (sessionId) {
+// 		deleteSessions(sessionId);
+// 	}
 
-	locals.user = {};
+// 	locals.user = {};
 
-	const headers = deleteSessionCookies();
+// 	const headers = deleteSessionCookies();
 
-	return {
-		status: 200,
-		headers,
-		body: {
-			ok: true
-		}
-	};
-};
+// 	return {
+// 		status: 200,
+// 		headers,
+// 		body: {
+// 			ok: true
+// 		}
+// 	};
+// };
 
-async function deleteSessions(query: FilterQuery<SessionsDocument>) {
-	return await SessionsModel.findByIdAndDelete(query);
-}
+// async function deleteSessions(query: FilterQuery<SessionsDocument>) {
+// 	return await SessionsModel.findByIdAndDelete(query);
+// }

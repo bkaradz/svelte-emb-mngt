@@ -2,9 +2,10 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { deleteSessionCookies, deleteSessions } from '$lib/services/session.services';
 import logger from '$lib/utility/logger';
 
-export const get: RequestHandler = async ({ locals }) => {
+export const post: RequestHandler = async ({ locals }) => {
 	try {
 		const sessionId = locals?.user?.sessionId;
+		const name = locals?.user?.name;
 
 		const headers = deleteSessionCookies();
 
@@ -17,6 +18,7 @@ export const get: RequestHandler = async ({ locals }) => {
 				}
 			};
 		}
+
 		deleteSessions(sessionId);
 
 		locals.user = {};
@@ -25,7 +27,7 @@ export const get: RequestHandler = async ({ locals }) => {
 			status: 200,
 			headers,
 			body: {
-				message: 'You have successfully singed out'
+				message: `${name} has successfully singed out`
 			}
 		};
 	} catch (err) {

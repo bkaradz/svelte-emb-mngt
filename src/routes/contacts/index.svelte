@@ -70,7 +70,7 @@
 	];
 
 	let contacts: ContentIterface;
-	let error: any;
+	// let error: any;
 	let limit = 15;
 	let currentGlobalParams: getContactsInterface = {
 		limit,
@@ -130,7 +130,6 @@
 			contacts = await res.json();
 		} catch (err) {
 			logger.error(err.message);
-			error = err.message;
 		}
 	};
 </script>
@@ -139,9 +138,7 @@
 	<title>Settings: Contacts</title>
 </svelte:head>
 
-{#if error}
-	<h2>Error while loading the data</h2>
-{:else if contacts}
+{#if contacts}
 	<div class="flex flex-1  flex-col overflow-hidden">
 		<div>
 			<!-- Heading and Buttons Bar -->
@@ -411,7 +408,7 @@
 						class=" flex h-44 w-full max-w-xs grow flex-col border-t-4 border-royal-blue-500 bg-white shadow-lg hover:cursor-pointer hover:bg-pickled-bluewood-100 lg:w-1/6"
 					>
 						<div class="flex h-full items-center">
-							<h4 class="p-4 text-base font-medium text-pickled-bluewood-600 truncate">
+							<h4 class="truncate p-4 text-base font-medium text-pickled-bluewood-600">
 								{contact.name}
 							</h4>
 						</div>
@@ -421,13 +418,13 @@
 							<div class="p-1">
 								<p class="p-1 text-xs font-semibold text-pickled-bluewood-500">BALANCE DUE</p>
 								<span class="p-1 text-base font-bold text-pickled-bluewood-500">
-									${contact.balanceDue}
+									${contact.balanceDue.$numberDecimal}
 								</span>
 							</div>
 							<div class="p-1">
 								<p class="p-1 text-xs font-semibold text-pickled-bluewood-500">TOTAL INVOICED</p>
 								<span class="p-1 text-base font-bold text-pickled-bluewood-500">
-									${contact.totalReceipts}
+									${contact.totalReceipts.$numberDecimal}
 								</span>
 							</div>
 						</div>
@@ -451,7 +448,7 @@
 								<tbody class="overflow-y-auto">
 									{#each contacts.results as contact (contact._id)}
 										<tr
-											class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 odd:bg-pickled-bluewood-100 even:text-pickled-bluewood-900 font-normal odd:text-pickled-bluewood-900"
+											class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
 										>
 											<td class="px-2 py-1">{contact.name}</td>
 											<td class="px-2 py-1"
@@ -474,9 +471,9 @@
 											<td class="px-2 py-1">
 												{!contact.vatOrBpNo ? '...' : contact.vatOrBpNo}
 											</td>
-											<td class="px-2 py-1 text-right">${contact.balanceDue}</td>
-											<td class="px-2 py-1 text-right">${contact.totalReceipts}</td>
-											<td class="px-2 py-1 flex justify-end items-center">
+											<td class="px-2 py-1 text-right">${contact.balanceDue.$numberDecimal}</td>
+											<td class="px-2 py-1 text-right">${contact.totalReceipts.$numberDecimal}</td>
+											<td class="flex items-center justify-end px-2 py-1">
 												<span class="rounded-full bg-success px-3 py-1 text-xs font-bold text-white"
 													>Invoiced</span
 												>

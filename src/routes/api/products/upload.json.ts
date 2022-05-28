@@ -1,13 +1,23 @@
-import parseCSV from '$lib/services/csvParse.services';
 import { postSuite } from '$lib/validation/server/products.validate';
 import pickBy from 'lodash/pickBy';
 import identity from 'lodash/identity';
 import logger from '$lib/utility/logger';
 import type { RequestHandler } from '@sveltejs/kit';
-import ProductsModel, { getCurrentProductID, incProductID } from '$lib/models/products.models';
-// import { getCurrentProductID, incProductID } from '$lib/models/products.models';
+import ProductsModel, {
+	getCurrentProductID,
+	incProductID,
+	type ProductsDocument
+} from '$lib/models/products.models';
+import csv from 'csvtojson';
 
-export const post: RequestHandler = async ({ request, locals }) => {
+/** @type {import('@sveltejs/kit').RequestHandler}*/
+export const post: RequestHandler = async ({
+	request,
+	locals
+}): Promise<{
+	status: number;
+	body: { error: string } | { message: string };
+}> => {
 	try {
 		if (!locals?.user?._id) {
 			return {
@@ -20,25 +30,28 @@ export const post: RequestHandler = async ({ request, locals }) => {
 
 		const userId = locals.user._id;
 
-		const jsonFile = await parseCSV(request);
+		const data = await request.formData();
 
-		interface productInterface {
-			name: string;
-			productID?: string;
-			title?: string;
-			description?: string;
-			unitPrice?: number;
-			category?: string;
-			stitches?: number;
-			quantity?: number;
-			isActive: boolean;
-		}
+		const file = data.get('products');
 
+		const csvString = await file.text();
+
+		const jsonArray = await csv()
+			.preFileLine((fileLine, idx) => {
+				if (idx === 0) {
+					return fileLine.toLowerCase();
+				}
+				return fileLine;
+			})
+			.fromString(csvString);
+
+		// get initial productID and increment using incProductID function
 		let productID = await getCurrentProductID();
 
-		jsonFile.forEach(async (element) => {
+		jsonArray.forEach(async (element) => {
+			// increment productID and save in ProductID
 			productID = incProductID(productID);
-			const product = {
+			const product: Partial<ProductsDocument> = {
 				category: 'embLogo',
 				isActive: true,
 				productID,

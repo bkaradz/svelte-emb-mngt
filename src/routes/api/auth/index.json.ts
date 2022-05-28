@@ -83,6 +83,9 @@ export const post: RequestHandler = async ({ request }): Promise<unknown> => {
 		if (allUsers.length === 0) {
 			contacts.userRole = 'ADMIN';
 			contacts.isActive = true;
+		} else {
+			contacts.userRole = 'USER';
+			contacts.isActive = false;
 		}
 
 		contacts.isUser = true;

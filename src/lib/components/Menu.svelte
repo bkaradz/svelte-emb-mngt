@@ -11,6 +11,7 @@
 	} from '$lib/utility/svgLogos';
 	import { Menu, MenuItems, MenuItem, MenuButton, Transition } from '@rgossiaux/svelte-headlessui';
 	import { session } from '$app/stores';
+	import { toasts } from '$lib/stores/toasts.store';
 
 	let signInMenuOpen = false;
 	function handleClick() {
@@ -33,12 +34,16 @@
 	const handleSignOut = async () => {
 		try {
 			const res = await fetch('/api/auth/signOut.json', {
-				method: 'GET'
+				method: 'POST'
 			});
 
 			if (res.ok) {
 				const data = await res.json();
 				$session = {};
+				toasts.add({
+					message: `${data.message}`,
+					type: 'success'
+				});
 				await goto('/auth/signIn');
 			}
 		} catch (err) {
