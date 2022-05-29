@@ -139,7 +139,7 @@
 </svelte:head>
 
 {#if contacts}
-	<div class="flex flex-1  flex-col overflow-hidden">
+	<div class="flex flex-1 flex-col overflow-hidden">
 		<div>
 			<!-- Heading and Buttons Bar -->
 			<div class="main-header flex flex-row items-center justify-between">
@@ -431,21 +431,21 @@
 					</div>
 				{/each}
 			{:else}
-				<div class=" flex flex-1 flex-wrap gap-4">
+				<div class="flex flex-1 flex-wrap gap-4">
 					<!-- Table start -->
 					<div class="w-full bg-white py-6 shadow-lg">
-						<div class="mx-6 block ">
-							<table class="relative w-full rounded-lg text-left text-sm">
-								<thead>
+						<div class="mx-6 block">
+							<table class="w-full text-left text-sm">
+								<thead class="sticky top-0">
 									<tr
-										class=" sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
+										class="border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
 									>
 										{#each tableHeadings as header (header.id)}
 											<th on:click={(e) => console.log(header)} class="px-2 py-2">{header.name}</th>
 										{/each}
 									</tr>
 								</thead>
-								<tbody class="overflow-y-auto">
+								<tbody>
 									{#each contacts.results as contact (contact._id)}
 										<tr
 											class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"

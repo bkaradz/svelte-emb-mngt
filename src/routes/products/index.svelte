@@ -432,7 +432,7 @@
 					<div class="w-full bg-white py-6 shadow-lg">
 						<div class="mx-6 block ">
 							<table class="relative w-full rounded-lg text-left text-sm">
-								<thead>
+								<thead class="sticky top-0">
 									<tr
 										class=" sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
 									>

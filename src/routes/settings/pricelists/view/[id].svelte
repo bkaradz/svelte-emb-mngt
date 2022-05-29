@@ -1,0 +1,211 @@
+<script lang="ts">
+	import { page } from '$app/stores';
+	import suite from '$lib/validation/client/signUp.validate';
+	import classnames from 'vest/classnames';
+	import { onMount } from 'svelte';
+	import logger from '$lib/utility/logger';
+	import Input from '$lib/components/Input.svelte';
+	import Checkbox from '$lib/components/Checkbox.svelte';
+	import { svgDocumentAdd, svgPencil, svgPlus, svgXSmall } from '$lib/utility/svgLogos';
+	import { v4 as uuidv4 } from 'uuid';
+
+	let result = suite.get();
+
+	export let tableHeadings = [
+		'Embroidery Type',
+		'Minimum Price',
+		'Maximum Quantity',
+		'Price per 1000 stitches'
+	];
+
+	const endpoint = `/api/pricelists/${$page.params.id}.json`;
+
+	let pricelist;
+
+	let selectedGroup = 'all';
+
+	let groupList = new Set(['all']);
+
+	$: groupList;
+
+	let isEditableID = null;
+
+	$: if (pricelist?.pricelists?.length) {
+		pricelist.pricelists.forEach((list) => {
+			groupList.add(list.embroideryType);
+		});
+	}
+
+	onMount(async () => {
+		try {
+			const res = await fetch(endpoint);
+			if (res.ok) {
+				pricelist = await res.json();
+			}
+		} catch (err) {
+			logger.error(err.message);
+		}
+	});
+
+	$: cn = classnames(result, {
+		warning: 'warning',
+		invalid: 'error',
+		valid: 'success'
+	});
+
+	const heandleEditable = async (list) => {
+		if (isEditableID === null) {
+			isEditableID = list._id;
+		} else {
+			// await updateOrAddOptions(list);
+			isEditableID = null;
+		}
+	};
+
+	const handleInput = () => {};
+
+	const heandleDelete = (finalData: any) => {
+		idToRemove = idToRemove.filter((list) => list !== finalData._id);
+		pricelist.pricelists = pricelist.pricelists.filter((list) => list._id !== finalData._id);
+		// deleteOption(finalData);
+	};
+
+	let idToRemove = [];
+
+	$: heandleAddRow = () => {
+		const id = uuidv4();
+
+		isEditableID = id;
+		idToRemove.push(id);
+		pricelist.pricelists = [
+			...pricelist.pricelists,
+			{
+				_id: id,
+				embroideryType: selectedGroup,
+				minimumPrice: { $numberDecimal: 'Edit...' },
+				maximumQuantity: 'Edit...',
+				pricePerThousandStitches: { $numberDecimal: 'Edit...' },
+				isDefault: false,
+				editable: true
+			}
+		];
+	};
+</script>
+
+{#if pricelist}
+	<div class="mb-2 bg-white p-4">
+		<h1>Pricelist Details View</h1>
+	</div>
+	<form>
+		<div class="space-y-4 bg-white p-2 shadow-lg">
+			<div class="flex items-end justify-between">
+				<div class="flex items-end space-x-6 ">
+					<Input
+						name="name"
+						label="Name"
+						disabled={true}
+						bind:value={pricelist.name}
+						onInput={handleInput}
+						messages={result.getErrors('name')}
+						validityClass={cn('name')}
+					/>
+					<Checkbox
+						name="isActive"
+						label="isActive"
+						disabled={true}
+						validityClass={cn('isActive')}
+						bind:checked={pricelist.isActive}
+					/>
+					<Checkbox
+						name="isDefault"
+						label="isDefault"
+						disabled={true}
+						validityClass={cn('isDefault')}
+						bind:checked={pricelist.isDefault}
+					/>
+				</div>
+				<div>
+					<input class="btn btn-primary hidden" type="submit" value="Submit" />
+				</div>
+			</div>
+			<!-- Table start -->
+			<div class="w-full  ">
+				<div>
+					{#each [...groupList] as list, index (index)}
+						<button
+							on:click|preventDefault={(e) => (selectedGroup = list)}
+							class="mx-1 mb-3 mt-2 justify-center rounded-full border border-transparent px-3 py-1 text-sm font-medium text-white {selectedGroup ===
+							list
+								? `btn-primary`
+								: `btn-tertiary`}">{list}</button
+						>
+					{/each}
+				</div>
+				<div class=" block ">
+					<table class="relative w-full rounded-lg text-left text-sm">
+						<thead>
+							<tr
+								class=" sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
+							>
+								{#each tableHeadings as header (header)}
+									<th on:click={() => console.log(header)} class="px-2 py-2">{header}</th>
+								{/each}
+							</tr>
+						</thead>
+						<tbody class="overflow-y-auto">
+							{#each pricelist.pricelists as list (list._id)}
+								{#if selectedGroup === list.embroideryType || selectedGroup === 'all'}
+									<tr
+										class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
+									>
+										<td class="px-2 py-1">
+											<input
+												class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
+												type="text"
+												name="embroideryType"
+												disabled={!(isEditableID === list._id)}
+												bind:value={list.embroideryType}
+											/>
+										</td>
+										<td class="px-2 py-1">
+											<input
+												class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
+												type="text"
+												name="minimumPrice"
+												disabled={!(isEditableID === list._id)}
+												bind:value={list.minimumPrice.$numberDecimal}
+											/>
+										</td>
+										<td class="px-2 py-1">
+											<input
+												class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
+												type="text"
+												name="maximumQuantity"
+												disabled={!(isEditableID === list._id)}
+												bind:value={list.maximumQuantity}
+											/>
+										</td>
+										<td class="px-2 py-1">
+											<input
+												class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
+												type="text"
+												name="pricePerThousandStitches"
+												disabled={!(isEditableID === list._id)}
+												bind:value={list.pricePerThousandStitches.$numberDecimal}
+											/>
+										</td>
+									</tr>
+								{/if}
+							{/each}
+						</tbody>
+					</table>
+				</div>
+				<pre class="text-xs text-royal-blue-900" />
+			</div>
+			<!-- Table End -->
+		</div>
+	</form>
+{/if}
+
+<style>
+</style>

@@ -8,6 +8,9 @@
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import { svgDocumentAdd, svgPencil, svgPlus, svgXSmall } from '$lib/utility/svgLogos';
 	import { v4 as uuidv4 } from 'uuid';
+	import type { ParamMatcher } from '@sveltejs/kit';
+	import type { PricelistsSubDocument } from '$lib/models/pricelists.model';
+	import { toasts } from '$lib/stores/toasts.store';
 
 	let result = suite.get();
 
@@ -23,6 +26,7 @@
 	const endpoint = `/api/pricelists/${$page.params.id}.json`;
 
 	let pricelist;
+	$: console.log('🚀 ~ file: [id].svelte ~ line 26 ~ pricelist', pricelist);
 
 	let selectedGroup = 'all';
 
@@ -38,7 +42,7 @@
 		});
 	}
 
-	onMount(async () => {
+	const getPricelist = async () => {
 		try {
 			const res = await fetch(endpoint);
 			if (res.ok) {
@@ -47,6 +51,10 @@
 		} catch (err) {
 			logger.error(err.message);
 		}
+	};
+
+	onMount(async () => {
+		getPricelist();
 	});
 
 	$: cn = classnames(result, {
@@ -92,13 +100,44 @@
 			}
 		];
 	};
+
+	const headleSubmit = async () => {
+		try {
+			console.log('Pricelist', pricelist);
+			pricelist.pricelists = pricelist.pricelists.map((pList) => {
+				return {
+					...pList,
+					minimumPrice: pList.minimumPrice.$numberDecimal,
+					pricePerThousandStitches: pList.pricePerThousandStitches.$numberDecimal
+				};
+			});
+			console.log('Pricelist', pricelist);
+			const res = await fetch('/api/pricelists.json', {
+				method: 'PUT',
+				body: JSON.stringify(pricelist),
+				headers: { 'Content-Type': 'application/json' }
+			});
+
+			if (res.ok) {
+				getPricelist();
+				const newPricelist = await res.json();
+				toasts.add({ message: `${newPricelist.name} was updated`, type: 'success' });
+			}
+		} catch (err) {
+			logger.error(err.messages);
+			toasts.add({
+				message: 'An error has occured while updating',
+				type: 'error'
+			});
+		}
+	};
 </script>
 
 {#if pricelist}
 	<div class="mb-2 bg-white p-4">
-		<h1>Pricelist Details</h1>
+		<h1>Pricelist Details Edit</h1>
 	</div>
-	<form>
+	<form on:submit|preventDefault={headleSubmit}>
 		<div class="space-y-4 bg-white p-2 shadow-lg">
 			<div class="flex items-end justify-between">
 				<div class="flex items-end space-x-6 ">

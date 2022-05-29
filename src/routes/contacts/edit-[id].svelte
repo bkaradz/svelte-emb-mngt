@@ -128,7 +128,7 @@
 	const handleUpdate = async () => {
 		try {
 			const res = await fetch('/api/contacts.json', {
-				method: 'POST',
+				method: 'PUT',
 				body: JSON.stringify(formData),
 				headers: { 'Content-Type': 'application/json' }
 			});

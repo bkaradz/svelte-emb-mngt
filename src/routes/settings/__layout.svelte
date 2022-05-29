@@ -27,7 +27,7 @@
 			</ul>
 		</aside>
 	</div>
-	<div class="h-full grow rounded bg-pickled-bluewood-200 p-5">
+	<div class="h-full grow overflow-hidden rounded bg-pickled-bluewood-200 p-5">
 		<slot />
 	</div>
 </div>

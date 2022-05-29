@@ -143,8 +143,8 @@
 					const option = await res.json();
 					toasts.add({ message: `${option.name} was updated`, type: 'success' });
 				}
-				getOptions();
 			}
+			getOptions();
 		} catch (err) {
 			logger.error(err.message);
 			toasts.add({
@@ -172,7 +172,7 @@
 </script>
 
 <!-- Table start -->
-<div class="w-full bg-white p-2 shadow-lg">
+<div class="w-full overflow-hidden bg-white p-2 shadow-lg">
 	<div>
 		{#if optionsList.length}
 			{#each [...groupList] as list, index (index)}
@@ -186,11 +186,11 @@
 			{/each}
 		{/if}
 	</div>
-	<div class=" block ">
+	<div class="block">
 		<table class="relative w-full rounded-lg text-left text-sm">
 			<thead>
 				<tr
-					class=" sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
+					class="sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
 				>
 					{#each tableHeadings as header (header)}
 						<th on:click={() => console.log(header)} class="px-2 py-2">{header}</th>
@@ -277,7 +277,7 @@
 					</td>
 					<td class="px-2 py-1" />
 					<td class="p-1 text-center">
-						<button class=" m-0 p-0" on:click|preventDefault={heandleAddRow()}
+						<button class=" m-0 p-0" on:click|preventDefault={(e) => heandleAddRow()}
 							><span class="flex fill-current text-white">{@html svgPlus} Add Row</span></button
 						>
 					</td>

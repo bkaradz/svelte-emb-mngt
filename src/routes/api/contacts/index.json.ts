@@ -140,7 +140,6 @@ export const get = async ({
 			aggregateFilter,
 			endSearchParams
 		);
-		console.log('🚀 ~ file: index.json.ts ~ line 143 ~ contacts', contacts);
 
 		contacts = { ...contacts, ...contacts.metaData[0] };
 		delete contacts.metaData;

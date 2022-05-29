@@ -1,5 +1,6 @@
 <script>
 	export let name = '';
+	export let disabled = false;
 	export let checked = false;
 	export let label = '';
 	export let onChange = () => {};
@@ -21,6 +22,7 @@
 		<input
 			type="checkbox"
 			bind:checked
+			{disabled}
 			on:change={onChange}
 			id={name}
 			{name}

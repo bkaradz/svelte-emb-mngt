@@ -43,6 +43,23 @@ const optionsSchema: Schema = new Schema<OptionsDocument>(
 	{ timestamps: true }
 );
 
+optionsSchema.pre('save', async function (next) {
+	const option = this as OptionsDocument;
+
+	if (option.isDefault === false) {
+		return next();
+	}
+
+	const getGroupDefault = await OptionsModel.find({ group: option.group, isDefault: true });
+
+	if (getGroupDefault.length >= 1) {
+		// reset all values to false
+		await OptionsModel.updateMany({ group: option.group }, { isDefault: false });
+	}
+
+	return next();
+});
+
 const OptionsModel = model<OptionsDocument>('Options', optionsSchema);
 
 export default OptionsModel;

@@ -83,6 +83,7 @@ const contactsSchema: Schema = new Schema<ContactsDocument>(
 );
 
 contactsSchema.pre('save', async function (next) {
+	// this.$where = { isActive: false };
 	const contact = this as ContactsDocument;
 
 	if (!contact.isUser) {

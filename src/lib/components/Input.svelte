@@ -2,6 +2,7 @@
 	import { selectTextOnFocus, blurOnEscape } from '$lib/utility/inputSelectDirective';
 	import { svgLoaderSmall } from '$lib/utility/svgLogos';
 	export let value = '';
+	export let disabled = false;
 	export let type = 'text';
 	export let label = '';
 	export let name = '';
@@ -33,6 +34,7 @@
 			use:selectTextOnFocus
 			use:blurOnEscape
 			bind:value
+			{disabled}
 			on:input={onInput}
 			use:typeAction
 			id={name}
