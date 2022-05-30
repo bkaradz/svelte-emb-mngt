@@ -105,6 +105,10 @@
 		try {
 			console.log('Pricelist', pricelist);
 			pricelist.pricelists = pricelist.pricelists.map((pList) => {
+				if (idToRemove.includes(pList._id)) {
+					delete pList._id;
+					idToRemove = idToRemove.filter((list) => list !== pList._id);
+				}
 				return {
 					...pList,
 					minimumPrice: pList.minimumPrice.$numberDecimal,

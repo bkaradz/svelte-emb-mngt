@@ -33,6 +33,7 @@
 		optionsList.forEach((list) => {
 			groupList.add(list.group);
 		});
+		groupList = groupList;
 	}
 	// else {
 	// 	groupList = [];
