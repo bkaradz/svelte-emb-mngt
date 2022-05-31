@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.11",
-    "@playwright/test": "^1.22.2",
+    "@playwright/test": "^1.23.0-alpha-may-31-2022",
     "@rgossiaux/svelte-headlessui": "^1.0.0-beta.10",
     "@sveltejs/adapter-auto": "next",
     "@sveltejs/kit": "next",
