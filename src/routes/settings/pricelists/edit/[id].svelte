@@ -8,8 +8,6 @@
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import { svgDocumentAdd, svgPencil, svgPlus, svgXSmall } from '$lib/utility/svgLogos';
 	import { v4 as uuidv4 } from 'uuid';
-	import type { ParamMatcher } from '@sveltejs/kit';
-	import type { PricelistsSubDocument } from '$lib/models/pricelists.model';
 	import { toasts } from '$lib/stores/toasts.store';
 
 	let result = suite.get();
@@ -26,7 +24,6 @@
 	const endpoint = `/api/pricelists/${$page.params.id}.json`;
 
 	let pricelist;
-	$: console.log('🚀 ~ file: [id].svelte ~ line 26 ~ pricelist', pricelist);
 
 	let selectedGroup = 'all';
 
@@ -103,7 +100,6 @@
 
 	const headleSubmit = async () => {
 		try {
-			console.log('Pricelist', pricelist);
 			pricelist.pricelists = pricelist.pricelists.map((pList) => {
 				if (idToRemove.includes(pList._id)) {
 					delete pList._id;
@@ -115,7 +111,6 @@
 					pricePerThousandStitches: pList.pricePerThousandStitches.$numberDecimal
 				};
 			});
-			console.log('Pricelist', pricelist);
 			const res = await fetch('/api/pricelists.json', {
 				method: 'PUT',
 				body: JSON.stringify(pricelist),

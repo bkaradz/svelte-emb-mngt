@@ -7,11 +7,9 @@
 	const heandleSubmit = async (e: SubmitEvent) => {
 		const formElm = e.target as HTMLFormElement;
 		const formData = new FormData(formElm);
-		console.log('🚀 ~ file: index.svelte ~ line 11 ~ heandleSubmit ~ formData', formData);
 		// formData.append('file', e.target.file);
 		// const json = Object.fromEntries(formData.entries());
 		// console.log('🚀 ~ file: index.svelte ~ line 14 ~ heandleSubmit ~ json', json);
-		console.log('🚀 ~ file: index.svelte ~ line 11 ~ heandleSubmit ~ formData', formData);
 
 		const res = await fetch('/api/test.json', {
 			method: 'POST',

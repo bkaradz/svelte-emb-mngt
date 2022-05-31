@@ -31,7 +31,6 @@
 		isDefault: false,
 		pricelists: []
 	};
-	$: console.log('🚀 ~ file: [id].svelte ~ line 26 ~ pricelist', pricelist);
 
 	let selectedGroup = 'all';
 
@@ -108,7 +107,6 @@
 
 	const headleSubmit = async () => {
 		try {
-			console.log('Pricelist', pricelist);
 			pricelist.pricelists = pricelist.pricelists.map((pList) => {
 				if (idToRemove.includes(pList._id)) {
 					delete pList._id;
@@ -120,7 +118,6 @@
 					pricePerThousandStitches: pList.pricePerThousandStitches.$numberDecimal
 				};
 			});
-			console.log('Pricelist', pricelist);
 			const res = await fetch('/api/pricelists.json', {
 				method: 'POST',
 				body: JSON.stringify(pricelist),

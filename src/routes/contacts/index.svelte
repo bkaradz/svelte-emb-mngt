@@ -135,7 +135,7 @@
 </script>
 
 <svelte:head>
-	<title>Settings: Contacts</title>
+	<title>Contacts</title>
 </svelte:head>
 
 {#if contacts}

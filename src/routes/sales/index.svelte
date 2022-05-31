@@ -136,7 +136,7 @@
 </script>
 
 <svelte:head>
-	<title>Settings: Contacts</title>
+	<title>Sales</title>
 </svelte:head>
 
 {#if error}

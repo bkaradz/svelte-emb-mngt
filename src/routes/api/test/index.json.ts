@@ -6,9 +6,9 @@ export const post: RequestHandler = async ({ request }) => {
 	const data = await request.formData();
 
 	const file = data.get('file');
-	console.log('🚀 ~ file: index.json.ts ~ line 6 ~ constget:RequestHandler= ~ body', file.size);
-	console.log('🚀 ~ file: index.json.ts ~ line 6 ~ constget:RequestHandler= ~ body', file.type);
-	console.log('🚀 ~ file: index.json.ts ~ line 6 ~ constget:RequestHandler= ~ body', file.name);
+	// console.log('🚀 ~ file: index.json.ts ~ line 6 ~ constget:RequestHandler= ~ body', file.size);
+	// console.log('🚀 ~ file: index.json.ts ~ line 6 ~ constget:RequestHandler= ~ body', file.type);
+	// console.log('🚀 ~ file: index.json.ts ~ line 6 ~ constget:RequestHandler= ~ body', file.name);
 
 	const csvString = await file.text();
 	// console.log('🚀 ~ file: index.ts ~ line 20 ~ constpost:RequestHandler= ~ csvString', csvString);

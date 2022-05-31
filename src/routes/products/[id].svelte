@@ -51,6 +51,10 @@
 	$: product;
 </script>
 
+<svelte:head>
+	<title>Product Details</title>
+</svelte:head>
+
 {#if product}
 	<div class="flex flex-1 flex-col overflow-hidden">
 		<!-- Heading and Buttons -->

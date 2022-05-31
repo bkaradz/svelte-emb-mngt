@@ -13,6 +13,8 @@
 	import Textarea from '$lib/components/Textarea.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import Combobox from '$lib/components/Combobox.svelte';
+	import type { OptionsDocument } from '$lib/models/options.models';
+	import type { ProductsDocument } from '$lib/models/products.models';
 
 	let result = suite.get();
 
@@ -49,42 +51,35 @@
 		isCorporate: true
 	};
 	let currentCorporateQueryParams = defaultCorporateQueryParams;
-	let contacts: contactsInterface;
+	let productcategories: Array<OptionsDocument>;
 
 	onMount(() => {
-		getCorporateContacts(currentCorporateQueryParams);
+		getProductCategories();
 	});
 
-	const getCorporateContacts = async (paramsObj: Partial<corporateQueryParamsInterface>) => {
+	const getProductCategories = async () => {
 		try {
-			let searchParams = new URLSearchParams(paramsObj as string);
-			const res = await fetch('/api/contacts.json?' + searchParams.toString());
-			contacts = await res.json();
+			let searchParams = new URLSearchParams({ group: 'productCategories' });
+			const res = await fetch('/api/options.json?' + searchParams.toString());
+			productcategories = await res.json();
 		} catch (err) {
 			logger.error(err.message);
 			toasts.add({
-				message: 'An error has occured while getting corporate contacts',
+				message: 'An error has occured while getting product categories',
 				type: 'error'
 			});
 		}
 	};
 
-	interface formDataType {
-		name: string;
-		organizationID?: Partial<ContactsDocument>;
-		isCorporate: boolean;
-		email: string;
-		phone: string;
-		address: string;
-	}
-
-	let formData: formDataType = {
-		isCorporate: false,
-		organizationID: categorySearch,
+	let formData: Partial<ProductsDocument> = {
 		name: '',
-		email: '',
-		phone: '',
-		address: ''
+		title: '',
+		description: '',
+		unitPrice: 0,
+		category: '',
+		stitches: 0,
+		quantity: 0,
+		isActive: true
 	};
 
 	const handleInput = (event) => {
@@ -104,12 +99,14 @@
 
 	$: resetForm = () => {
 		formData = {
-			isCorporate: false,
-			organizationID: { name: '' },
 			name: '',
-			email: '',
-			phone: '',
-			address: ''
+			title: '',
+			description: '',
+			unitPrice: 0,
+			category: '',
+			stitches: 0,
+			quantity: 0,
+			isActive: true
 		};
 		categorySearch = { name: '' };
 		suite.reset();
@@ -161,19 +158,6 @@
 		}
 	};
 
-	const makeMatchBold = (searchMatchString: string) => {
-		let MatchedWords = [];
-		if (categorySearch.name) {
-			const regex = new RegExp(categorySearch.name, 'ig');
-			MatchedWords = searchMatchString.trim().match(regex);
-		}
-
-		let makeBold = `<strong>${MatchedWords[0]}</strong>`;
-		let boldedStr = searchMatchString.replace(MatchedWords[0], makeBold);
-
-		return boldedStr;
-	};
-
 	const handleComboInput = (e: any) => {
 		currentCorporateQueryParams = {
 			...currentCorporateQueryParams,
@@ -184,7 +168,7 @@
 </script>
 
 <svelte:head>
-	<title>Add Contact</title>
+	<title>Add Product</title>
 </svelte:head>
 
 <div class="flex flex-1 flex-col">
@@ -259,61 +243,44 @@
 					validityClass={cn('description')}
 				/>
 
-				{#if contacts}
+				{#if productcategories}
 					<Combobox
 						name="category"
 						label="category"
-						list={contacts.results}
+						list={productcategories}
 						bind:value={categorySearch}
 						onInput={handleComboInput}
-						disabled={formData.category}
-					/>
-				{/if}
-
-				<Checkbox
-					name="isCorporate"
-					label="Individual or Corparate"
-					validityClass={cn('isCorporate')}
-					bind:checked={formData.isCorporate}
-				/>
-
-				{#if contacts}
-					<Combobox
-						label="Organization"
-						name="organization"
-						list={contacts.results}
-						bind:value={categorySearch}
-						onInput={handleComboInput}
-						disabled={formData.isCorporate}
 					/>
 				{/if}
 
 				<Input
-					name="email"
-					label="Email"
-					bind:value={formData.email}
+					name="stitches"
+					label="Stitches"
+					type="number"
+					bind:value={formData.stitches}
 					onInput={handleInput}
-					type="email"
-					messages={result.getErrors('email')}
-					validityClass={cn('email')}
+					messages={result.getErrors('stitches')}
+					validityClass={cn('stitches')}
 				/>
 
 				<Input
-					name="phone"
-					label="Phone"
-					bind:value={formData.phone}
+					name="unitPrice"
+					label="Unit Price"
+					type="number"
+					bind:value={formData.unitPrice}
 					onInput={handleInput}
-					messages={result.getErrors('phone')}
-					validityClass={cn('phone')}
+					messages={result.getErrors('unitPrice')}
+					validityClass={cn('unitPrice')}
 				/>
 
-				<Textarea
-					name="address"
-					label="Address"
-					bind:value={formData.address}
+				<Input
+					name="quantity"
+					label="Quantity"
+					type="number"
+					bind:value={formData.quantity}
 					onInput={handleInput}
-					messages={result.getErrors('address')}
-					validityClass={cn('address')}
+					messages={result.getErrors('quantity')}
+					validityClass={cn('quantity')}
 				/>
 
 				<div class="mt-6 flex space-x-2">
