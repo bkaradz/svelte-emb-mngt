@@ -10,5 +10,5 @@
 // export default config;
 /** @type {import('@playwright/test').PlaywrightTestConfig} */
 
-const config = { testDir: './tests/' };
+const config = { testDir: './src/__tests__' };
 export default config;
