@@ -9,7 +9,7 @@
 	export let pending = false;
 	export let messages = [];
 	export let validityClass = '';
-	export let onInput = (e: any) => {};
+	export let onInput = (e: SubmitEvent) => {};
 
 	function typeAction(node: HTMLInputElement) {
 		node.type = type;

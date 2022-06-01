@@ -5,52 +5,14 @@
 	import { svgAddUser, svgArrow, svgPlus, svgUpload, svgX } from '$lib/utility/svgLogos';
 	import classnames from 'vest/classnames';
 	import { goto } from '$app/navigation';
-	// import Loading from '$lib/components/Loading.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { ContactsDocument } from '$lib/models/contacts.model';
-	import type { metaDataInterface } from '$lib/services/aggregateQuery.services';
 	import Input from '$lib/components/Input.svelte';
 	import Textarea from '$lib/components/Textarea.svelte';
-	import Checkbox from '$lib/components/Checkbox.svelte';
 	import Combobox from '$lib/components/Combobox.svelte';
 	import type { OptionsDocument } from '$lib/models/options.models';
-	import type { ProductsDocument } from '$lib/models/products.models';
 
 	let result = suite.get();
 
-	// let error: string | undefined = undefined;
-
-	interface contactsInterface extends metaDataInterface {
-		results: Array<Omit<ContactsDocument, 'createdAt' | 'updatedAt' | 'password' | 'userRole'>>;
-	}
-
-	interface corporateQueryParamsInterface {
-		limit: number;
-		page: number;
-		sort: string;
-		isCorporate: boolean;
-		name?: string;
-	}
-
-	type corporateSearchInterface = Partial<ContactsDocument> & { name: string };
-
-	let categorySearch: corporateSearchInterface = { name: '' };
-
-	let showList = false;
-
-	function handleShowList() {
-		if (showList) {
-			showList = false;
-		}
-	}
-
-	let defaultCorporateQueryParams: Partial<corporateQueryParamsInterface> = {
-		limit: 7,
-		page: 1,
-		sort: 'name',
-		isCorporate: true
-	};
-	let currentCorporateQueryParams = defaultCorporateQueryParams;
 	let productcategories: Array<OptionsDocument>;
 
 	onMount(() => {
@@ -71,23 +33,25 @@
 		}
 	};
 
-	let formData: Partial<ProductsDocument> = {
+	const initFromData = {
 		name: '',
 		title: '',
 		description: '',
 		unitPrice: 0,
-		category: '',
+		category: { name: '', value: '' },
 		stitches: 0,
 		quantity: 0,
 		isActive: true
 	};
 
-	const handleInput = (event) => {
-		let name = event.target.name;
-		let value = event.target.value;
-		formData[name] = value;
-		result = suite(formData, name);
-	};
+	let formData = { ...initFromData };
+
+	// const handleInput = (event: SubmitEvent) => {
+	// 	let name = event.target.name;
+	// 	let value = event.target.value;
+	// 	formData[name] = value;
+	// 	result = suite(formData, name);
+	// };
 
 	$: cn = classnames(result, {
 		warning: 'warning',
@@ -95,29 +59,19 @@
 		valid: 'success'
 	});
 
-	$: disabled = !result.isValid();
+	// $: disabled = !result.isValid();
 
 	$: resetForm = () => {
-		formData = {
-			name: '',
-			title: '',
-			description: '',
-			unitPrice: 0,
-			category: '',
-			stitches: 0,
-			quantity: 0,
-			isActive: true
-		};
-		categorySearch = { name: '' };
+		formData = { ...initFromData };
 		suite.reset();
 		result = suite.get();
 	};
 
 	const handleSubmit = async () => {
 		try {
-			const { organizationID, ...otherData } = formData;
-			const finalData = { ...otherData, organizationID: organizationID._id };
-			const res = await fetch('/api/contacts.json', {
+			const { category, ...otherData } = formData;
+			const finalData = { ...otherData, category: category.value };
+			const res = await fetch('/api/products.json', {
 				method: 'POST',
 				body: JSON.stringify(finalData),
 				headers: { 'Content-Type': 'application/json' }
@@ -126,11 +80,11 @@
 			if (res.ok) {
 				// const data = await res.json();
 				resetForm();
-				toasts.add({ message: 'The Contact was added', type: 'success' });
+				toasts.add({ message: 'The Product was added', type: 'success' });
 			}
 		} catch (err) {
 			logger.error(err.messages);
-			toasts.add({ message: 'An error has occured while adding the contact', type: 'error' });
+			toasts.add({ message: 'An error has occured while adding the product', type: 'error' });
 		}
 	};
 
@@ -158,13 +112,17 @@
 		}
 	};
 
-	const handleComboInput = (e: any) => {
-		currentCorporateQueryParams = {
-			...currentCorporateQueryParams,
-			name: e.target.value
-		};
-		// getCorporateContacts(currentCorporateQueryParams);
-	};
+	/**
+	 * TODO: impliment filter
+	 */
+	// const handleComboInput = (e: SubmitEvent) => {
+	// 	// onInput={handleComboInput}
+	// 	console.log('e.target', e.target);
+	// 	formData = {
+	// 		...formData,
+	// 		category: e.target.value
+	// 	};
+	// };
 </script>
 
 <svelte:head>
@@ -222,7 +180,6 @@
 					name="name"
 					label="Name"
 					bind:value={formData.name}
-					onInput={handleInput}
 					messages={result.getErrors('name')}
 					validityClass={cn('name')}
 				/>
@@ -230,7 +187,6 @@
 					name="title"
 					label="Title"
 					bind:value={formData.title}
-					onInput={handleInput}
 					messages={result.getErrors('title')}
 					validityClass={cn('title')}
 				/>
@@ -238,7 +194,6 @@
 					name="description"
 					label="Description"
 					bind:value={formData.description}
-					onInput={handleInput}
 					messages={result.getErrors('description')}
 					validityClass={cn('description')}
 				/>
@@ -248,41 +203,41 @@
 						name="category"
 						label="category"
 						list={productcategories}
-						bind:value={categorySearch}
-						onInput={handleComboInput}
+						bind:value={formData.category}
 					/>
 				{/if}
 
-				<Input
-					name="stitches"
-					label="Stitches"
-					type="number"
-					bind:value={formData.stitches}
-					onInput={handleInput}
-					messages={result.getErrors('stitches')}
-					validityClass={cn('stitches')}
-				/>
+				{#if formData?.category?.value === 'embroideryLogo'}
+					<Input
+						name="stitches"
+						label="Stitches"
+						type="number"
+						bind:value={formData.stitches}
+						messages={result.getErrors('stitches')}
+						validityClass={cn('stitches')}
+					/>
+				{/if}
 
-				<Input
-					name="unitPrice"
-					label="Unit Price"
-					type="number"
-					bind:value={formData.unitPrice}
-					onInput={handleInput}
-					messages={result.getErrors('unitPrice')}
-					validityClass={cn('unitPrice')}
-				/>
-
-				<Input
-					name="quantity"
-					label="Quantity"
-					type="number"
-					bind:value={formData.quantity}
-					onInput={handleInput}
-					messages={result.getErrors('quantity')}
-					validityClass={cn('quantity')}
-				/>
-
+				{#if formData?.category?.value !== 'embroideryLogo'}
+					<Input
+						name="unitPrice"
+						label="Unit Price"
+						type="number"
+						bind:value={formData.unitPrice}
+						messages={result.getErrors('unitPrice')}
+						validityClass={cn('unitPrice')}
+					/>
+				{/if}
+				{#if formData?.category?.value !== 'embroideryLogo'}
+					<Input
+						name="quantity"
+						label="Quantity"
+						type="number"
+						bind:value={formData.quantity}
+						messages={result.getErrors('quantity')}
+						validityClass={cn('quantity')}
+					/>
+				{/if}
 				<div class="mt-6 flex space-x-2">
 					<button
 						type="submit"
@@ -291,7 +246,7 @@
 						<span class="absolute inset-y-0 left-0 flex items-center pl-3">
 							{@html svgAddUser}
 						</span>
-						Add Contact
+						Add Product
 					</button>
 					<button
 						on:click|preventDefault={(e) => resetForm()}

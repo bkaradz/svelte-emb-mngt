@@ -34,14 +34,6 @@
 
 	let corporateSearch: corporateSearchInterface = { name: '' };
 
-	let showList = false;
-
-	function handleShowList() {
-		if (showList) {
-			showList = false;
-		}
-	}
-
 	let defaultCorporateQueryParams: Partial<corporateQueryParamsInterface> = {
 		limit: 7,
 		page: 1,
