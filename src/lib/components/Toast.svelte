@@ -1,14 +1,12 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
 	import {
 		svgCheckCircle,
-		svgExclamationCircle,
 		svgExclamation,
 		svgInfo,
-		svgXCircle,
-		svgXSmall,
-		svgShieldExclamation
+		svgShieldExclamation,
+		svgXSmall
 	} from '$lib/utility/svgLogos';
+	import { fade } from 'svelte/transition';
 	export let type: string;
 	export let message: string;
 	export let id: string;

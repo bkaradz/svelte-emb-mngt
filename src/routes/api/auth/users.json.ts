@@ -1,6 +1,6 @@
 import ContactsModel from '$lib/models/contacts.model';
 
-export const get = async ({ request, locals }) => {
+export const get = async ({ locals }) => {
 	try {
 		if (!locals?.user?._id) {
 			return {

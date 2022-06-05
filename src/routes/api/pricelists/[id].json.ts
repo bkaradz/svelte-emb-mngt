@@ -7,13 +7,11 @@ export async function get({ params }) {
 		const pricelist = await PricelistsModel.findOne(
 			{ _id: params.id },
 			{ createdAt: 0, updatedAt: 0, __v: 0 }
-		).lean();
+		);
 
 		return {
 			status: 200,
-			body: {
-				...pricelist
-			}
+			body: pricelist
 		};
 	} catch (err) {
 		logger.error(err);

@@ -1,20 +1,19 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { svgArrow, svgRefresh, svgSelector, svgXCircle, svgXSmall } from '$lib/utility/svgLogos';
-	import { onMount } from 'svelte';
-	import suite from '$lib/validation/client/signUp.validate';
-	import logger from '$lib/utility/logger';
-	import classnames from 'vest/classnames';
-	import { clickOutside } from '$lib/utility/clickOutside';
-	import Loading from '$lib/components/Loading.svelte';
-	import Input from '$lib/components/Input.svelte';
+	import { page } from '$app/stores';
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import Combobox from '$lib/components/Combobox.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import Loading from '$lib/components/Loading.svelte';
 	import Textarea from '$lib/components/Textarea.svelte';
-	import type { metaDataInterface } from '$lib/services/aggregateQuery.services';
 	import type { ContactsDocument } from '$lib/models/contacts.model';
+	import type { metaDataInterface } from '$lib/services/aggregateQuery.services';
 	import { toasts } from '$lib/stores/toasts.store';
+	import logger from '$lib/utility/logger';
+	import { svgArrow, svgRefresh, svgXCircle } from '$lib/utility/svgLogos';
+	import suite from '$lib/validation/client/signUp.validate';
+	import { onMount } from 'svelte';
+	import classnames from 'vest/classnames';
 
 	const endpoint = `/api/contacts/${$page.params.id}.json`;
 
@@ -167,10 +166,10 @@
 		await goto(`/contacts/${$page.params.id}`);
 	};
 
-	const handleComboInput = (e: any) => {
+	const handleComboInput = (event: { target: { value: any } }) => {
 		currentCorporateQueryParams = {
 			...currentCorporateQueryParams,
-			name: e.target.value
+			name: event.target.value
 		};
 		getCorporateContacts(currentCorporateQueryParams);
 	};

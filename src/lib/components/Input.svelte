@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { selectTextOnFocus, blurOnEscape } from '$lib/utility/inputSelectDirective';
 	import { svgLoaderSmall } from '$lib/utility/svgLogos';
-	export let value = '';
+	export let value = null;
 	export let disabled = false;
 	export let type = 'text';
 	export let label = '';
@@ -9,7 +9,7 @@
 	export let pending = false;
 	export let messages = [];
 	export let validityClass = '';
-	export let onInput = (e: SubmitEvent) => {};
+	export let onInput = (e: any) => {};
 
 	function typeAction(node: HTMLInputElement) {
 		node.type = type;

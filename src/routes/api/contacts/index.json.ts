@@ -78,16 +78,16 @@ export const get = async ({
 					as: 'organizationID'
 				}
 			},
-			// {
-			// 	$addFields: {
-			// 		balanceDue: {
-			// 			$toString: '$balanceDue'
-			// 		},
-			// 		totalReceipts: {
-			// 			$toString: '$totalReceipts'
-			// 		}
-			// 	}
-			// },
+			{
+				$addFields: {
+					balanceDue: {
+						$toString: '$balanceDue'
+					},
+					totalReceipts: {
+						$toString: '$totalReceipts'
+					}
+				}
+			},
 			{
 				$match: newRegExQuery
 			},

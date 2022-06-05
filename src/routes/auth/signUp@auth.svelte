@@ -44,7 +44,6 @@
 
 	$: disabled = !result.isValid();
 
-	let error: string | undefined = undefined;
 
 	const resetForm = () => {
 		formData = {
@@ -77,12 +76,8 @@
 				});
 				await goto('/auth/signIn');
 			}
-			// else {
-			// 	error = 'An error has occured';
-			// }
 		} catch (err) {
 			logger.error(err.messages);
-			error = 'An error has occured';
 			toasts.add({ message: 'An error has occured', type: 'error' });
 		}
 	};

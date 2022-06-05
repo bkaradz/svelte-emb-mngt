@@ -17,7 +17,9 @@
 	import Loading from '$lib/components/Loading.svelte';
 	import dayjs from 'dayjs';
 	import type { ProductsDocument } from '$lib/models/products.models';
+
 	const endpoint = `/api/products/${$page.params.id}.json`;
+
 	let product: Partial<ProductsDocument>;
 
 	onMount(async () => {

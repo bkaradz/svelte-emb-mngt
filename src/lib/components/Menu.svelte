@@ -1,17 +1,10 @@
 <script lang="ts">
-	import { clickOutside } from '$lib/utility/clickOutside';
-	import logger from '$lib/utility/logger';
 	import { goto } from '$app/navigation';
-	import {
-		svgBellSolid,
-		svgLogout,
-		svgMessages,
-		svgSettings,
-		svgUser
-	} from '$lib/utility/svgLogos';
-	import { Menu, MenuItems, MenuItem, MenuButton, Transition } from '@rgossiaux/svelte-headlessui';
 	import { session } from '$app/stores';
 	import { toasts } from '$lib/stores/toasts.store';
+	import logger from '$lib/utility/logger';
+	import { svgBellSolid, svgLogout, svgSettings, svgUser } from '$lib/utility/svgLogos';
+	import { Menu, MenuButton, MenuItem, MenuItems } from '@rgossiaux/svelte-headlessui';
 
 	let signInMenuOpen = false;
 	function handleClick() {
@@ -80,7 +73,6 @@
 			role="menu"
 			aria-orientation="vertical"
 			aria-labelledby="menu-button"
-			tabindex="-1"
 		>
 			<div class="py-1" role="none">
 				<MenuItem let:active let:disabled>

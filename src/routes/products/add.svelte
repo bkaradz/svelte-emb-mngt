@@ -33,6 +33,17 @@
 		}
 	};
 
+	// interface productInterface {
+	// 	name: string;
+	// 	title: string;
+	// 	description: string;
+	// 	unitPrice: number | string;
+	// 	category: { name: string; value: string };
+	// 	stitches: number | string;
+	// 	quantity: number | string;
+	// 	isActive: boolean;
+	// }
+
 	const initFromData = {
 		name: '',
 		title: '',
@@ -46,20 +57,11 @@
 
 	let formData = { ...initFromData };
 
-	// const handleInput = (event: SubmitEvent) => {
-	// 	let name = event.target.name;
-	// 	let value = event.target.value;
-	// 	formData[name] = value;
-	// 	result = suite(formData, name);
-	// };
-
 	$: cn = classnames(result, {
 		warning: 'warning',
 		invalid: 'error',
 		valid: 'success'
 	});
-
-	// $: disabled = !result.isValid();
 
 	$: resetForm = () => {
 		formData = { ...initFromData };
@@ -78,7 +80,6 @@
 			});
 
 			if (res.ok) {
-				// const data = await res.json();
 				resetForm();
 				toasts.add({ message: 'The Product was added', type: 'success' });
 			}
@@ -249,7 +250,7 @@
 						Add Product
 					</button>
 					<button
-						on:click|preventDefault={(e) => resetForm()}
+						on:click|preventDefault={() => resetForm()}
 						class="group relative flex w-full justify-center  border border-transparent bg-royal-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-royal-blue-700 focus:outline-none focus:ring-2 focus:ring-royal-blue-500 focus:ring-offset-2"
 					>
 						<span class="absolute inset-y-0 left-0 flex items-center pl-3">

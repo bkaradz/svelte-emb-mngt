@@ -1,5 +1,4 @@
 import ContactsModel from '$lib/models/contacts.model';
-import { omit } from 'lodash';
 import logger from '$lib/utility/logger';
 import { postSuite } from '$lib/validation/server/signUp.validate';
 import type { RequestHandler } from '@sveltejs/kit';
@@ -92,11 +91,11 @@ export const post: RequestHandler = async ({ request }): Promise<unknown> => {
 
 		await contacts.save();
 
+		delete contacts.password;
+
 		return {
 			status: 200,
-			body: {
-				message: omit(contacts.toJSON(), 'password')
-			}
+			body: contacts
 		};
 	} catch (err) {
 		logger.error(err.message);

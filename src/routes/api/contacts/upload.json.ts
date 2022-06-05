@@ -28,8 +28,18 @@ export const post: RequestHandler = async ({
 
 		const data = await request.formData();
 
-		const file = data.get('contacts');
+		const file: FormDataEntryValue | null = data.get('contacts');
 
+		if (!(Object.prototype.toString.call(file) === '[object File]')) {
+			logger.error('File is empty');
+			return {
+				status: 400,
+				body: {
+					message: 'File is empty'
+				}
+			};
+		}
+		// @ts-expect-error: the above if statement catches the error if file is null
 		const csvString = await file.text();
 
 		const jsonArray = await csv()

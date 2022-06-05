@@ -9,12 +9,12 @@
 	export let label = '';
 	export let name = '';
 	export let value = { name: '' };
-	export let list: Array<T | null> = [];
+	export let list: Array<any | null> = [];
 	export let pending = false;
 	export let messages = [];
 	export let validityClass = '';
 	export let disabled = false;
-	export let onInput = (e) => {};
+	export let onInput = (event: any) => {};
 
 	let userEnter = false;
 
@@ -36,9 +36,9 @@
 		userEnter = false;
 	};
 
-	async function handleKeyDown(e) {
+	async function handleKeyDown(event) {
 		const listLenght = list.length;
-		switch (e.key) {
+		switch (event.key) {
 			case 'Escape':
 				showList = false;
 				break;
@@ -102,8 +102,8 @@
 						use:blurOnEscape
 						bind:value={value.name}
 						on:keydown={handleKeyDown}
-						on:focus|preventDefault={(e) => (showList = true)}
-						on:click|preventDefault={(e) => (showList = true)}
+						on:focus|preventDefault={() => (showList = true)}
+						on:click|preventDefault={() => (showList = true)}
 						on:input|preventDefault={onInput}
 						autocomplete="off"
 						{name}
@@ -145,7 +145,7 @@
 							<li class="list--item group">
 								<!-- svelte-ignore a11y-missing-attribute -->
 								<a
-									on:click|preventDefault={(e) => {
+									on:click|preventDefault={() => {
 										value = listItem;
 										showList = false;
 									}}

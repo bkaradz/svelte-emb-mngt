@@ -13,8 +13,8 @@ export interface ContactsDocument extends Document {
 	email?: string;
 	phone: string;
 	address?: string;
-	balanceDue: mongoose.Schema.Types.Decimal128;
-	totalReceipts: mongoose.Schema.Types.Decimal128;
+	balanceDue: mongoose.Schema.Types.Decimal128 | number;
+	totalReceipts: mongoose.Schema.Types.Decimal128 | number;
 	isActive: boolean;
 	isUser: boolean;
 	userRole?: string;
@@ -50,15 +50,14 @@ const contactsSchema: Schema = new Schema<ContactsDocument>(
 		balanceDue: {
 			type: Schema.Types.Decimal128,
 			required: true,
-			get: (v: number) => v.toString(),
+			get: (v: number) => getMonetaryValue(v),
 			set: (v: number) => mongoose.Types.Decimal128.fromString((+v).toFixed(4)),
 			default: 0
 		},
 		totalReceipts: {
 			type: Schema.Types.Decimal128,
 			required: true,
-			// get: (v) => mongoose.Types.Decimal128.fromString((+v.toString()).toFixed(2)),
-			get: (v: number) => v.toString(),
+			get: (v: number) => getMonetaryValue(v),
 			set: (v: number) => mongoose.Types.Decimal128.fromString((+v).toFixed(4)),
 			default: 0
 		},
@@ -113,3 +112,10 @@ contactsSchema.methods.comparePassword = async function (
 const ContactsModel = model<ContactsDocument>('Contacts', contactsSchema);
 
 export default ContactsModel;
+
+function getMonetaryValue(value: number) {
+	if (typeof value !== 'undefined') {
+		return parseFloat(value.toString());
+	}
+	return value;
+}

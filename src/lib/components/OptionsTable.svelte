@@ -178,7 +178,7 @@
 		{#if optionsList.length}
 			{#each [...groupList] as list, index (index)}
 				<button
-					on:click|preventDefault={(e) => (selectedGroup = list)}
+					on:click|preventDefault={() => (selectedGroup = list)}
 					class="mx-1 mb-3 mt-2 justify-center rounded-full border border-transparent px-3 py-1 text-sm font-medium text-white {selectedGroup ===
 					list
 						? `btn-primary`
@@ -278,7 +278,7 @@
 					</td>
 					<td class="px-2 py-1" />
 					<td class="p-1 text-center">
-						<button class=" m-0 p-0" on:click|preventDefault={(e) => heandleAddRow()}
+						<button class=" m-0 p-0" on:click|preventDefault={() => heandleAddRow()}
 							><span class="flex fill-current text-white">{@html svgPlus} Add Row</span></button
 						>
 					</td>

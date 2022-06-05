@@ -170,7 +170,7 @@
 				<div>
 					{#each [...groupList] as list, index (index)}
 						<button
-							on:click|preventDefault={(e) => (selectedGroup = list)}
+							on:click|preventDefault={() => (selectedGroup = list)}
 							class="mx-1 mb-3 mt-2 justify-center rounded-full border border-transparent px-3 py-1 text-sm font-medium text-white {selectedGroup ===
 							list
 								? `btn-primary`

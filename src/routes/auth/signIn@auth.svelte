@@ -36,7 +36,6 @@
 
 	$: disabled = !result.isValid();
 
-	let error: string | undefined = undefined;
 
 	const resetForm = () => {
 		formData = {
@@ -65,9 +64,7 @@
 				await goto('/');
 			}
 		} catch (err) {
-			console.error(err);
 			logger.error(err.messages);
-			error = 'An error has occured';
 			toasts.add({ message: 'An error has occured', type: 'error' });
 		}
 	};

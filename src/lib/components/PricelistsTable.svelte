@@ -1,10 +1,8 @@
 <script lang="ts">
-	import type { PricelistsDocument } from '$lib/models/pricelists.model';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { goto } from '$app/navigation';
 	import logger from '$lib/utility/logger';
 	import { svgPencil, svgView, svgXSmall } from '$lib/utility/svgLogos';
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
 
 	export let tableHeadings = ['Name', 'isActive', 'isDefault', 'View', 'Edit', 'Delete'];
 

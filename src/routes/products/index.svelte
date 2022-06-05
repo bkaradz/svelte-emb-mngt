@@ -7,7 +7,6 @@
 		svgPlus,
 		svgSearch,
 		svgSelector,
-		svgSort,
 		svgView
 	} from '$lib/utility/svgLogos';
 	import { goto } from '$app/navigation';
@@ -40,7 +39,6 @@
 	}
 
 	let products: productIterface;
-	let error: any;
 	let limit = 15;
 	let currentGlobalParams = {
 		limit,
@@ -81,14 +79,14 @@
 		category: 'Category'
 	};
 
-	const heandleSearchSelection = (e) => {
-		searchOption = e.target.name;
+	const heandleSearchSelection = (event) => {
+		searchOption = event.target.name;
 		searchInputValue = '';
 	};
 
-	const heandleSearch = async (e) => {
+	const heandleSearch = async (event) => {
 		currentGlobalParams.page = 1;
-		let searchWord = e.target.value;
+		let searchWord = event.target.value;
 		currentGlobalParams = { ...currentGlobalParams, [searchOption]: searchWord };
 		getProducts(currentGlobalParams);
 	};
@@ -100,7 +98,6 @@
 			products = await res.json();
 		} catch (err) {
 			logger.error(err.message);
-			error = err.message;
 		}
 	};
 </script>
@@ -150,7 +147,6 @@
 								role="menu"
 								aria-orientation="vertical"
 								aria-labelledby="menu-button"
-								tabindex="-1"
 							>
 								<div class="py-1" role="none">
 									<MenuItem let:active let:disabled>
@@ -289,7 +285,7 @@
 										name="limit"
 										id="limit"
 										bind:value={limit}
-										on:change={(e) => {
+										on:change={() => {
 											currentGlobalParams = {
 												...currentGlobalParams,
 												...products.current,
@@ -306,7 +302,7 @@
 							<li>
 								<button
 									disabled={!products.previous}
-									on:click|preventDefault={(e) => {
+									on:click|preventDefault={() => {
 										currentGlobalParams = { ...currentGlobalParams, ...products.previous };
 										getProducts(currentGlobalParams);
 									}}
@@ -319,7 +315,7 @@
 							<li>
 								<button
 									disabled={!products.previous}
-									on:click|preventDefault={(e) => {
+									on:click|preventDefault={() => {
 										currentGlobalParams = { ...currentGlobalParams, ...products.previous };
 										getProducts(currentGlobalParams);
 									}}
@@ -339,7 +335,7 @@
 							<li>
 								<button
 									disabled={!products.next}
-									on:click|preventDefault={(e) => {
+									on:click|preventDefault={() => {
 										currentGlobalParams = { ...currentGlobalParams, ...products.next };
 										getProducts(currentGlobalParams);
 									}}
@@ -352,7 +348,7 @@
 							<li>
 								<button
 									disabled={!products.next}
-									on:click|preventDefault={(e) => {
+									on:click|preventDefault={() => {
 										currentGlobalParams = { ...currentGlobalParams, ...products.next };
 										getProducts(currentGlobalParams);
 									}}
@@ -366,13 +362,13 @@
 					</div>
 					<!-- List and Grid Buttons -->
 					<button
-						on:click={(e) => (gridView = true)}
+						on:click={() => (gridView = true)}
 						class="{gridView ? 'btn-primary' : 'bg-pickled-bluewood-600'} btn btn-md mr-4 p-0"
 					>
 						{@html svgGrid}
 					</button>
 					<button
-						on:click={(e) => (gridView = false)}
+						on:click={() => (gridView = false)}
 						class="{!gridView ? 'btn-primary' : 'bg-pickled-bluewood-600'} btn btn-md mr-6 p-0"
 					>
 						{@html svgList}
@@ -386,7 +382,7 @@
 			{#if gridView}
 				{#each products.results as product (product._id)}
 					<div
-						on:click|preventDefault={(e) => viewProducts(product._id)}
+						on:click|preventDefault={() => viewProducts(product._id)}
 						class=" flex h-44 w-full max-w-xs grow flex-col border-t-4 border-royal-blue-500 bg-white shadow-lg hover:cursor-pointer hover:bg-pickled-bluewood-100 lg:w-1/6"
 					>
 						<div class="flex h-full items-center">
@@ -476,7 +472,7 @@
 											<td class="py-1 text-center">
 												<button
 													class=" m-0 p-0"
-													on:click={async (e) => await goto(`/products/${product._id}`)}
+													on:click={async () => await goto(`/products/${product._id}`)}
 													><span class="fill-current text-pickled-bluewood-500"
 														>{@html svgView}</span
 													></button

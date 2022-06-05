@@ -1,9 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
 	import IconButton from '$lib/components/IconButton.svelte';
-	import Input from '$lib/components/Input.svelte';
 	import { svgWaves } from '$lib/utility/svgLogos';
-	import Index from './contacts/index.svelte';
 
 	const props = {
 		value: '',

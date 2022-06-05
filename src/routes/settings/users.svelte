@@ -30,7 +30,6 @@
 	];
 
 	let contacts: Array<userInterface> = [];
-	let error: any;
 	let isEditableID = null;
 
 	const getUsers = async () => {
@@ -39,7 +38,6 @@
 			contacts = await res.json();
 		} catch (err) {
 			logger.error(err.message);
-			error = err.message;
 		}
 	};
 
@@ -65,7 +63,6 @@
 				message: 'An error has occured while updating user',
 				type: 'error'
 			});
-			error = err.message;
 		}
 	};
 	const deleteUser = async (finalData: any) => {
@@ -90,7 +87,6 @@
 				message: 'An error has occured while updating user',
 				type: 'error'
 			});
-			error = err.message;
 		}
 	};
 

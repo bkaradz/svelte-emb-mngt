@@ -5,7 +5,6 @@
 	import { svgAddUser, svgArrow, svgPlus, svgUpload, svgX } from '$lib/utility/svgLogos';
 	import classnames from 'vest/classnames';
 	import { goto } from '$app/navigation';
-	// import Loading from '$lib/components/Loading.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { ContactsDocument } from '$lib/models/contacts.model';
 	import type { metaDataInterface } from '$lib/services/aggregateQuery.services';
@@ -15,8 +14,6 @@
 	import Combobox from '$lib/components/Combobox.svelte';
 
 	let result = suite.get();
-
-	// let error: string | undefined = undefined;
 
 	interface contactsInterface extends metaDataInterface {
 		results: Array<Omit<ContactsDocument, 'createdAt' | 'updatedAt' | 'password' | 'userRole'>>;
@@ -292,7 +289,7 @@
 						Add Contact
 					</button>
 					<button
-						on:click|preventDefault={(e) => resetForm()}
+						on:click|preventDefault={() => resetForm()}
 						class="group relative flex w-full justify-center  border border-transparent bg-royal-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-royal-blue-700 focus:outline-none focus:ring-2 focus:ring-royal-blue-500 focus:ring-offset-2"
 					>
 						<span class="absolute inset-y-0 left-0 flex items-center pl-3">

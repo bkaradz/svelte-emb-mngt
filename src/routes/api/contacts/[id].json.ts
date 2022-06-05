@@ -11,15 +11,6 @@ export async function get({ params }) {
 			.populate('organizationID')
 			.exec();
 
-		// if (!contact) {
-		// 	return {
-		// 		status: 404,
-		// 		body: {
-		// 			message: 'Customer not found'
-		// 		}
-		// 	};
-		// }
-
 		return {
 			status: 200,
 			body: {

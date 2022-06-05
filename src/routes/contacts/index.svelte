@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import Loading from '$lib/components/Loading.svelte';
+	import logger from '$lib/utility/logger';
 	import {
 		svgChevronLeft,
 		svgChevronRight,
@@ -7,18 +10,15 @@
 		svgPlus,
 		svgSearch,
 		svgSelector,
-		svgUpload,
 		svgView
 	} from '$lib/utility/svgLogos';
-	import { goto } from '$app/navigation';
+	import { Menu, MenuButton, MenuItem, MenuItems } from '@rgossiaux/svelte-headlessui';
 	import { onMount } from 'svelte';
-	import Loading from '$lib/components/Loading.svelte';
-	import logger from '$lib/utility/logger';
-	import { Menu, MenuButton, MenuItems, MenuItem } from '@rgossiaux/svelte-headlessui';
 
 	interface ContentIterface {
 		results: [
 			{
+				_id: string;
 				name: string;
 				isCorporate: boolean;
 				notes: string;
@@ -29,8 +29,12 @@
 				balanceDue: number;
 				totalReceipts: number;
 				isActive: boolean;
+				organizationID: {
+					name: string;
+				};
 			}
 		];
+		_id: string;
 		totalRecords: number;
 		totalPages: number;
 		limit: number;
@@ -70,7 +74,6 @@
 	];
 
 	let contacts: ContentIterface;
-	// let error: any;
 	let limit = 15;
 	let currentGlobalParams: getContactsInterface = {
 		limit,
@@ -110,14 +113,14 @@
 		state: 'State'
 	};
 
-	const heandleSearchSelection = (e) => {
-		searchOption = e.target.name;
+	const heandleSearchSelection = (event) => {
+		searchOption = event.target.name;
 		searchInputValue = '';
 	};
 
-	const heandleSearch = async (e) => {
+	const heandleSearch = async (event) => {
 		currentGlobalParams.page = 1;
-		let searchWord = e.target.value;
+		let searchWord = event.target.value;
 		currentGlobalParams = { ...currentGlobalParams, [searchOption]: searchWord };
 		getContacts(currentGlobalParams);
 	};
@@ -180,7 +183,6 @@
 								role="menu"
 								aria-orientation="vertical"
 								aria-labelledby="menu-button"
-								tabindex="-1"
 							>
 								<div class="py-1" role="none">
 									<MenuItem let:active let:disabled>
@@ -191,12 +193,12 @@
 												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
 											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-0"
 										>
 											Name
 										</a>
 									</MenuItem>
+
 									<MenuItem let:active let:disabled>
 										<a
 											on:click={heandleSearchSelection}
@@ -205,7 +207,6 @@
 												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
 											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-1">Organisation</a
 										>
 									</MenuItem>
@@ -218,7 +219,6 @@
 												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
 											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-2">Phone</a
 										>
 									</MenuItem>
@@ -230,7 +230,6 @@
 												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
 											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-3">Email</a
 										>
 									</MenuItem>
@@ -243,7 +242,6 @@
 												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
 											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-4">Vat Number</a
 										>
 									</MenuItem>
@@ -255,7 +253,6 @@
 												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
 											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-5">Balance Due</a
 										>
 									</MenuItem>
@@ -268,7 +265,6 @@
 												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
 											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-6">State</a
 										>
 									</MenuItem>
@@ -307,7 +303,7 @@
 										name="limit"
 										id="limit"
 										bind:value={limit}
-										on:change={(e) => {
+										on:change={() => {
 											currentGlobalParams = {
 												...currentGlobalParams,
 												...contacts.current,
@@ -324,7 +320,7 @@
 							<li>
 								<button
 									disabled={!contacts.previous}
-									on:click|preventDefault={(e) => {
+									on:click|preventDefault={() => {
 										currentGlobalParams = { ...currentGlobalParams, ...contacts.previous };
 										getContacts(currentGlobalParams);
 									}}
@@ -337,7 +333,7 @@
 							<li>
 								<button
 									disabled={!contacts.previous}
-									on:click|preventDefault={(e) => {
+									on:click|preventDefault={() => {
 										currentGlobalParams = { ...currentGlobalParams, ...contacts.previous };
 										getContacts(currentGlobalParams);
 									}}
@@ -357,7 +353,7 @@
 							<li>
 								<button
 									disabled={!contacts.next}
-									on:click|preventDefault={(e) => {
+									on:click|preventDefault={() => {
 										currentGlobalParams = { ...currentGlobalParams, ...contacts.next };
 										getContacts(currentGlobalParams);
 									}}
@@ -370,7 +366,7 @@
 							<li>
 								<button
 									disabled={!contacts.next}
-									on:click|preventDefault={(e) => {
+									on:click|preventDefault={() => {
 										currentGlobalParams = { ...currentGlobalParams, ...contacts.next };
 										getContacts(currentGlobalParams);
 									}}
@@ -384,13 +380,13 @@
 					</div>
 					<!-- List and Grid Buttons -->
 					<button
-						on:click={(e) => (gridView = true)}
+						on:click={() => (gridView = true)}
 						class="{gridView ? 'btn-primary' : 'bg-pickled-bluewood-600'} btn btn-md mr-4 p-0"
 					>
 						{@html svgGrid}
 					</button>
 					<button
-						on:click={(e) => (gridView = false)}
+						on:click={() => (gridView = false)}
 						class="{!gridView ? 'btn-primary' : 'bg-pickled-bluewood-600'} btn btn-md mr-6 p-0"
 					>
 						{@html svgList}
@@ -404,7 +400,7 @@
 			{#if gridView}
 				{#each contacts.results as contact (contact._id)}
 					<div
-						on:click|preventDefault={(e) => viewContact(contact._id)}
+						on:click|preventDefault={() => viewContact(contact._id)}
 						class=" flex h-44 w-full max-w-xs grow flex-col border-t-4 border-royal-blue-500 bg-white shadow-lg hover:cursor-pointer hover:bg-pickled-bluewood-100 lg:w-1/6"
 					>
 						<div class="flex h-full items-center">
@@ -418,13 +414,13 @@
 							<div class="p-1">
 								<p class="p-1 text-xs font-semibold text-pickled-bluewood-500">BALANCE DUE</p>
 								<span class="p-1 text-base font-bold text-pickled-bluewood-500">
-									${contact.balanceDue.$numberDecimal}
+									${contact.balanceDue}
 								</span>
 							</div>
 							<div class="p-1">
 								<p class="p-1 text-xs font-semibold text-pickled-bluewood-500">TOTAL INVOICED</p>
 								<span class="p-1 text-base font-bold text-pickled-bluewood-500">
-									${contact.totalReceipts.$numberDecimal}
+									${contact.totalReceipts}
 								</span>
 							</div>
 						</div>
@@ -441,7 +437,7 @@
 										class="border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
 									>
 										{#each tableHeadings as header (header.id)}
-											<th on:click={(e) => console.log(header)} class="px-2 py-2">{header.name}</th>
+											<th on:click={() => console.log(header)} class="px-2 py-2">{header.name}</th>
 										{/each}
 									</tr>
 								</thead>
@@ -471,8 +467,8 @@
 											<td class="px-2 py-1">
 												{!contact.vatOrBpNo ? '...' : contact.vatOrBpNo}
 											</td>
-											<td class="px-2 py-1 text-right">${contact.balanceDue.$numberDecimal}</td>
-											<td class="px-2 py-1 text-right">${contact.totalReceipts.$numberDecimal}</td>
+											<td class="px-2 py-1 text-right">${contact.balanceDue}</td>
+											<td class="px-2 py-1 text-right">${contact.totalReceipts}</td>
 											<td class="flex items-center justify-end px-2 py-1">
 												<span class="rounded-full bg-success px-3 py-1 text-xs font-bold text-white"
 													>Invoiced</span
@@ -481,7 +477,7 @@
 											<td class="p-1 text-center ">
 												<button
 													class=" m-0 p-0"
-													on:click={async (e) => await goto(`/contacts/${contact._id}`)}
+													on:click={async () => await goto(`/contacts/${contact._id}`)}
 													><span class="fill-current text-pickled-bluewood-500"
 														>{@html svgView}</span
 													></button

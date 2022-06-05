@@ -22,13 +22,24 @@
 
 	const endpoint = `/api/contacts/${$page.params.id}.json`;
 
-	let contact = {
-		name: 'Loading...',
-		balanceDue: 0,
-		totalReceipts: 0
-	};
+	interface ContactIterface {
+		_id: string;
+		name: string;
+		isCorporate: boolean;
+		notes: string;
+		vatOrBpNo: string;
+		email: string;
+		phone: string;
+		address: string;
+		balanceDue: number;
+		totalReceipts: number;
+		isActive: boolean;
+		organizationID: {
+			name: string;
+		};
+	}
 
-	let error: string | undefined = undefined;
+	let contact: ContactIterface;
 
 	onMount(async () => {
 		try {
@@ -39,11 +50,10 @@
 			}
 		} catch (err) {
 			logger.error(err.message);
-			error = err.message;
 		}
 	});
 
-	let noOrdersPerPage = 10;
+	let noContactsPerPage = 10;
 	let paginationCurrentValue = 2;
 	const PAGINATION_LAST_VALUE = 20; // To be replace by the value from the database
 	$: disableLeft = paginationCurrentValue <= 2 ? true : false;
@@ -62,7 +72,7 @@
 	const gotoContacts = async () => {
 		await goto(`/contacts`);
 	};
-	const heandleEdit = async (id) => {
+	const heandleEdit = async (id: string) => {
 		await goto(`/contacts/edit-${id}`);
 	};
 
@@ -73,9 +83,7 @@
 	<title>Contacts Details</title>
 </svelte:head>
 
-{#if error}
-	<h2>Error while loading the data</h2>
-{:else if contact}
+{#if contact}
 	<div class="flex flex-1 flex-col overflow-hidden">
 		<!-- Heading and Buttons -->
 		<div class="main-header flex flex-row items-center justify-between">
@@ -121,12 +129,11 @@
 							role="menu"
 							aria-orientation="vertical"
 							aria-labelledby="menu-button"
-							tabindex="-1"
 						>
 							<div class="py-1" role="none">
-								<MenuItem active={true}>
+								<MenuItem>
 									<a
-										on:click={(e) => heandleEdit($page.params.id)}
+										on:click={() => heandleEdit($page.params.id)}
 										class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
 										role="menuitem"
 										tabindex="-1"
@@ -313,7 +320,7 @@
 											type="number"
 											name="noContactsPerPage"
 											id="noContactsPerPage"
-											bind:value={noOrdersPerPage}
+											bind:value={noContactsPerPage}
 										/>
 									</div>
 								</li>

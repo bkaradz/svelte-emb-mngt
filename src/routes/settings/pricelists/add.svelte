@@ -1,16 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import suite from '$lib/validation/client/signUp.validate';
-	import classnames from 'vest/classnames';
-	import { onMount } from 'svelte';
-	import logger from '$lib/utility/logger';
-	import Input from '$lib/components/Input.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
-	import { svgDocumentAdd, svgPencil, svgPlus, svgXSmall } from '$lib/utility/svgLogos';
-	import { v4 as uuidv4 } from 'uuid';
-	import type { ParamMatcher } from '@sveltejs/kit';
-	import type { PricelistsSubDocument } from '$lib/models/pricelists.model';
+	import Input from '$lib/components/Input.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
+	import logger from '$lib/utility/logger';
+	import { svgDocumentAdd, svgPencil, svgPlus, svgXSmall } from '$lib/utility/svgLogos';
+	import suite from '$lib/validation/client/signUp.validate';
+	import { v4 as uuidv4 } from 'uuid';
+	import classnames from 'vest/classnames';
 
 	let result = suite.get();
 
@@ -177,7 +174,7 @@
 				<div>
 					{#each [...groupList] as list, index (index)}
 						<button
-							on:click|preventDefault={(e) => (selectedGroup = list)}
+							on:click|preventDefault={() => (selectedGroup = list)}
 							class="mx-1 mb-3 mt-2 justify-center rounded-full border border-transparent px-3 py-1 text-sm font-medium text-white {selectedGroup ===
 							list
 								? `btn-primary`

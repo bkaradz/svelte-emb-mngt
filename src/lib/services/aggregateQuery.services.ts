@@ -1,5 +1,4 @@
 import logger from '$lib/utility/logger';
-import { omit } from 'lodash';
 import type { ContactsDocument } from '../models/contacts.model';
 
 export interface paginationNavInterface {

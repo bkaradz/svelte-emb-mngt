@@ -57,7 +57,7 @@ export const post: RequestHandler = async ({ request }) => {
 		return {
 			status: 200,
 			body: {
-				message: omit(contacts.toJSON(), 'password')
+				message: omit(contacts.toJSON(), ['password', 'createdAt', 'updatedAt', '__v'])
 			}
 		};
 	} catch (err) {

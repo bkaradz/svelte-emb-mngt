@@ -21,7 +21,6 @@
 	import { svgSignIn, svgSignUp } from '$lib/utility/svgLogos';
 	import logo from '$lib/assets/logo.ico';
 
-	let error: any;
 
 	let isPageLoading = true;
 
@@ -52,10 +51,8 @@
 	<link rel="icon" href={logo} />
 </svelte:head>
 
-{#if error}
-	<h2>Error while loading the data</h2>
-{:else if !isPageLoading}
-	<div class="height_max flex flex-col items-center bg-pickled-bluewood-50">
+{#if !isPageLoading} 
+<div class="height_max flex flex-col items-center bg-pickled-bluewood-50">
 		<div
 			class="mb-16 flex h-[70px] w-screen flex-row items-center justify-center bg-pickled-bluewood-100 drop-shadow-md"
 		>

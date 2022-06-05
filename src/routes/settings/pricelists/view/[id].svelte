@@ -6,8 +6,7 @@
 	import logger from '$lib/utility/logger';
 	import Input from '$lib/components/Input.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
-	import { svgDocumentAdd, svgPencil, svgPlus, svgXSmall } from '$lib/utility/svgLogos';
-	import { v4 as uuidv4 } from 'uuid';
+	import type { PricelistsDocument, PricelistsSubDocument } from '$lib/models/pricelists.model';
 
 	let result = suite.get();
 
@@ -20,7 +19,7 @@
 
 	const endpoint = `/api/pricelists/${$page.params.id}.json`;
 
-	let pricelist;
+	let pricelist: PricelistsDocument;
 
 	let selectedGroup = 'all';
 
@@ -31,7 +30,7 @@
 	let isEditableID = null;
 
 	$: if (pricelist?.pricelists?.length) {
-		pricelist.pricelists.forEach((list) => {
+		pricelist.pricelists.forEach((list: PricelistsSubDocument) => {
 			groupList.add(list.embroideryType);
 		});
 	}
@@ -52,44 +51,6 @@
 		invalid: 'error',
 		valid: 'success'
 	});
-
-	const heandleEditable = async (list) => {
-		if (isEditableID === null) {
-			isEditableID = list._id;
-		} else {
-			// await updateOrAddOptions(list);
-			isEditableID = null;
-		}
-	};
-
-	const handleInput = () => {};
-
-	const heandleDelete = (finalData: any) => {
-		idToRemove = idToRemove.filter((list) => list !== finalData._id);
-		pricelist.pricelists = pricelist.pricelists.filter((list) => list._id !== finalData._id);
-		// deleteOption(finalData);
-	};
-
-	let idToRemove = [];
-
-	$: heandleAddRow = () => {
-		const id = uuidv4();
-
-		isEditableID = id;
-		idToRemove.push(id);
-		pricelist.pricelists = [
-			...pricelist.pricelists,
-			{
-				_id: id,
-				embroideryType: selectedGroup,
-				minimumPrice: { $numberDecimal: 'Edit...' },
-				maximumQuantity: 'Edit...',
-				pricePerThousandStitches: { $numberDecimal: 'Edit...' },
-				isDefault: false,
-				editable: true
-			}
-		];
-	};
 </script>
 
 {#if pricelist}
@@ -105,7 +66,6 @@
 						label="Name"
 						disabled={true}
 						bind:value={pricelist.name}
-						onInput={handleInput}
 						messages={result.getErrors('name')}
 						validityClass={cn('name')}
 					/>
@@ -133,7 +93,7 @@
 				<div>
 					{#each [...groupList] as list, index (index)}
 						<button
-							on:click|preventDefault={(e) => (selectedGroup = list)}
+							on:click|preventDefault={() => (selectedGroup = list)}
 							class="mx-1 mb-3 mt-2 justify-center rounded-full border border-transparent px-3 py-1 text-sm font-medium text-white {selectedGroup ===
 							list
 								? `btn-primary`
@@ -173,7 +133,7 @@
 												type="text"
 												name="minimumPrice"
 												disabled={!(isEditableID === list._id)}
-												bind:value={list.minimumPrice.$numberDecimal}
+												bind:value={list.minimumPrice}
 											/>
 										</td>
 										<td class="px-2 py-1">
@@ -191,7 +151,7 @@
 												type="text"
 												name="pricePerThousandStitches"
 												disabled={!(isEditableID === list._id)}
-												bind:value={list.pricePerThousandStitches.$numberDecimal}
+												bind:value={list.pricePerThousandStitches}
 											/>
 										</td>
 									</tr>
