@@ -157,7 +157,6 @@
 												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
 											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-0"
 										>
 											Name
@@ -171,7 +170,6 @@
 												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
 											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-1">Product ID</a
 										>
 									</MenuItem>
@@ -184,7 +182,6 @@
 												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
 											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-2">Title</a
 										>
 									</MenuItem>
@@ -196,7 +193,6 @@
 												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
 											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-3">Description</a
 										>
 									</MenuItem>
@@ -209,7 +205,6 @@
 												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
 											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-4">Unit Price</a
 										>
 									</MenuItem>
@@ -221,7 +216,6 @@
 												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
 											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-5">Category</a
 										>
 									</MenuItem>
@@ -234,7 +228,6 @@
 												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
 											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-6">Stitches</a
 										>
 									</MenuItem>
@@ -246,7 +239,6 @@
 												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
 											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-6">Quantity</a
 										>
 									</MenuItem>

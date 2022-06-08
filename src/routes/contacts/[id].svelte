@@ -136,7 +136,6 @@
 										on:click={() => heandleEdit($page.params.id)}
 										class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
 										role="menuitem"
-										tabindex="-1"
 										id="menu-item-0">Edit</a
 									>
 								</MenuItem>
@@ -145,7 +144,6 @@
 										href="/"
 										class="block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
 										role="menuitem"
-										tabindex="-1"
 										id="menu-item-1">Delete</a
 									>
 								</MenuItem>
@@ -232,20 +230,17 @@
 									role="menu"
 									aria-orientation="vertical"
 									aria-labelledby="menu-button"
-									tabindex="-1"
 								>
 									<div class="py-1" role="none">
 										<a
 											class="block px-4 py-2 text-sm text-pickled-bluewood-700"
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-0">Edit</a
 										>
 										<a
 											href="/"
 											class="block px-4 py-2 text-sm text-pickled-bluewood-700"
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-1">Duplicate</a
 										>
 									</div>
@@ -254,14 +249,12 @@
 											href="/"
 											class="block px-4 py-2 text-sm text-pickled-bluewood-700"
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-2">Archive</a
 										>
 										<a
 											href="/"
 											class="block px-4 py-2 text-sm text-pickled-bluewood-700"
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-3">Move</a
 										>
 									</div>
@@ -270,14 +263,12 @@
 											href="/"
 											class="block px-4 py-2 text-sm text-pickled-bluewood-700"
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-4">Share</a
 										>
 										<a
 											href="/"
 											class="block px-4 py-2 text-sm text-pickled-bluewood-700"
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-5">Add to favorites</a
 										>
 									</div>
@@ -286,7 +277,6 @@
 											href="/"
 											class="block px-4 py-2 text-sm text-pickled-bluewood-700"
 											role="menuitem"
-											tabindex="-1"
 											id="menu-item-6">Delete</a
 										>
 									</div>

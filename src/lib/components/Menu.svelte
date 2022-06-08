@@ -80,7 +80,6 @@
 						href="/"
 						class="flex items-center px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
 						role="menuitem"
-						tabindex="-1"
 						id="menu-item-0"
 					>
 						<div class="mr-3">
@@ -94,7 +93,6 @@
 						href="/"
 						class="flex items-center px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
 						role="menuitem"
-						tabindex="-1"
 						id="menu-item-1"
 					>
 						<div class="mr-3">
@@ -112,7 +110,6 @@
 							active ? 'bg-royal-blue-500 text-white' : ''
 						} flex items-center px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
 						role="menuitem"
-						tabindex="-1"
 						id="menu-item-2"
 						on:click={handleSignOut}
 					>
