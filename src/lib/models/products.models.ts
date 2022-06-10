@@ -1,22 +1,6 @@
 import mongoose, { model, Schema, Document } from 'mongoose';
-
-const constants = {
-	USER_ROLES: 'userRoles',
-	PRODUCT_CATEGORIES: 'productCategories',
-	EMBROIDERY_TYPES: 'embTypes',
-	GARMENT_POSITIONS: 'garmentPositions',
-	CUSTOMER_TYPES: 'customerTypes',
-	ACCOUNTS_STATUS: 'accountsStatus',
-	MANUFACTURING_STATUS: 'manufacturingStatus',
-	// Default values
-	DEF_USER_ROLE: 'USER',
-	DEF_PRODUCT_CATEGORY: 'embLogo',
-	DEF_EMBROIDERY_TYPE: 'Flat',
-	DEF_GARMENT_POSITION: 'Front Left',
-	DEF_CUSTOMER_TYPE: 'Individual',
-	DEF_ACCOUNTS_STATUS: 'quotation',
-	DEF_MANUFACTURING_STATUS: 'awaitingEmbroidery'
-};
+import { optionsGroupsValuesDefaults } from '$lib/models/options.models';
+import { getMonetaryValue } from '$lib/services/monetary.services';
 
 export interface ProductsDocument extends Document {
 	_id: mongoose.Schema.Types.ObjectId;
@@ -25,7 +9,7 @@ export interface ProductsDocument extends Document {
 	productID: string;
 	title?: string;
 	description?: string;
-	unitPrice: number;
+	unitPrice: mongoose.Schema.Types.Decimal128 | number;
 	category?: string;
 	stitches: number;
 	quantity: number;
@@ -53,26 +37,28 @@ const productsSchema: Schema = new Schema<ProductsDocument>(
 			type: String
 		},
 		unitPrice: {
-			type: Number,
+			type: Schema.Types.Decimal128,
+			get: (v: number) => getMonetaryValue(v),
+			set: (v: number) => mongoose.Types.Decimal128.fromString((+v).toFixed(4)),
 			required: function () {
-				return this.category !== constants.DEF_PRODUCT_CATEGORY;
+				return this.category !== optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORY;
 			}
 		},
 		category: {
 			type: String,
-			default: constants.DEF_PRODUCT_CATEGORY,
+			default: optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORY,
 			required: true
 		},
 		stitches: {
 			type: Number,
 			required: function () {
-				return this.category === constants.DEF_PRODUCT_CATEGORY;
+				return this.category === optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORY;
 			}
 		},
 		quantity: {
 			type: Number,
 			required: function () {
-				return this.category !== constants.DEF_PRODUCT_CATEGORY;
+				return this.category !== optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORY;
 			}
 		},
 		isActive: { type: Boolean, required: true, default: true },

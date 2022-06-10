@@ -1,6 +1,7 @@
 import mongoose, { model, Schema, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 import config from 'config';
+import { getMonetaryValue } from '$lib/services/monetary.services';
 
 export interface ContactsDocument extends Document {
 	_id: mongoose.Schema.Types.ObjectId;
@@ -112,10 +113,3 @@ contactsSchema.methods.comparePassword = async function (
 const ContactsModel = model<ContactsDocument>('Contacts', contactsSchema);
 
 export default ContactsModel;
-
-function getMonetaryValue(value: number) {
-	if (typeof value !== 'undefined') {
-		return parseFloat(value.toString());
-	}
-	return value;
-}

@@ -1,3 +1,4 @@
+import { getMonetaryValue } from '$lib/services/monetary.services';
 import mongoose, { model, Schema, Document } from 'mongoose';
 
 export interface PricelistsSubDocument {
@@ -107,10 +108,3 @@ PricelistsSchema.pre(/^(updateOne|findOneAndUpdate|findByIdAndUpdate)/, async fu
 const PricelistsModel = model<PricelistsDocument>('Pricelists', PricelistsSchema);
 
 export default PricelistsModel;
-
-function getMonetaryValue(value: number) {
-	if (typeof value !== 'undefined') {
-		return parseFloat(value.toString());
-	}
-	return value;
-}
