@@ -1,11 +1,9 @@
 import PricelistsModel from '$lib/models/pricelists.model';
 import { postSuite } from '$lib/validation/server/pricelists.validate';
 import logger from '$lib/utility/logger';
+import type { RequestHandler } from '@sveltejs/kit';
 
-/**
- * @type {import('@sveltejs/kit').RequestHandler}
- */
-export const get = async ({ locals }) => {
+export const get: RequestHandler = async ({ locals }) => {
 	try {
 		if (!locals?.user?._id) {
 			return {
@@ -33,10 +31,7 @@ export const get = async ({ locals }) => {
 	}
 };
 
-/**
- * @type {import('@sveltejs/kit').RequestHandler}
- */
-export const post = async ({ request, locals }) => {
+export const post: RequestHandler = async ({ request, locals }) => {
 	try {
 		if (!locals?.user?._id) {
 			return {
@@ -84,10 +79,7 @@ export const post = async ({ request, locals }) => {
 	}
 };
 
-/**
- * @type {import('@sveltejs/kit').RequestHandler}
- */
-export const put = async ({ request, locals }) => {
+export const put: RequestHandler = async ({ request, locals }) => {
 	try {
 		if (!locals?.user?._id) {
 			return {
@@ -126,12 +118,7 @@ export const put = async ({ request, locals }) => {
 			body: newPricelists
 		};
 	} catch (err) {
-		logger.error(err);
-		return {
-			status: 500,
-			body: {
-				error: `A server error occurred ${err}`
-			}
-		};
+		logger.error(err.message);
+		throw new Error(`Error ${err.message}`);
 	}
 };

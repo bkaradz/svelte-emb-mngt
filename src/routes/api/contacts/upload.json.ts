@@ -108,12 +108,7 @@ export const post: RequestHandler = async ({
 			}
 		};
 	} catch (err) {
-		logger.error('Error', err);
-		return {
-			status: 500,
-			body: {
-				message: 'Error has ocurred'
-			}
-		};
+		logger.error(err.message);
+		throw new Error(`Error ${err.message}`);
 	}
 };

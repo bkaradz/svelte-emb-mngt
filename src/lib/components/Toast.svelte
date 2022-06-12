@@ -10,7 +10,7 @@
 	export let type: string;
 	export let message: string;
 	export let id: string;
-	export let removeToast;
+	export let removeToast: (id: string) => void;
 
 	let progress = 0;
 	let autoClose = 5000;

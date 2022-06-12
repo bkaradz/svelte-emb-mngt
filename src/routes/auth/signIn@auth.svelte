@@ -21,9 +21,9 @@
 		password: ''
 	};
 
-	const handleInput = (event) => {
-		let name = event.target.name;
-		let value = event.target.value;
+	const handleInput = (event: Event & { currentTarget: EventTarget & HTMLInputElement }) => {
+		let name = (event.target as HTMLInputElement).name;
+		let value = (event.target as HTMLInputElement).value;
 		formData[name] = value;
 		result = suite(formData, name);
 	};
@@ -35,7 +35,6 @@
 	});
 
 	$: disabled = !result.isValid();
-
 
 	const resetForm = () => {
 		formData = {

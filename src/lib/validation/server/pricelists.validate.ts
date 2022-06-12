@@ -26,7 +26,7 @@ export function postSuite(data) {
 			(field: {
 				minimumPrice: number;
 				pricePerThousandStitches: number;
-				maximumQuantity: number;
+				minimumQuantity: number;
 				embroideryType: string;
 			}) => {
 				test('minimumPrice', 'minimumPrice is required', () => {
@@ -41,11 +41,11 @@ export function postSuite(data) {
 				test('pricePerThousandStitches', 'pricePerThousandStitches must be a number', () => {
 					enforce(field.pricePerThousandStitches).isNumeric();
 				});
-				test('maximumQuantity', 'maximumQuantity is required', () => {
-					enforce(field.maximumQuantity).isNotBlank();
+				test('minimumQuantity', 'minimumQuantity is required', () => {
+					enforce(field.minimumQuantity).isNotBlank();
 				});
-				test('maximumQuantity', 'maximumQuantity must be a number', () => {
-					enforce(field.maximumQuantity).isNumeric();
+				test('minimumQuantity', 'minimumQuantity must be a number', () => {
+					enforce(field.minimumQuantity).isNumeric();
 				});
 				test('embroideryType', 'embroideryType is required', () => {
 					enforce(field.embroideryType).isNotBlank();

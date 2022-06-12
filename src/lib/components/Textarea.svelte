@@ -7,7 +7,7 @@
 	export let pending = false;
 	export let messages = [];
 	export let validityClass = '';
-	export let onInput = (e: any) => {};
+	export let onInput = (e: Event & { currentTarget: EventTarget & HTMLTextAreaElement }) => {};
 </script>
 
 <div class:pending class={`${validityClass} form-input`}>
@@ -28,7 +28,7 @@
 			use:selectTextOnFocus
 			use:blurOnEscape
 			bind:value
-			on:input={onInput}
+			on:input={(e) => onInput(e)}
 			id={name}
 			class="input"
 			autocomplete="off"

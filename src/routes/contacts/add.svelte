@@ -76,9 +76,9 @@
 		address: ''
 	};
 
-	const handleInput = (event) => {
-		let name = event.target.name;
-		let value = event.target.value;
+	const handleInput = (event: any) => {
+		const name = (event.target as HTMLInputElement).name;
+		const value = (event.target as HTMLInputElement).value;
 		formData[name] = value;
 		result = suite(formData, name);
 	};
@@ -89,7 +89,7 @@
 		valid: 'success'
 	});
 
-	$: disabled = !result.isValid();
+	// $: disabled = !result.isValid();
 
 	$: resetForm = () => {
 		formData = {
@@ -150,18 +150,18 @@
 		}
 	};
 
-	const makeMatchBold = (searchMatchString: string) => {
-		let MatchedWords = [];
-		if (corporateSearch.name) {
-			const regex = new RegExp(corporateSearch.name, 'ig');
-			MatchedWords = searchMatchString.trim().match(regex);
-		}
+	// const makeMatchBold = (searchMatchString: string) => {
+	// 	let MatchedWords = [];
+	// 	if (corporateSearch.name) {
+	// 		const regex = new RegExp(corporateSearch.name, 'ig');
+	// 		MatchedWords = searchMatchString.trim().match(regex);
+	// 	}
 
-		let makeBold = `<strong>${MatchedWords[0]}</strong>`;
-		let boldedStr = searchMatchString.replace(MatchedWords[0], makeBold);
+	// 	let makeBold = `<strong>${MatchedWords[0]}</strong>`;
+	// 	let boldedStr = searchMatchString.replace(MatchedWords[0], makeBold);
 
-		return boldedStr;
-	};
+	// 	return boldedStr;
+	// };
 
 	const handleComboInput = (e: any) => {
 		currentCorporateQueryParams = {

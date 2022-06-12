@@ -6,8 +6,7 @@
 	import Input from '$lib/components/Input.svelte';
 	import Loading from '$lib/components/Loading.svelte';
 	import Textarea from '$lib/components/Textarea.svelte';
-	import type { ContactsDocument } from '$lib/models/contacts.model';
-	import type { metaDataInterface } from '$lib/services/aggregateQuery.services';
+	import type { AggregateContactsDocument, ContactsDocument } from '$lib/models/contacts.model';
 	import { toasts } from '$lib/stores/toasts.store';
 	import logger from '$lib/utility/logger';
 	import { svgArrow, svgRefresh, svgXCircle } from '$lib/utility/svgLogos';
@@ -19,13 +18,11 @@
 
 	let result = suite.get();
 
-	let error: string | undefined = undefined;
+	let editContact: Partial<ContactsDocument>;
 
-	let editContact;
-
-	interface contactsInterface extends metaDataInterface {
-		results: Array<Omit<ContactsDocument, 'createdAt' | 'updatedAt' | 'password' | 'userRole'>>;
-	}
+	// interface contactsInterface extends metaDataInterface {
+	// 	results: Array<Omit<ContactsDocument, 'createdAt' | 'updatedAt' | 'password' | 'userRole'>>;
+	// }
 	interface corporateQueryParamsInterface {
 		limit: number;
 		page: number;
@@ -34,17 +31,17 @@
 		name?: string;
 	}
 
-	type corporateSearchInterface = Partial<ContactsDocument> & { name: string; _id?: string };
+	// type corporateSearchInterface = Partial<ContactsDocument> & { name: string; _id?: string };
 
-	let corporateSearch: corporateSearchInterface = { name: null };
+	let corporateSearch: any = { name: null };
 
-	let showList = false;
+	// let showList = false;
 
-	function handleShowList() {
-		if (showList) {
-			showList = false;
-		}
-	}
+	// function handleShowList() {
+	// 	if (showList) {
+	// 		showList = false;
+	// 	}
+	// }
 
 	let defaultCorporateQueryParams: Partial<corporateQueryParamsInterface> = {
 		limit: 7,
@@ -53,7 +50,7 @@
 		isCorporate: true
 	};
 	let currentCorporateQueryParams = defaultCorporateQueryParams;
-	let corporateContacts;
+	let corporateContacts: Partial<AggregateContactsDocument>;
 
 	onMount(() => {
 		getCorporateContacts(currentCorporateQueryParams);
@@ -70,18 +67,17 @@
 				message: 'An error has occured while getting corporate contacts',
 				type: 'error'
 			});
-			error = err.message;
 		}
 	};
 
-	interface formDataType {
-		name: string;
-		organizationID?: Partial<ContactsDocument>;
-		isCorporate: boolean;
-		email: string;
-		phone: string;
-		address: string;
-	}
+	// interface formDataType {
+	// 	name: string;
+	// 	organizationID?: Partial<ContactsDocument>;
+	// 	isCorporate: boolean;
+	// 	email: string;
+	// 	phone: string;
+	// 	address: string;
+	// }
 
 	// let formData: formDataType = {
 	// 	isCorporate: false,
@@ -92,7 +88,7 @@
 	// 	address: ''
 	// };
 
-	$: formData = {
+	let formData = {
 		...editContact,
 		organizationID: corporateSearch?._id
 	};
@@ -101,9 +97,9 @@
 
 	$: corporateSearch = editContact?.organizationID ? editContact?.organizationID : { name: '' };
 
-	const handleInput = (event) => {
-		let name = event.target.name;
-		let value = event.target.value;
+	const handleInput = (event: any) => {
+		const name = (event.target as HTMLInputElement).name;
+		const value = (event.target as HTMLInputElement).value;
 		formData[name] = value;
 		result = suite(formData, name);
 	};
@@ -114,13 +110,13 @@
 		valid: 'success'
 	});
 
-	$: disabled = !result.isValid();
+	// $: disabled = !result.isValid();
 
 	onMount(async () => {
 		const res = await fetch(endpoint);
 		if (res.ok) {
 			const results = await res.json();
-			editContact = { ...results.contact };
+			editContact = results;
 		}
 	});
 
@@ -133,15 +129,16 @@
 			});
 
 			if (res.ok) {
-				const data = await res.json();
+				// const data = await res.json();
 
 				suite.reset();
-			} else {
-				error = 'An error has occured';
 			}
 		} catch (err) {
 			logger.error(err.messages);
-			error = 'An error has occured';
+			toasts.add({
+				message: 'An error has occured while updating contacts',
+				type: 'error'
+			});
 		}
 	};
 
@@ -149,27 +146,27 @@
 		await goto(`/contacts`);
 	};
 
-	const makeMatchBold = (searchMatchString: string) => {
-		let MatchedWords = [];
-		if (corporateSearch.name) {
-			const regex = new RegExp(corporateSearch.name, 'ig');
-			MatchedWords = searchMatchString.trim().match(regex);
-		}
+	// const makeMatchBold = (searchMatchString: string) => {
+	// 	let MatchedWords = [];
+	// 	if (corporateSearch.name) {
+	// 		const regex = new RegExp(corporateSearch.name, 'ig');
+	// 		MatchedWords = searchMatchString.trim().match(regex);
+	// 	}
 
-		let makeBold = `<strong>${MatchedWords[0]}</strong>`;
-		let boldedStr = searchMatchString.replace(MatchedWords[0], makeBold);
+	// 	let makeBold = `<strong>${MatchedWords[0]}</strong>`;
+	// 	let boldedStr = searchMatchString.replace(MatchedWords[0], makeBold);
 
-		return boldedStr;
-	};
+	// 	return boldedStr;
+	// };
 
 	const handleCancel = async () => {
 		await goto(`/contacts/${$page.params.id}`);
 	};
 
-	const handleComboInput = (event: { target: { value: any } }) => {
+	const handleComboInput = (event: Event & { currentTarget: EventTarget & HTMLInputElement }) => {
 		currentCorporateQueryParams = {
 			...currentCorporateQueryParams,
-			name: event.target.value
+			name: (event.target as HTMLInputElement).value
 		};
 		getCorporateContacts(currentCorporateQueryParams);
 	};
@@ -178,9 +175,8 @@
 <svelte:head>
 	<title>Edit Contacts</title>
 </svelte:head>
-{#if error}
-	<h2>Error while loading the data</h2>
-{:else if editContact && corporateContacts}
+
+{#if editContact && corporateContacts}
 	<div class="flex flex-1 flex-col">
 		<!-- Use This -->
 		<div>

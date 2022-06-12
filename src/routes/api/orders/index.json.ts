@@ -1,29 +1,11 @@
-import ContactsModel, { type ContactsDocument } from '$lib/models/contacts.model';
-import omit from 'lodash/omit';
 import logger from '$lib/utility/logger';
 import aggregateQuery from '$lib/services/aggregateQuery.services';
-import { postSuite } from '$lib/validation/server/contacts.validate';
-import pickBy from 'lodash/pickBy';
-import identity from 'lodash/identity';
-import type { RequestHandler } from '@sveltejs/kit';
+import OrdersModel from '$lib/models/orders.model';
+import omit from 'lodash/omit';
+import ProductsModel from '$lib/models/products.models';
 
-export const get: RequestHandler = async ({
-	url,
-	locals
-}): Promise<{
-	status: number;
-	body: ContactsDocument | { error: string } | { message: string };
-}> => {
+export const get = async ({ url }) => {
 	try {
-		if (!locals?.user?._id) {
-			return {
-				status: 401,
-				body: {
-					message: 'Unauthorized'
-				}
-			};
-		}
-
 		const queryParams = Object.fromEntries(url.searchParams);
 
 		let { limit = 15, page = 1 } = queryParams;
@@ -69,21 +51,18 @@ export const get: RequestHandler = async ({
 		});
 
 		const aggregateFilter = [
-			{
-				$lookup: {
-					from: 'contacts',
-					localField: 'organizationID',
-					foreignField: '_id',
-					as: 'organizationID'
-				}
-			},
+			// {
+			// 	$lookup: {
+			// 		from: 'products',
+			// 		localField: 'organizationID',
+			// 		foreignField: '_id',
+			// 		as: 'organizationID'
+			// 	}
+			// },
 			{
 				$addFields: {
-					balanceDue: {
-						$toString: '$balanceDue'
-					},
-					totalReceipts: {
-						$toString: '$totalReceipts'
+					stitches: {
+						$toString: '$stitches'
 					}
 				}
 			},
@@ -123,8 +102,6 @@ export const get: RequestHandler = async ({
 			{
 				$project: {
 					results: {
-						userRole: 0,
-						password: 0,
 						createdAt: 0,
 						updatedAt: 0,
 						__v: 0
@@ -133,19 +110,19 @@ export const get: RequestHandler = async ({
 			}
 		];
 
-		let contacts = await aggregateQuery(
+		let products = await aggregateQuery(
 			queryParams,
-			ContactsModel,
+			ProductsModel,
 			aggregateFilter,
 			endSearchParams
 		);
 
-		contacts = { ...contacts, ...contacts.metaData[0] };
-		delete contacts.metaData;
+		products = { ...products, ...products.metaData[0] };
+		delete products.metaData;
 
 		return {
 			status: 200,
-			body: contacts
+			body: { ...products }
 		};
 	} catch (err) {
 		return {
@@ -157,13 +134,7 @@ export const get: RequestHandler = async ({
 	}
 };
 
-export const post: RequestHandler = async ({
-	request,
-	locals
-}): Promise<{
-	status: number;
-	body: ContactsDocument | { error: string } | { message: string };
-}> => {
+export const post = async ({ request, locals }) => {
 	try {
 		if (!locals?.user?._id) {
 			return {
@@ -176,73 +147,48 @@ export const post: RequestHandler = async ({
 
 		const userId = locals.user._id;
 
-		let reqContact = await request.json();
+		const reqOrder = await request.json();
 
-		// password only allowed in signUp endpoint
-		reqContact = omit(reqContact, 'password');
+		// const result = postSuite(reqOrder);
 
-		reqContact.isActive = true;
+		// if (result.hasErrors()) {
+		// 	logger.error(result.getErrors());
+		// 	return {
+		// 		status: 400,
+		// 		body: {
+		// 			message: result.getErrors()
+		// 		}
+		// 	};
+		// }
 
-		const result = postSuite(reqContact);
+		const newOrder = new OrdersModel(reqOrder);
 
-		if (result.hasErrors()) {
-			logger.error(result.getErrors());
-			return {
-				status: 400,
-				body: {
-					message: `${result.getErrors()}`
-				}
-			};
-		}
+		newOrder.userID = userId;
 
-		const contactFiltered = pickBy(reqContact, identity);
-
-		const contacts = new ContactsModel(contactFiltered);
-
-		contacts.isUser = false;
-		contacts.userID = userId;
-
-		await contacts.save();
+		await newOrder.save();
 
 		return {
 			status: 200,
-			body: contacts
+			body: newOrder
 		};
 	} catch (err) {
 		logger.error(err.message);
 		return {
 			status: 500,
 			body: {
-				error: `A server error occurred ${err}`
+				error: `A server error occurred ${err.message}`
 			}
 		};
 	}
 };
 
-export const put: RequestHandler = async ({
-	request,
-	locals
-}): Promise<{
-	status: number;
-	body: ContactsDocument | { error: string } | { message: string };
-}> => {
+export const put = async () => {
 	try {
-		if (!locals?.user?._id) {
-			return {
-				status: 401,
-				body: {
-					message: 'Unauthorized'
-				}
-			};
-		}
-
-		const reqContact = await request.json();
-
-		const res = await ContactsModel.findByIdAndUpdate(reqContact._id, reqContact);
-
 		return {
 			status: 200,
-			body: res
+			body: {
+				message: 'Success'
+			}
 		};
 	} catch (err) {
 		return {
@@ -254,6 +200,6 @@ export const put: RequestHandler = async ({
 	}
 };
 
-// export const del: RequestHandler = async() => {
-// 	return;
-// }
+export async function del() {
+	return;
+}

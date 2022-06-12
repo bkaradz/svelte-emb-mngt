@@ -7,18 +7,18 @@
 	import { Menu, MenuButton, MenuItem, MenuItems } from '@rgossiaux/svelte-headlessui';
 
 	let signInMenuOpen = false;
-	function handleClick() {
-		signInMenuOpen = !signInMenuOpen;
-	}
-	$: signInMenuOpen;
+	// function handleClick() {
+	// 	signInMenuOpen = !signInMenuOpen;
+	// }
+	// $: signInMenuOpen;
 
-	function handleClickOutside(event) {
-		if (signInMenuOpen) {
-			signInMenuOpen = !signInMenuOpen;
-		}
-	}
+	// function handleClickOutside(event: any) {
+	// 	if (signInMenuOpen) {
+	// 		signInMenuOpen = !signInMenuOpen;
+	// 	}
+	// }
 
-	function handleKeyDown(event) {
+	function handleKeyDown(event: { key: string }) {
 		if (event.key === 'Escape') {
 			signInMenuOpen = !signInMenuOpen;
 		}
@@ -75,7 +75,7 @@
 			aria-labelledby="menu-button"
 		>
 			<div class="py-1" role="none">
-				<MenuItem let:active let:disabled>
+				<MenuItem>
 					<a
 						href="/"
 						class="flex items-center px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
@@ -88,7 +88,7 @@
 						Account
 					</a>
 				</MenuItem>
-				<MenuItem let:active let:disabled>
+				<MenuItem>
 					<a
 						href="/"
 						class="flex items-center px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white"
@@ -103,7 +103,7 @@
 				</MenuItem>
 			</div>
 			<div class="py-1" role="none">
-				<MenuItem let:active let:disabled>
+				<MenuItem let:active>
 					<a
 						href="/"
 						class={`${

@@ -9,10 +9,10 @@ export interface ProductsDocument extends Document {
 	productID: string;
 	title?: string;
 	description?: string;
-	unitPrice: mongoose.Schema.Types.Decimal128 | number;
+	unitPrice?: mongoose.Schema.Types.Decimal128 | number;
 	category?: string;
-	stitches: number;
-	quantity: number;
+	stitches?: number;
+	quantity?: number;
 	isActive: boolean;
 	createdAt: Date;
 	updatedAt: Date;
@@ -113,6 +113,6 @@ export const getCurrentProductID = async (): Promise<string> => {
 		}
 		return productID;
 	} catch (err) {
-		throw new Error('Error ${err.message}');
+		throw new Error(`Error ${err.message}`);
 	}
 };

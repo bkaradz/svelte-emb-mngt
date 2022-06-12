@@ -46,7 +46,8 @@
 			const res = await fetch(endpoint);
 			if (res.ok) {
 				const results = await res.json();
-				contact = { ...contact, ...results.contact };
+				console.log('🚀 ~ file: [id].svelte ~ line 49 ~ onMount ~ results', results);
+				contact = results;
 			}
 		} catch (err) {
 			logger.error(err.message);

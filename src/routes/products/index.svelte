@@ -79,19 +79,21 @@
 		category: 'Category'
 	};
 
-	const heandleSearchSelection = (event) => {
-		searchOption = event.target.name;
+	const heandleSearchSelection = (event: MouseEvent) => {
+		searchOption = (event.target as HTMLInputElement).name;
 		searchInputValue = '';
 	};
 
-	const heandleSearch = async (event) => {
+	const heandleSearch = async (
+		event: Event & { currentTarget: EventTarget & HTMLInputElement }
+	) => {
 		currentGlobalParams.page = 1;
-		let searchWord = event.target.value;
+		let searchWord = (event.target as HTMLInputElement).value;
 		currentGlobalParams = { ...currentGlobalParams, [searchOption]: searchWord };
 		getProducts(currentGlobalParams);
 	};
 
-	const getProducts = async (paramsObj) => {
+	const getProducts = async (paramsObj: any) => {
 		try {
 			let searchParams = new URLSearchParams(paramsObj);
 			const res = await fetch('/api/products.json?' + searchParams.toString());
@@ -149,7 +151,7 @@
 								aria-labelledby="menu-button"
 							>
 								<div class="py-1" role="none">
-									<MenuItem let:active let:disabled>
+									<MenuItem let:active>
 										<a
 											on:click={heandleSearchSelection}
 											name="name"
@@ -162,7 +164,7 @@
 											Name
 										</a>
 									</MenuItem>
-									<MenuItem let:active let:disabled>
+									<MenuItem let:active>
 										<a
 											on:click={heandleSearchSelection}
 											name="productID"
@@ -174,7 +176,7 @@
 										>
 									</MenuItem>
 
-									<MenuItem let:active let:disabled>
+									<MenuItem let:active>
 										<a
 											on:click={heandleSearchSelection}
 											name="title"
@@ -185,7 +187,7 @@
 											id="menu-item-2">Title</a
 										>
 									</MenuItem>
-									<MenuItem let:active let:disabled>
+									<MenuItem let:active>
 										<a
 											on:click={heandleSearchSelection}
 											name="description"
@@ -197,7 +199,7 @@
 										>
 									</MenuItem>
 
-									<MenuItem let:active let:disabled>
+									<MenuItem let:active>
 										<a
 											on:click={heandleSearchSelection}
 											name="unitPrice"
@@ -208,7 +210,7 @@
 											id="menu-item-4">Unit Price</a
 										>
 									</MenuItem>
-									<MenuItem let:active let:disabled>
+									<MenuItem let:active>
 										<a
 											on:click={heandleSearchSelection}
 											name="category"
@@ -220,7 +222,7 @@
 										>
 									</MenuItem>
 
-									<MenuItem let:active let:disabled>
+									<MenuItem let:active>
 										<a
 											on:click={heandleSearchSelection}
 											name="stitches"
@@ -231,7 +233,7 @@
 											id="menu-item-6">Stitches</a
 										>
 									</MenuItem>
-									<MenuItem let:active let:disabled>
+									<MenuItem let:active>
 										<a
 											on:click={heandleSearchSelection}
 											name="quantity"

@@ -61,9 +61,8 @@ const aggregateQuery = async (searchQuery, model, aggregateFilter, endSearchPara
 
 		return results[0];
 	} catch (err) {
-		logger.error(err);
-		// return { metaData: [{ error: true }], message: err.message }
-		throw new Error(err.message);
+		logger.error(err.message);
+		throw new Error(`Error ${err.message}`);
 	}
 };
 

@@ -12,8 +12,8 @@
 
 	export let tableHeadings = [
 		'Embroidery Type',
+		'Minimum Quantity',
 		'Minimum Price',
-		'Maximum Quantity',
 		'Price per 1000 stitches'
 	];
 
@@ -40,6 +40,7 @@
 			const res = await fetch(endpoint);
 			if (res.ok) {
 				pricelist = await res.json();
+				console.log('🚀 ~ file: [id].svelte ~ line 43 ~ onMount ~ pricelist', pricelist);
 			}
 		} catch (err) {
 			logger.error(err.message);
@@ -131,18 +132,18 @@
 											<input
 												class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
 												type="text"
-												name="minimumPrice"
+												name="minimumQuantity"
 												disabled={!(isEditableID === list._id)}
-												bind:value={list.minimumPrice}
+												bind:value={list.minimumQuantity}
 											/>
 										</td>
 										<td class="px-2 py-1">
 											<input
 												class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
 												type="text"
-												name="maximumQuantity"
+												name="minimumPrice"
 												disabled={!(isEditableID === list._id)}
-												bind:value={list.maximumQuantity}
+												bind:value={list.minimumPrice}
 											/>
 										</td>
 										<td class="px-2 py-1">

@@ -1,21 +1,11 @@
 <script lang="ts">
+	import type { ContactsDocument } from '$lib/models/contacts.model';
+
 	import { toasts } from '$lib/stores/toasts.store';
 
 	import logger from '$lib/utility/logger';
 	import { svgLockClosed, svgPencil, svgXSmall } from '$lib/utility/svgLogos';
 	import { onMount } from 'svelte';
-
-	interface userInterface {
-		_id: string;
-		editable?: boolean;
-		name: string;
-		email: string;
-		phone: string;
-		address: string;
-		isActive: boolean;
-		isUser: boolean;
-		userRole: string;
-	}
 
 	const tableHeadings = [
 		'name',
@@ -29,7 +19,7 @@
 		'delete'
 	];
 
-	let contacts: Array<userInterface> = [];
+	let contacts: Array<Partial<ContactsDocument>> = [];
 	let isEditableID = null;
 
 	const getUsers = async () => {
@@ -41,7 +31,7 @@
 		}
 	};
 
-	const updateUser = async (finalData: any) => {
+	const updateUser = async (finalData: Partial<ContactsDocument>) => {
 		try {
 			// let searchParams = new URLSearchParams(paramsObj as string);
 			const res = await fetch('/api/auth.json', {
@@ -65,7 +55,7 @@
 			});
 		}
 	};
-	const deleteUser = async (finalData: any) => {
+	const deleteUser = async (finalData: Partial<ContactsDocument>) => {
 		try {
 			// let searchParams = new URLSearchParams(paramsObj as string);
 			const res = await fetch('/api/auth.json', {
@@ -95,7 +85,7 @@
 		getUsers();
 	});
 
-	const heandleEditable = async (list) => {
+	const heandleEditable = async (list: Partial<ContactsDocument>) => {
 		if (isEditableID === null) {
 			isEditableID = list._id;
 		} else {
@@ -104,7 +94,7 @@
 		}
 	};
 
-	const heandleDelete = async (list) => {
+	const heandleDelete = async (list: Partial<ContactsDocument>) => {
 		await deleteUser(list);
 	};
 </script>

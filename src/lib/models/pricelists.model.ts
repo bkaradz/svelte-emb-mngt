@@ -3,9 +3,9 @@ import mongoose, { model, Schema, Document } from 'mongoose';
 
 export interface PricelistsSubDocument {
 	_id: mongoose.Schema.Types.ObjectId | string;
-	minimumPrice: mongoose.Schema.Types.Decimal128;
-	pricePerThousandStitches: mongoose.Schema.Types.Decimal128;
-	maximumQuantity: number;
+	minimumPrice: mongoose.Schema.Types.Decimal128 | number;
+	pricePerThousandStitches: mongoose.Schema.Types.Decimal128 | number;
+	minimumQuantity: number;
 	embroideryType: string;
 }
 
@@ -20,7 +20,7 @@ export interface PricelistsDocument extends Document {
 	updatedAt: Date | string;
 }
 
-const PricelistsSubSchema: Schema = new Schema<PricelistsSubDocument>(
+const pricelistsSubSchema: Schema = new Schema<PricelistsSubDocument>(
 	{
 		minimumPrice: {
 			type: Schema.Types.Decimal128,
@@ -36,7 +36,7 @@ const PricelistsSubSchema: Schema = new Schema<PricelistsSubDocument>(
 			set: (v: number) => mongoose.Types.Decimal128.fromString((+v).toFixed(4)),
 			default: 0
 		},
-		maximumQuantity: {
+		minimumQuantity: {
 			type: Number,
 			required: true
 		},
@@ -66,7 +66,7 @@ const PricelistsSchema: Schema = new Schema<PricelistsDocument>(
 			required: true,
 			default: false
 		},
-		pricelists: [PricelistsSubSchema]
+		pricelists: [pricelistsSubSchema]
 	},
 	{ timestamps: true, toJSON: { getters: true } }
 );
@@ -104,6 +104,32 @@ PricelistsSchema.pre(/^(updateOne|findOneAndUpdate|findByIdAndUpdate)/, async fu
 
 	return next();
 });
+
+PricelistsSchema.methods.comparePassword = async function ({
+	id,
+	embroideryType,
+	quantity
+}: {
+	id: string;
+	embroideryType: string;
+	quantity: number;
+}) {
+	console.log('🚀 ~ file: pricelists.model.ts ~ line 109 ~ quantity', quantity);
+	console.log('🚀 ~ file: pricelists.model.ts ~ line 109 ~ embroideryType', embroideryType);
+	const pricelist = await PricelistsModel.findById({ _id: id }).lean();
+	const pricelistsArray = pricelist.pricelists;
+
+	const minimumQuantityArray = pricelistsArray
+		.filter((list) => embroideryType === list.embroideryType)
+		.sort((a, b) => a.minimumQuantity - b.minimumQuantity)
+		.filter((list) => list.minimumQuantity <= quantity);
+
+	console.log(
+		'🚀 ~ file: pricelists.model.ts ~ line 124 ~ minimumQuantityArray',
+		minimumQuantityArray
+	);
+	return minimumQuantityArray.pop();
+};
 
 const PricelistsModel = model<PricelistsDocument>('Pricelists', PricelistsSchema);
 

@@ -9,13 +9,14 @@
 	import { svgDocumentAdd, svgPencil, svgPlus, svgXSmall } from '$lib/utility/svgLogos';
 	import { v4 as uuidv4 } from 'uuid';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { PricelistsDocument, PricelistsSubDocument } from '$lib/models/pricelists.model';
 
 	let result = suite.get();
 
 	export let tableHeadings = [
 		'Embroidery Type',
+		'Minimum Quantity',
 		'Minimum Price',
-		'Maximum Quantity',
 		'Price per 1000 stitches',
 		'Edit/Update',
 		'Delete/Add Row'
@@ -23,7 +24,7 @@
 
 	const endpoint = `/api/pricelists/${$page.params.id}.json`;
 
-	let pricelist;
+	let pricelist: Partial<PricelistsDocument>;
 
 	let selectedGroup = 'all';
 
@@ -34,9 +35,11 @@
 	let isEditableID = null;
 
 	$: if (pricelist?.pricelists?.length) {
+		groupList = new Set(['all']);
 		pricelist.pricelists.forEach((list) => {
 			groupList.add(list.embroideryType);
 		});
+		groupList = groupList;
 	}
 
 	const getPricelist = async () => {
@@ -60,7 +63,7 @@
 		valid: 'success'
 	});
 
-	const heandleEditable = async (list) => {
+	const heandleEditable = async (list: PricelistsSubDocument) => {
 		if (isEditableID === null) {
 			isEditableID = list._id;
 		} else {
@@ -71,7 +74,7 @@
 
 	const handleInput = () => {};
 
-	const heandleDelete = (finalData: any) => {
+	const heandleDelete = (finalData: PricelistsSubDocument) => {
 		idToRemove = idToRemove.filter((list) => list !== finalData._id);
 		pricelist.pricelists = pricelist.pricelists.filter((list) => list._id !== finalData._id);
 		// deleteOption(finalData);
@@ -89,11 +92,9 @@
 			{
 				_id: id,
 				embroideryType: selectedGroup,
-				minimumPrice: { $numberDecimal: 'Edit...' },
-				maximumQuantity: 'Edit...',
-				pricePerThousandStitches: { $numberDecimal: 'Edit...' },
-				isDefault: false,
-				editable: true
+				minimumPrice: 0.0,
+				minimumQuantity: 0,
+				pricePerThousandStitches: 0.0
 			}
 		];
 	};
@@ -107,8 +108,8 @@
 				}
 				return {
 					...pList,
-					minimumPrice: pList.minimumPrice.$numberDecimal,
-					pricePerThousandStitches: pList.pricePerThousandStitches.$numberDecimal
+					minimumPrice: pList.minimumPrice,
+					pricePerThousandStitches: pList.pricePerThousandStitches
 				};
 			});
 			const res = await fetch('/api/pricelists.json', {
@@ -208,18 +209,18 @@
 											<input
 												class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
 												type="text"
-												name="minimumPrice"
+												name="minimumQuantity"
 												disabled={!(isEditableID === list._id)}
-												bind:value={list.minimumPrice.$numberDecimal}
+												bind:value={list.minimumQuantity}
 											/>
 										</td>
 										<td class="px-2 py-1">
 											<input
 												class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
 												type="text"
-												name="maximumQuantity"
+												name="minimumPrice"
 												disabled={!(isEditableID === list._id)}
-												bind:value={list.maximumQuantity}
+												bind:value={list.minimumPrice}
 											/>
 										</td>
 										<td class="px-2 py-1">
@@ -228,7 +229,7 @@
 												type="text"
 												name="pricePerThousandStitches"
 												disabled={!(isEditableID === list._id)}
-												bind:value={list.pricePerThousandStitches.$numberDecimal}
+												bind:value={list.pricePerThousandStitches}
 											/>
 										</td>
 										<td class="p-1 text-center ">
@@ -256,7 +257,7 @@
 							>
 								<td class="px-2 py-1">embroideryType</td>
 								<td class="px-2 py-1">minimumPrice</td>
-								<td class="px-2 py-1">maximumQuantity</td>
+								<td class="px-2 py-1">minimumQuantity</td>
 								<td class="px-2 py-1">pricePerThousandStitches</td>
 
 								<td class="px-2 py-1" />

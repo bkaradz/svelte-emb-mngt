@@ -8,7 +8,9 @@
 
 	let pricelists = [];
 
-	const heandleDelete = (id: any) => {};
+	const heandleDelete = (id: string) => {
+		console.log('🚀 ~ file: PricelistsTable.svelte ~ line 12 ~ heandleDelete ~ id', id);
+	};
 
 	const getPricelists = async () => {
 		try {
@@ -23,11 +25,11 @@
 		getPricelists();
 	});
 
-	const viewPricelist = async (id) => {
+	const viewPricelist = async (id: string) => {
 		await goto(`/settings/pricelists/view/${id}`);
 	};
 
-	const editPricelist = async (id) => {
+	const editPricelist = async (id: string) => {
 		await goto(`/settings/pricelists/edit/${id}`);
 	};
 

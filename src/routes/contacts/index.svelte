@@ -113,20 +113,22 @@
 		state: 'State'
 	};
 
-	const heandleSearchSelection = (event) => {
-		searchOption = event.target.name;
+	const heandleSearchSelection = (event: MouseEvent) => {
+		searchOption = (event.target as HTMLInputElement).name;
 		searchInputValue = '';
 	};
 
-	const heandleSearch = async (event) => {
+	const heandleSearch = async (
+		event: Event & { currentTarget: EventTarget & HTMLInputElement }
+	) => {
 		currentGlobalParams.page = 1;
-		let searchWord = event.target.value;
+		let searchWord = (event.target as HTMLInputElement).value;
 		currentGlobalParams = { ...currentGlobalParams, [searchOption]: searchWord };
 		getContacts(currentGlobalParams);
 	};
 
 	// Input must be of the form {limit, page, sort, query}
-	const getContacts = async (paramsObj) => {
+	const getContacts = async (paramsObj: any) => {
 		try {
 			let searchParams = new URLSearchParams(paramsObj);
 			const res = await fetch('/api/contacts.json?' + searchParams.toString());
@@ -185,7 +187,7 @@
 								aria-labelledby="menu-button"
 							>
 								<div class="py-1" role="none">
-									<MenuItem let:active let:disabled>
+									<MenuItem let:active>
 										<a
 											on:click={heandleSearchSelection}
 											name="name"
@@ -199,7 +201,7 @@
 										</a>
 									</MenuItem>
 
-									<MenuItem let:active let:disabled>
+									<MenuItem let:active>
 										<a
 											on:click={heandleSearchSelection}
 											name="organisation"
@@ -211,7 +213,7 @@
 										>
 									</MenuItem>
 
-									<MenuItem let:active let:disabled>
+									<MenuItem let:active>
 										<a
 											on:click={heandleSearchSelection}
 											name="phone"
@@ -222,7 +224,7 @@
 											id="menu-item-2">Phone</a
 										>
 									</MenuItem>
-									<MenuItem let:active let:disabled>
+									<MenuItem let:active>
 										<a
 											on:click={heandleSearchSelection}
 											name="email"
@@ -234,7 +236,7 @@
 										>
 									</MenuItem>
 
-									<MenuItem let:active let:disabled>
+									<MenuItem let:active>
 										<a
 											on:click={heandleSearchSelection}
 											name="vatNo"
@@ -245,7 +247,7 @@
 											id="menu-item-4">Vat Number</a
 										>
 									</MenuItem>
-									<MenuItem let:active let:disabled>
+									<MenuItem let:active>
 										<a
 											on:click={heandleSearchSelection}
 											name="balanceDue"
@@ -257,7 +259,7 @@
 										>
 									</MenuItem>
 
-									<MenuItem let:active let:disabled>
+									<MenuItem let:active>
 										<a
 											on:click={heandleSearchSelection}
 											name="state"

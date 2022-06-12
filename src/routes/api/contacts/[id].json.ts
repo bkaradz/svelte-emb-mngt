@@ -11,14 +11,13 @@ export async function get({ params }) {
 			.populate('organizationID')
 			.exec();
 
+		console.log('🚀 ~ file: [id].json.ts ~ line 11 ~ get ~ contact', contact);
 		return {
 			status: 200,
-			body: {
-				contact
-			}
+			body: contact
 		};
 	} catch (err) {
-		logger.error(err);
-		throw new Error(err.message);
+		logger.error(err.message);
+		throw new Error(`Error ${err.message}`);
 	}
 }

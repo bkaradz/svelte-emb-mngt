@@ -29,9 +29,9 @@
 		confirmPassword: ''
 	};
 
-	const handleInput = (event) => {
-		let name = event.target.name;
-		let value = event.target.value;
+	const handleInput = (event: any) => {
+		let name = (event.target as HTMLInputElement).name;
+		let value = (event.target as HTMLInputElement).value;
 		formData[name] = value;
 		result = suite(formData, name);
 	};
@@ -43,7 +43,6 @@
 	});
 
 	$: disabled = !result.isValid();
-
 
 	const resetForm = () => {
 		formData = {
@@ -65,7 +64,7 @@
 			});
 
 			if (res.ok) {
-				const data = await res.json();
+				// const data = await res.json();
 
 				resetForm();
 

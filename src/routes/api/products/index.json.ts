@@ -175,16 +175,11 @@ export const post = async ({ request, locals }) => {
 		};
 	} catch (err) {
 		logger.error(err.message);
-		return {
-			status: 500,
-			body: {
-				error: `A server error occurred ${err}`
-			}
-		};
+		throw new Error(`Error ${err.message}`);
 	}
 };
 
-export const put = async ({ request }) => {
+export const put = async () => {
 	try {
 		return {
 			status: 200,
@@ -193,15 +188,11 @@ export const put = async ({ request }) => {
 			}
 		};
 	} catch (err) {
-		return {
-			status: 500,
-			body: {
-				error: `A server error occurred ${err}`
-			}
-		};
+		logger.error(err.message);
+		throw new Error(`Error ${err.message}`);
 	}
 };
 
-export async function del({ request }) {
+export async function del() {
 	return;
 }

@@ -1,7 +1,13 @@
 import mongoose, { model, Schema, Document } from 'mongoose';
 import type { ProductsDocument } from './products.models';
+import logger from '$lib/utility/logger';
 import dayjs from 'dayjs';
 import { getMonetaryValue } from '$lib/services/monetary.services';
+import {
+	optionContainsName,
+	optionsGroupsNames,
+	optionsGroupsValuesDefaults
+} from '$lib/models/options.models';
 dayjs().format();
 
 const oneWeek = dayjs().add(7, 'day').toDate();
@@ -15,10 +21,10 @@ export interface ProductDocument extends Document {
 	unitPrice: mongoose.Schema.Types.Decimal128;
 	total: mongoose.Schema.Types.Decimal128;
 	category: string;
-	embroideryType: string;
-	garmentPositions: string;
-	manufacturingStatus: string;
-	stitches: number;
+	embroideryType?: string;
+	garmentPositions?: string;
+	manufacturingStatus?: string;
+	stitches?: number;
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -60,44 +66,40 @@ const productsSchema: Schema = new Schema<ProductDocument>(
 		},
 		category: {
 			type: String,
-			// default: constants.DEF_PRODUCT_CATEGORY,
-			required: true
-			// validate: (value) => {
-			// 	return optionContainsName(constants.PRODUCT_CATEGORIES, value);
-			// }
+			required: true,
+			validate: (value: string) => {
+				return optionContainsName(optionsGroupsNames.PRODUCT_CATEGORIES, value);
+			}
 		},
 		embroideryType: {
 			type: String,
-			default: 'flat'
-			// validate: (value) => {
-			// 	return optionContainsName(constants.EMBROIDERY_TYPES, value);
-			// },
-			// required: function () {
-			// 	return this.category === constants.DEF_PRODUCT_CATEGORY;
-			// }
+			validate: (value: string) => {
+				return optionContainsName(optionsGroupsNames.EMBROIDERY_TYPES, value);
+			},
+			required: function () {
+				return this.category === optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORY;
+			}
 		},
 		garmentPositions: {
 			type: String,
-			default: 'front_left'
-			// validate: (value) => {
-			// 	return optionContainsName(constants.GARMENT_POSITIONS, value);
-			// },
-			// required: function () {
-			// 	return this.category === constants.DEF_PRODUCT_CATEGORY;
-			// }
+			validate: (value: string) => {
+				return optionContainsName(optionsGroupsNames.GARMENT_POSITIONS, value);
+			},
+			required: function () {
+				return this.category === optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORY;
+			}
 		},
 		stitches: {
-			type: Number
-			// required: function () {
-			// 	return this.category === constants.DEF_PRODUCT_CATEGORY;
-			// }
+			type: Number,
+			required: function () {
+				return this.category === optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORY;
+			}
 		},
 		manufacturingStatus: {
 			type: String,
-			default: 'Receiving'
-			// validate: (value) => {
-			// 	return optionContainsName(constants.MANUFACTURING_STATUS, value);
-			// }
+			validate: (value: string) => {
+				return optionContainsName(optionsGroupsNames.MANUFACTURING_STATUS, value);
+			}
 		},
 		createdAt: { type: Date },
 		updatedAt: { type: Date }
@@ -110,24 +112,24 @@ export interface OrdersDocument extends Document {
 	customerID: mongoose.Schema.Types.ObjectId;
 	pricelistID: mongoose.Schema.Types.ObjectId;
 	orderID: string;
-	comment: string;
+	comment?: string;
 	accountsStatus: string;
-	orderDate: Date;
-	quoteExpiryDate: Date;
-	requiredDate: Date;
+	orderDate?: Date;
+	quoteExpiryDate?: Date;
+	requiredDate?: Date;
 	subTotal: mongoose.Schema.Types.Decimal128 | number;
-	tax: mongoose.Schema.Types.Decimal128 | number;
-	taxRate: number;
-	discount: mongoose.Schema.Types.Decimal128 | number;
+	tax?: mongoose.Schema.Types.Decimal128 | number;
+	taxRate?: number;
+	discount?: mongoose.Schema.Types.Decimal128 | number;
 	balance: mongoose.Schema.Types.Decimal128 | number;
-	discountRate: number;
+	discountRate?: number;
 	isActive: boolean;
 	orderLine: Array<Partial<ProductsDocument>>;
 	createdAt: Date;
 	updatedAt: Date;
 }
 
-const OrdersSchema: Schema = new Schema<OrdersDocument>(
+const ordersSchema: Schema = new Schema<OrdersDocument>(
 	{
 		userID: {
 			type: mongoose.Schema.Types.ObjectId,
@@ -145,7 +147,7 @@ const OrdersSchema: Schema = new Schema<OrdersDocument>(
 			ref: 'Pricelists'
 		},
 		orderID: {
-			// of the form SO0000001 /SO\s[0-9]{7}$/gm
+			// of the form SO 0000001 /SO\s[0-9]{7}$/gm
 			type: String,
 			match: /SO\s[0-9]{7}$/,
 			required: true,
@@ -214,20 +216,36 @@ const OrdersSchema: Schema = new Schema<OrdersDocument>(
 		orderLine: { type: [productsSchema], required: true },
 		accountsStatus: {
 			type: String,
-			default: 'quotation'
-			// validate: (value) => {
-			// 	return optionContainsName(constants.ACCOUNTS_STATUS, value);
-			// }
+			required: true,
+			validate: (value: string) => {
+				return optionContainsName(optionsGroupsNames.ACCOUNTS_STATUS, value);
+			}
 		}
 	},
 	{ timestamps: true }
 );
 
-const OrdersModel = model<OrdersDocument>('Orders', OrdersSchema);
+ordersSchema.pre('validate', async function (next) {
+	const order = this as OrdersDocument;
+	console.log('🚀 ~ file: orders.model.ts ~ line 230 ~ order', order);
+
+	if (order?.orderID) {
+		return next();
+	}
+
+	const oldOrderID = await getCurrentOrderID();
+	const currentOrderID = incOrderID(oldOrderID);
+
+	order.orderID = currentOrderID;
+
+	return next();
+});
+
+const OrdersModel = model<OrdersDocument>('Orders', ordersSchema);
 
 export default OrdersModel;
 
-export const incOrderID = (orderID) => {
+export const incOrderID = (orderID: string) => {
 	const numOrderID = orderID.slice(2); // remove characters SO from string
 	const strOrderID = (parseInt(numOrderID) + 1).toString(); // convert to int and add one then covert to string
 	const zeroBuffer = '0000000';
@@ -248,6 +266,7 @@ export const getCurrentOrderID = async () => {
 		}
 		return orderID;
 	} catch (err) {
-		return { errors: [{ msg: `Sever Error: ${err.message}` }] };
+		logger.error(err.message);
+		throw new Error(`Error ${err.message}`);
 	}
 };

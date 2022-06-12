@@ -114,9 +114,8 @@ const query = async (searchQuery, model) => {
 
 		return results;
 	} catch (err) {
-		logger.error(err);
-		// return { metaData: [{ error: true }], message: err.message };
-		throw new Error(err.message);
+		logger.error(err.message);
+		throw new Error(`Error ${err.message}`);
 	}
 };
 

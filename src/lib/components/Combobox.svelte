@@ -3,9 +3,9 @@
 	import { clickOutside } from '$lib/utility/clickOutside';
 	import { svgLoaderSmall, svgSelector, svgXSmall } from '$lib/utility/svgLogos';
 
-	interface disabledInterface {
-		disabled?: boolean;
-	}
+	// interface disabledInterface {
+	// 	disabled?: boolean;
+	// }
 	export let label = '';
 	export let name = '';
 	export let value = { name: '' };
@@ -14,7 +14,7 @@
 	export let messages = [];
 	export let validityClass = '';
 	export let disabled = false;
-	export let onInput = (event: any) => {};
+	export let onInput = (e: Event & { currentTarget: EventTarget & HTMLInputElement }) => {};
 
 	let userEnter = false;
 
@@ -36,7 +36,7 @@
 		userEnter = false;
 	};
 
-	async function handleKeyDown(event) {
+	async function handleKeyDown(event: { key: any }) {
 		const listLenght = list.length;
 		switch (event.key) {
 			case 'Escape':
@@ -66,18 +66,18 @@
 		}
 	}
 
-	const makeMatchBold = (searchMatchString: string) => {
-		let MatchedWords = [];
-		if (value.name) {
-			const regex = new RegExp(value.name, 'ig');
-			MatchedWords = searchMatchString.trim().match(regex);
-		}
+	// const makeMatchBold = (searchMatchString: string) => {
+	// 	let MatchedWords = [];
+	// 	if (value.name) {
+	// 		const regex = new RegExp(value.name, 'ig');
+	// 		MatchedWords = searchMatchString.trim().match(regex);
+	// 	}
 
-		let makeBold = `<strong>${MatchedWords[0]}</strong>`;
-		let boldedStr = searchMatchString.replace(MatchedWords[0], makeBold);
+	// 	let makeBold = `<strong>${MatchedWords[0]}</strong>`;
+	// 	let boldedStr = searchMatchString.replace(MatchedWords[0], makeBold);
 
-		return boldedStr;
-	};
+	// 	return boldedStr;
+	// };
 
 	if (!disabled) {
 		list.length ? (disabled = false) : (disabled = true);
@@ -104,7 +104,7 @@
 						on:keydown={handleKeyDown}
 						on:focus|preventDefault={() => (showList = true)}
 						on:click|preventDefault={() => (showList = true)}
-						on:input|preventDefault={onInput}
+						on:input|preventDefault={(e) => onInput(e)}
 						autocomplete="off"
 						{name}
 						id="select"

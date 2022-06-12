@@ -3,33 +3,6 @@
 	import IconButton from '$lib/components/IconButton.svelte';
 	import { svgWaves } from '$lib/utility/svgLogos';
 
-	const props = {
-		value: '',
-		size: '',
-		label: 'Testing',
-		outlined: '',
-		messages: ['testing'],
-		name: 'Testing',
-		validityClass: '',
-		placeholder: 'Testing',
-		required: true,
-		type: ''
-	};
-	const props2 = {
-		value: '',
-		size: '',
-		label: 'Testing',
-		outlined: '',
-		messages: ['testing'],
-		name: 'Testing',
-		validityClass: '',
-		placeholder: 'Testing',
-		required: true,
-		type: ''
-	};
-
-	let name = '';
-
 	let value = 0;
 	const increment = () => (value += 1);
 	const decrement = () => (value -= 1);

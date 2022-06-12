@@ -16,10 +16,7 @@
 		'Delete & Add Row'
 	];
 
-	interface optionListInterface extends OptionsDocument {
-		editable: boolean;
-	}
-	let optionsList: Array<Partial<optionListInterface>> = [];
+	let optionsList: Array<Partial<OptionsDocument>> = [];
 
 	let selectedGroup = 'all';
 
@@ -35,29 +32,26 @@
 		});
 		groupList = groupList;
 	}
-	// else {
-	// 	groupList = [];
-	// }
 
-	const handleSubmit = async (option) => {
-		try {
-			const res = await fetch('/api/options.json', {
-				method: 'POST',
-				body: JSON.stringify(option),
-				headers: { 'Content-Type': 'application/json' }
-			});
+	// const handleSubmit = async (option) => {
+	// 	try {
+	// 		const res = await fetch('/api/options.json', {
+	// 			method: 'POST',
+	// 			body: JSON.stringify(option),
+	// 			headers: { 'Content-Type': 'application/json' }
+	// 		});
 
-			if (res.ok) {
-				// const data = await res.json();
-				toasts.add({ message: 'The Option was added', type: 'success' });
-			}
-		} catch (err) {
-			logger.error(err.messages);
-			toasts.add({ message: 'An error has occured while adding the contact', type: 'error' });
-		}
-	};
+	// 		if (res.ok) {
+	// 			// const data = await res.json();
+	// 			toasts.add({ message: 'The Option was added', type: 'success' });
+	// 		}
+	// 	} catch (err) {
+	// 		logger.error(err.messages);
+	// 		toasts.add({ message: 'An error has occured while adding the contact', type: 'error' });
+	// 	}
+	// };
 
-	const heandleEditable = async (list) => {
+	const heandleEditable = async (list: Partial<OptionsDocument>) => {
 		if (isEditableID === null) {
 			isEditableID = list._id;
 		} else {
@@ -80,8 +74,7 @@
 				name: 'Edit...',
 				value: 'Edit...',
 				isActive: true,
-				isDefault: false,
-				editable: true
+				isDefault: false
 			}
 		];
 	};

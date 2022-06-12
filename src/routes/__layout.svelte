@@ -5,7 +5,7 @@
 		if (!session?.user?.authenticated) {
 			return {
 				status: 302,
-				redirect: '/auth/unauthorized'
+				redirect: '/auth/signIn'
 			};
 		}
 		return {};
@@ -17,14 +17,14 @@
 	import Menu from '$lib/components/Menu.svelte';
 	import SideMenu from '$lib/components/SideMenu.svelte';
 	import '../styles/app.css';
-	import { goto } from '$app/navigation';
+	// import { goto } from '$app/navigation';
 	import Toasts from '$lib/components/Toasts.svelte';
 
-	async function redirectToLogin() {
-		if (typeof window !== 'undefined') {
-			await goto('/auth/signIn');
-		}
-	}
+	// async function redirectToLogin() {
+	// 	if (typeof window !== 'undefined') {
+	// 		await goto('/auth/signIn');
+	// 	}
+	// }
 </script>
 
 <div class="app flex h-screen {$toggleMenu ? 'big-menu' : 'small-menu'}">

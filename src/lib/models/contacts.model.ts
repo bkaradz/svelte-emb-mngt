@@ -3,11 +3,23 @@ import bcrypt from 'bcrypt';
 import config from 'config';
 import { getMonetaryValue } from '$lib/services/monetary.services';
 
+export interface ContactsPaginationDocument {
+	totalRecords: number;
+	previous: null | { page: number; limit: number };
+	current: null | { page: number; limit: number };
+	next: null | { page: number; limit: number };
+	limit: number;
+	error: boolean;
+	totalPages: number;
+}
+export interface AggregateContactsDocument extends ContactsPaginationDocument {
+	results: Array<Partial<ContactsDocument>>;
+}
 export interface ContactsDocument extends Document {
 	_id: mongoose.Schema.Types.ObjectId;
 	userID?: mongoose.Schema.Types.ObjectId;
-	organizationID?: mongoose.Schema.Types.ObjectId;
-	name: string;
+	organizationID?: mongoose.Schema.Types.ObjectId | ContactsDocument;
+	name: string | null;
 	isCorporate: boolean;
 	notes?: string;
 	vatOrBpNo?: string;

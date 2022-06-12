@@ -18,7 +18,7 @@ export async function get({ params }) {
 			}
 		};
 	} catch (err) {
-		logger.error(err);
-		throw new Error(err.message);
+		logger.error(err.message);
+		throw new Error(`Error ${err.message}`);
 	}
 }

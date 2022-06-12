@@ -9,7 +9,7 @@
 	export let pending = false;
 	export let messages = [];
 	export let validityClass = '';
-	export let onInput = (e: any) => {};
+	export let onInput = (e: Event & { currentTarget: EventTarget & HTMLInputElement }) => {};
 
 	function typeAction(node: HTMLInputElement) {
 		node.type = type;
@@ -35,7 +35,7 @@
 			use:blurOnEscape
 			bind:value
 			{disabled}
-			on:input={onInput}
+			on:input={(e) => onInput(e)}
 			use:typeAction
 			id={name}
 			class="input"
