@@ -1,6 +1,6 @@
 import mongoose, { model, Schema, Document } from 'mongoose';
 import { optionsGroupsValuesDefaults } from '$lib/models/options.models';
-import { getMonetaryValue } from '$lib/services/monetary.services';
+import { getMonetaryValue } from '$lib/services/monetary/monetary.services';
 
 export interface ProductsDocument extends Document {
 	_id: mongoose.Schema.Types.ObjectId;

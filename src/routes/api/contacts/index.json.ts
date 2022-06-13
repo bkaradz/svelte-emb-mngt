@@ -148,12 +148,13 @@ export const get: RequestHandler = async ({
 			body: contacts
 		};
 	} catch (err) {
-		return {
-			status: 500,
-			body: {
-				error: `A server error occurred ${err}`
-			}
-		};
+		logger.error(`Error: ${err.message}`)
+    return {
+      status: 500,
+      body: {
+        error: `A server error occurred ${err}`,
+      },
+    }
 	}
 };
 
@@ -209,13 +210,13 @@ export const post: RequestHandler = async ({
 			body: contacts
 		};
 	} catch (err) {
-		logger.error(err.message);
-		return {
-			status: 500,
-			body: {
-				error: `A server error occurred ${err}`
-			}
-		};
+		logger.error(`Error: ${err.message}`)
+    return {
+      status: 500,
+      body: {
+        error: `A server error occurred ${err}`,
+      },
+    }
 	}
 };
 
@@ -245,12 +246,13 @@ export const put: RequestHandler = async ({
 			body: res
 		};
 	} catch (err) {
-		return {
-			status: 500,
-			body: {
-				error: `A server error occurred ${err}`
-			}
-		};
+		logger.error(`Error: ${err.message}`)
+    return {
+      status: 500,
+      body: {
+        error: `A server error occurred ${err}`,
+      },
+    }
 	}
 };
 

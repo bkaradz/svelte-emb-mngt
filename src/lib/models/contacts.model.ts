@@ -1,7 +1,7 @@
 import mongoose, { model, Schema, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 import config from 'config';
-import { getMonetaryValue, setMonetaryValue } from '$lib/services/monetary.services';
+import { getMonetaryValue, setMonetaryValue } from '$lib/services/monetary/monetary.services';
 
 export interface ContactsPaginationDocument {
 	totalRecords: number;

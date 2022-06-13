@@ -1,42 +1,42 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { deleteSessionCookies, deleteSessions } from '$lib/services/session.services';
-import logger from '$lib/utility/logger';
+import type { RequestHandler } from '@sveltejs/kit'
+import { deleteSessionCookies, deleteSessions } from '$lib/services/session.services'
+import logger from '$lib/utility/logger'
 
 export const post: RequestHandler = async ({ locals }) => {
-	try {
-		const sessionId = locals?.user?.sessionId;
-		const name = locals?.user?.name;
+  try {
+    const sessionId = locals?.user?.sessionId
+    const name = locals?.user?.name
 
-		const headers = deleteSessionCookies();
+    const headers = deleteSessionCookies()
 
-		if (!sessionId) {
-			return {
-				status: 404,
-				headers,
-				body: {
-					message: 'Session not Found'
-				}
-			};
-		}
+    if (!sessionId) {
+      return {
+        status: 404,
+        headers,
+        body: {
+          message: 'Session not Found',
+        },
+      }
+    }
 
-		deleteSessions(sessionId);
+    deleteSessions(sessionId)
 
-		locals.user = {};
+    locals.user = {}
 
-		return {
-			status: 200,
-			headers,
-			body: {
-				message: `${name} has successfully singed out`
-			}
-		};
-	} catch (err) {
-		logger.error(err.message);
-		return {
-			status: 500,
-			body: {
-				message: `Error Occurred ${err.message}`
-			}
-		};
-	}
-};
+    return {
+      status: 200,
+      headers,
+      body: {
+        message: `${name} has successfully singed out`,
+      },
+    }
+  } catch (err) {
+    logger.error(`Error: ${err.message}`)
+    return {
+      status: 500,
+      body: {
+        error: `A server error occurred ${err}`,
+      },
+    }
+  }
+}

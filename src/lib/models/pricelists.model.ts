@@ -1,4 +1,4 @@
-import { getMonetaryValue } from '$lib/services/monetary.services';
+import { getMonetaryValue } from '$lib/services/monetary/monetary.services';
 import mongoose, { model, Schema, Document } from 'mongoose';
 import logger from '$lib/utility/logger';
 

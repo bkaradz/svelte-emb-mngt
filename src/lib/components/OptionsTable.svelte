@@ -166,7 +166,7 @@
 </script>
 
 <!-- Table start -->
-<div class="w-full overflow-hidden bg-white p-2 shadow-lg">
+<div class="relative w-full overflow-auto bg-white p-2 shadow-lg">
 	<div>
 		{#if optionsList.length}
 			{#each [...groupList] as list, index (index)}
@@ -180,8 +180,8 @@
 			{/each}
 		{/if}
 	</div>
-	<div class="block">
-		<table class="relative w-full rounded-lg text-left text-sm">
+	<div class="block overflow-y-auto">
+		<table class="relative w-full rounded-lg text-left text-sm overflow-y-auto">
 			<thead>
 				<tr
 					class="sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
