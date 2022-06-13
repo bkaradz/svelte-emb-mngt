@@ -1,5 +1,6 @@
 import { getMonetaryValue } from '$lib/services/monetary.services';
 import mongoose, { model, Schema, Document } from 'mongoose';
+import logger from '$lib/utility/logger';
 
 export interface PricelistsSubDocument {
 	_id: mongoose.Schema.Types.ObjectId | string;
@@ -18,6 +19,15 @@ export interface PricelistsDocument extends Document {
 	pricelists: Array<PricelistsSubDocument>;
 	createdAt: Date | string;
 	updatedAt: Date | string;
+	// getQuantityPricelist: ({
+	// 	id,
+	// 	embroideryType,
+	// 	quantity
+	// }: {
+	// 	id: string;
+	// 	embroideryType: string;
+	// 	quantity: number;
+	// }) => Promise<PricelistsSubDocument>;
 }
 
 const pricelistsSubSchema: Schema = new Schema<PricelistsSubDocument>(
@@ -48,7 +58,7 @@ const pricelistsSubSchema: Schema = new Schema<PricelistsSubDocument>(
 	{ timestamps: true, toJSON: { getters: true } }
 );
 
-const PricelistsSchema: Schema = new Schema<PricelistsDocument>(
+const pricelistsSchema: Schema = new Schema<PricelistsDocument>(
 	{
 		userID: { type: Schema.Types.ObjectId, ref: 'Contacts', required: true },
 		name: {
@@ -71,7 +81,7 @@ const PricelistsSchema: Schema = new Schema<PricelistsDocument>(
 	{ timestamps: true, toJSON: { getters: true } }
 );
 
-PricelistsSchema.pre(/^(save)/, async function (next) {
+pricelistsSchema.pre(/^(save)/, async function (next) {
 	const pricelist = this as PricelistsDocument;
 
 	if (pricelist.isDefault === false) {
@@ -88,7 +98,7 @@ PricelistsSchema.pre(/^(save)/, async function (next) {
 	return next();
 });
 
-PricelistsSchema.pre(/^(updateOne|findOneAndUpdate|findByIdAndUpdate)/, async function (next) {
+pricelistsSchema.pre(/^(updateOne|findOneAndUpdate|findByIdAndUpdate)/, async function (next) {
 	const pricelist = { ...this.getUpdate() };
 
 	if (pricelist.isDefault === false) {
@@ -105,7 +115,11 @@ PricelistsSchema.pre(/^(updateOne|findOneAndUpdate|findByIdAndUpdate)/, async fu
 	return next();
 });
 
-PricelistsSchema.methods.comparePassword = async function ({
+const PricelistsModel = model<PricelistsDocument>('Pricelists', pricelistsSchema);
+
+export default PricelistsModel;
+
+export const getQuantityPricelist = async ({
 	id,
 	embroideryType,
 	quantity
@@ -113,24 +127,19 @@ PricelistsSchema.methods.comparePassword = async function ({
 	id: string;
 	embroideryType: string;
 	quantity: number;
-}) {
-	console.log('🚀 ~ file: pricelists.model.ts ~ line 109 ~ quantity', quantity);
-	console.log('🚀 ~ file: pricelists.model.ts ~ line 109 ~ embroideryType', embroideryType);
-	const pricelist = await PricelistsModel.findById({ _id: id }).lean();
-	const pricelistsArray = pricelist.pricelists;
+}): Promise<PricelistsSubDocument> => {
+	try {
+		const pricelist = await PricelistsModel.findById({ _id: id }).lean();
+		const pricelistsArray = pricelist.pricelists;
 
-	const minimumQuantityArray = pricelistsArray
-		.filter((list) => embroideryType === list.embroideryType)
-		.sort((a, b) => a.minimumQuantity - b.minimumQuantity)
-		.filter((list) => list.minimumQuantity <= quantity);
+		const minimumQuantityArray = pricelistsArray
+			.filter((list) => embroideryType === list.embroideryType)
+			.sort((a, b) => a.minimumQuantity - b.minimumQuantity)
+			.filter((list) => list.minimumQuantity <= quantity);
 
-	console.log(
-		'🚀 ~ file: pricelists.model.ts ~ line 124 ~ minimumQuantityArray',
-		minimumQuantityArray
-	);
-	return minimumQuantityArray.pop();
+		return minimumQuantityArray.pop();
+	} catch (err) {
+		logger.error(`Error ${err.message}`);
+		throw new Error(`Error ${err.message}`);
+	}
 };
-
-const PricelistsModel = model<PricelistsDocument>('Pricelists', PricelistsSchema);
-
-export default PricelistsModel;

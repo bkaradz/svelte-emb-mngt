@@ -1,7 +1,7 @@
 import mongoose, { model, Schema, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 import config from 'config';
-import { getMonetaryValue } from '$lib/services/monetary.services';
+import { getMonetaryValue, setMonetaryValue } from '$lib/services/monetary.services';
 
 export interface ContactsPaginationDocument {
 	totalRecords: number;
@@ -64,14 +64,14 @@ const contactsSchema: Schema = new Schema<ContactsDocument>(
 			type: Schema.Types.Decimal128,
 			required: true,
 			get: (v: number) => getMonetaryValue(v),
-			set: (v: number) => mongoose.Types.Decimal128.fromString((+v).toFixed(4)),
+			set: (v: number) => setMonetaryValue(v),
 			default: 0
 		},
 		totalReceipts: {
 			type: Schema.Types.Decimal128,
 			required: true,
 			get: (v: number) => getMonetaryValue(v),
-			set: (v: number) => mongoose.Types.Decimal128.fromString((+v).toFixed(4)),
+			set: (v: number) => setMonetaryValue(v),
 			default: 0
 		},
 		isActive: { type: Boolean, required: true, default: false },

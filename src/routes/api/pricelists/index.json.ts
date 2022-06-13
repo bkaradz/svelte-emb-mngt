@@ -1,4 +1,4 @@
-import PricelistsModel from '$lib/models/pricelists.model';
+import PricelistsModel, { getQuantityPricelist } from '$lib/models/pricelists.model';
 import { postSuite } from '$lib/validation/server/pricelists.validate';
 import logger from '$lib/utility/logger';
 import type { RequestHandler } from '@sveltejs/kit';
@@ -15,6 +15,14 @@ export const get: RequestHandler = async ({ locals }) => {
 		}
 
 		const pricelists = await PricelistsModel.find();
+
+		console.log(
+			await getQuantityPricelist({
+				id: '62a4e9794ef67e77e35e7e02',
+				embroideryType: 'flat',
+				quantity: 100
+			})
+		);
 
 		return {
 			status: 200,

@@ -74,6 +74,7 @@
 	];
 
 	let contacts: ContentIterface;
+	$: console.log('🚀 ~ file: index.svelte ~ line 77 ~ contacts', contacts);
 	let limit = 15;
 	let currentGlobalParams: getContactsInterface = {
 		limit,
