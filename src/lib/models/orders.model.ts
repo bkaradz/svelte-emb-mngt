@@ -2,7 +2,7 @@ import mongoose, { model, Schema, Document } from 'mongoose'
 import type { ProductsDocument } from './products.models'
 import logger from '$lib/utility/logger'
 import dayjs from 'dayjs'
-import { getMonetaryValue } from '$lib/services/monetary/monetary.services'
+import { getMonetaryValue, setMonetaryValue } from '$lib/services/monetary'
 import { optionContainsName, optionsGroupsNames, optionsGroupsValuesDefaults } from '$lib/models/options.models'
 dayjs().format()
 
@@ -50,14 +50,14 @@ const productsSchema: Schema = new Schema<ProductDocument>(
       type: Schema.Types.Decimal128,
       required: true,
       get: (v: number) => getMonetaryValue(v),
-      set: (v: number) => mongoose.Types.Decimal128.fromString((+v).toFixed(4)),
+      set: (v: number) => setMonetaryValue(v),
       default: 0,
     },
     total: {
       type: Schema.Types.Decimal128,
       required: true,
       get: (v: number) => getMonetaryValue(v),
-      set: (v: number) => mongoose.Types.Decimal128.fromString((+v).toFixed(4)),
+      set: (v: number) => setMonetaryValue(v),
       default: 0,
     },
     category: {
@@ -172,14 +172,14 @@ const ordersSchema: Schema = new Schema<OrdersDocument>(
       type: Schema.Types.Decimal128,
       required: true,
       get: (v: number) => getMonetaryValue(v),
-      set: (v: number) => mongoose.Types.Decimal128.fromString((+v).toFixed(4)),
+      set: (v: number) => setMonetaryValue(v),
       default: 0,
     },
     tax: {
       type: Schema.Types.Decimal128,
       required: true,
       get: (v: number) => getMonetaryValue(v),
-      set: (v: number) => mongoose.Types.Decimal128.fromString((+v).toFixed(4)),
+      set: (v: number) => setMonetaryValue(v),
       default: 0,
     },
     taxRate: {
@@ -190,7 +190,7 @@ const ordersSchema: Schema = new Schema<OrdersDocument>(
       type: Schema.Types.Decimal128,
       required: true,
       get: (v: number) => getMonetaryValue(v),
-      set: (v: number) => mongoose.Types.Decimal128.fromString((+v).toFixed(4)),
+      set: (v: number) => setMonetaryValue(v),
       default: 0,
     },
     discountRate: {
@@ -201,7 +201,7 @@ const ordersSchema: Schema = new Schema<OrdersDocument>(
       type: Schema.Types.Decimal128,
       required: true,
       get: (v: number) => getMonetaryValue(v),
-      set: (v: number) => mongoose.Types.Decimal128.fromString((+v).toFixed(4)),
+      set: (v: number) => setMonetaryValue(v),
       default: 0,
     },
     isActive: {

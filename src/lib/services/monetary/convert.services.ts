@@ -25,9 +25,9 @@ function converter(dineroObject: Dinero<unknown>, newCurrency: { code: string; b
   if (newCurrency === RTGS) {
     return convert(dineroObject, newCurrency, { RTGS: { amount: 51000, scale: 2 } })
   }
-  // if (newCurrency === USD) {
-  //   return convert(dineroObject, newCurrency, { USD: { amount: 100, scale: 2 } })
-  // }
+  if (newCurrency === USD) {
+    return convert(dineroObject, newCurrency, { USD: { amount: 100, scale: 2 } })
+  }
 }
 
 export function createConverter({ code }) {
@@ -43,7 +43,6 @@ export function toDineroObject(amount: number | string | DineroOptions<number>) 
     return dinero({ amount: temp, currency: USD })
   }
   return dinero(amount)
-
 }
 
 export function toObject(

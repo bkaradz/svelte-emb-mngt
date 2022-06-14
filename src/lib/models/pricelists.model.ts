@@ -1,145 +1,145 @@
-import { getMonetaryValue } from '$lib/services/monetary/monetary.services';
-import mongoose, { model, Schema, Document } from 'mongoose';
-import logger from '$lib/utility/logger';
+import { getMonetaryValue, setMonetaryValue } from '$lib/services/monetary'
+import mongoose, { model, Schema, Document } from 'mongoose'
+import logger from '$lib/utility/logger'
 
 export interface PricelistsSubDocument {
-	_id: mongoose.Schema.Types.ObjectId | string;
-	minimumPrice: mongoose.Schema.Types.Decimal128 | number;
-	pricePerThousandStitches: mongoose.Schema.Types.Decimal128 | number;
-	minimumQuantity: number;
-	embroideryType: string;
+  _id: mongoose.Schema.Types.ObjectId | string
+  minimumPrice: mongoose.Schema.Types.Decimal128 | number
+  pricePerThousandStitches: mongoose.Schema.Types.Decimal128 | number
+  minimumQuantity: number
+  embroideryType: string
 }
 
 export interface PricelistsDocument extends Document {
-	_id: mongoose.Schema.Types.ObjectId | string;
-	userID: mongoose.Schema.Types.ObjectId | string;
-	name: string;
-	isActive: boolean;
-	isDefault: boolean;
-	pricelists: Array<PricelistsSubDocument>;
-	createdAt: Date | string;
-	updatedAt: Date | string;
-	// getQuantityPricelist: ({
-	// 	id,
-	// 	embroideryType,
-	// 	quantity
-	// }: {
-	// 	id: string;
-	// 	embroideryType: string;
-	// 	quantity: number;
-	// }) => Promise<PricelistsSubDocument>;
+  _id: mongoose.Schema.Types.ObjectId | string
+  userID: mongoose.Schema.Types.ObjectId | string
+  name: string
+  isActive: boolean
+  isDefault: boolean
+  pricelists: Array<PricelistsSubDocument>
+  createdAt: Date | string
+  updatedAt: Date | string
+  // getQuantityPricelist: ({
+  // 	id,
+  // 	embroideryType,
+  // 	quantity
+  // }: {
+  // 	id: string;
+  // 	embroideryType: string;
+  // 	quantity: number;
+  // }) => Promise<PricelistsSubDocument>;
 }
 
 const pricelistsSubSchema: Schema = new Schema<PricelistsSubDocument>(
-	{
-		minimumPrice: {
-			type: Schema.Types.Decimal128,
-			required: true,
-			get: (v: number) => getMonetaryValue(v),
-			set: (v: number) => mongoose.Types.Decimal128.fromString((+v).toFixed(4)),
-			default: 0
-		},
-		pricePerThousandStitches: {
-			type: Schema.Types.Decimal128,
-			required: true,
-			get: (v: number) => getMonetaryValue(v),
-			set: (v: number) => mongoose.Types.Decimal128.fromString((+v).toFixed(4)),
-			default: 0
-		},
-		minimumQuantity: {
-			type: Number,
-			required: true
-		},
-		embroideryType: {
-			type: String,
-			required: true
-		}
-	},
-	{ timestamps: true, toJSON: { getters: true } }
-);
+  {
+    minimumPrice: {
+      type: Schema.Types.Decimal128,
+      required: true,
+      get: (v: number) => getMonetaryValue(v),
+      set: (v: number) => setMonetaryValue(v),
+      default: 0,
+    },
+    pricePerThousandStitches: {
+      type: Schema.Types.Decimal128,
+      required: true,
+      get: (v: number) => getMonetaryValue(v),
+      set: (v: number) => setMonetaryValue(v),
+      default: 0,
+    },
+    minimumQuantity: {
+      type: Number,
+      required: true,
+    },
+    embroideryType: {
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true, toJSON: { getters: true } }
+)
 
 const pricelistsSchema: Schema = new Schema<PricelistsDocument>(
-	{
-		userID: { type: Schema.Types.ObjectId, ref: 'Contacts', required: true },
-		name: {
-			type: String,
-			required: true,
-			unique: true
-		},
-		isActive: {
-			type: Boolean,
-			required: true,
-			default: true
-		},
-		isDefault: {
-			type: Boolean,
-			required: true,
-			default: false
-		},
-		pricelists: [pricelistsSubSchema]
-	},
-	{ timestamps: true, toJSON: { getters: true } }
-);
+  {
+    userID: { type: Schema.Types.ObjectId, ref: 'Contacts', required: true },
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    isActive: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
+    isDefault: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    pricelists: [pricelistsSubSchema],
+  },
+  { timestamps: true, toJSON: { getters: true } }
+)
 
 pricelistsSchema.pre(/^(save)/, async function (next) {
-	const pricelist = this as PricelistsDocument;
+  const pricelist = this as PricelistsDocument
 
-	if (pricelist.isDefault === false) {
-		return next();
-	}
+  if (pricelist.isDefault === false) {
+    return next()
+  }
 
-	const getGroupDefault = await PricelistsModel.find({ isDefault: true });
+  const getGroupDefault = await PricelistsModel.find({ isDefault: true })
 
-	if (getGroupDefault.length >= 1) {
-		// reset all values to false
-		await PricelistsModel.updateMany({ isDefault: false });
-	}
+  if (getGroupDefault.length >= 1) {
+    // reset all values to false
+    await PricelistsModel.updateMany({ isDefault: false })
+  }
 
-	return next();
-});
+  return next()
+})
 
 pricelistsSchema.pre(/^(updateOne|findOneAndUpdate|findByIdAndUpdate)/, async function (next) {
-	const pricelist = { ...this.getUpdate() };
+  const pricelist = { ...this.getUpdate() }
 
-	if (pricelist.isDefault === false) {
-		return next();
-	}
+  if (pricelist.isDefault === false) {
+    return next()
+  }
 
-	const getGroupDefault = await PricelistsModel.find({ isDefault: true });
+  const getGroupDefault = await PricelistsModel.find({ isDefault: true })
 
-	if (getGroupDefault.length >= 1) {
-		// reset all values to false
-		await PricelistsModel.updateMany({ isDefault: false });
-	}
+  if (getGroupDefault.length >= 1) {
+    // reset all values to false
+    await PricelistsModel.updateMany({ isDefault: false })
+  }
 
-	return next();
-});
+  return next()
+})
 
-const PricelistsModel = model<PricelistsDocument>('Pricelists', pricelistsSchema);
+const PricelistsModel = model<PricelistsDocument>('Pricelists', pricelistsSchema)
 
-export default PricelistsModel;
+export default PricelistsModel
 
 export const getQuantityPricelist = async ({
-	id,
-	embroideryType,
-	quantity
+  id,
+  embroideryType,
+  quantity,
 }: {
-	id: string;
-	embroideryType: string;
-	quantity: number;
+  id: string
+  embroideryType: string
+  quantity: number
 }): Promise<PricelistsSubDocument> => {
-	try {
-		const pricelist = await PricelistsModel.findById({ _id: id }).lean();
-		const pricelistsArray = pricelist.pricelists;
+  try {
+    const pricelist = await PricelistsModel.findById({ _id: id }).lean()
+    const pricelistsArray = pricelist.pricelists
 
-		const minimumQuantityArray = pricelistsArray
-			.filter((list) => embroideryType === list.embroideryType)
-			.sort((a, b) => a.minimumQuantity - b.minimumQuantity)
-			.filter((list) => list.minimumQuantity <= quantity);
+    const minimumQuantityArray = pricelistsArray
+      .filter((list) => embroideryType === list.embroideryType)
+      .sort((a, b) => a.minimumQuantity - b.minimumQuantity)
+      .filter((list) => list.minimumQuantity <= quantity)
 
-		return minimumQuantityArray.pop();
-	} catch (err) {
-		logger.error(`Error ${err.message}`);
-		throw new Error(`Error ${err.message}`);
-	}
-};
+    return minimumQuantityArray.pop()
+  } catch (err) {
+    logger.error(`Error ${err.message}`)
+    throw new Error(`Error ${err.message}`)
+  }
+}
