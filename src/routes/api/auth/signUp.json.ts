@@ -8,16 +8,16 @@ export const post: RequestHandler = async ({ request }) => {
   try {
     const reqUser = await request.json()
 
-    const result = postSuite(reqUser)
+    // const result = postSuite(reqUser)
 
-    if (result.hasErrors()) {
-      return {
-        status: 400,
-        body: {
-          message: result.getErrors(),
-        },
-      }
-    }
+    // if (result.hasErrors()) {
+    //   return {
+    //     status: 400,
+    //     body: {
+    //       message: result.getErrors(),
+    //     },
+    //   }
+    // }
 
     const userExist = await ContactsModel.findOne({ email: reqUser.email })
 
@@ -56,12 +56,11 @@ export const post: RequestHandler = async ({ request }) => {
 
     return {
       status: 200,
-      body: {
-        message: omit(contacts.toJSON(), ['password', 'createdAt', 'updatedAt', '__v']),
-      },
+      body: omit(contacts.toJSON(), ['password', 'createdAt', 'updatedAt', '__v']),
     }
   } catch (err) {
     logger.error(`Error: ${err.message}`)
+    console.log('error log', err)
     return {
       status: 500,
       body: {

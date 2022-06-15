@@ -58,7 +58,9 @@ const formatters = {
 };
 
 export function format(dineroObject: Dinero<unknown>) {
+  console.log("🚀 ~ file: format.services.ts ~ line 61 ~ format ~ dineroObject", dineroObject)
 	const { currency } = toSnapshot(dineroObject) as dineroSnapshot;
+  console.log("🚀 ~ file: format.services.ts ~ line 63 ~ format ~ currency", currency)
 	const formatFn = formatters[currency.code] || formatDefault;
 
 	return formatFn(dineroObject);

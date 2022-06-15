@@ -36,10 +36,20 @@ export function createConverter({ code }) {
 
 export function toDineroObject(amount: number | string | DineroOptions<number>) {
   if (typeof amount === 'number') {
-    return dinero({ amount, currency: USD })
+    const temp = amount * 100
+    return dinero({ amount: temp, currency: USD })
   }
   if (typeof amount === 'string') {
-    const temp = +amount
+    console.log("🚀 ~ file: convert.services.ts ~ line 43 ~ toDineroObject ~ amount", amount)
+    // if string is a stringified dinero object
+    console.log('Enterd hhhh')
+    try {
+      const results = JSON.parse(amount)
+      return dinero(results)
+    } catch (error) {
+      console.log('Error test', error)
+    }
+    const temp = +amount * 100
     return dinero({ amount: temp, currency: USD })
   }
   return dinero(amount)

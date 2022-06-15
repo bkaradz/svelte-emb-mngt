@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import Loading from '$lib/components/Loading.svelte';
+	import { format } from '$lib/services/monetary';
 	import logger from '$lib/utility/logger';
 	import {
 		svgChevronLeft,
@@ -417,13 +418,15 @@
 							<div class="p-1">
 								<p class="p-1 text-xs font-semibold text-pickled-bluewood-500">BALANCE DUE</p>
 								<span class="p-1 text-base font-bold text-pickled-bluewood-500">
-									${contact.balanceDue}
+									{format(contact.balanceDue)}
+									<!-- ${contact.balanceDue} -->
 								</span>
 							</div>
 							<div class="p-1">
 								<p class="p-1 text-xs font-semibold text-pickled-bluewood-500">TOTAL INVOICED</p>
 								<span class="p-1 text-base font-bold text-pickled-bluewood-500">
-									${contact.totalReceipts}
+									{format(contact.totalReceipts)}
+									<!-- ${contact.totalReceipts} -->
 								</span>
 							</div>
 						</div>
@@ -470,8 +473,8 @@
 											<td class="px-2 py-1">
 												{!contact.vatOrBpNo ? '...' : contact.vatOrBpNo}
 											</td>
-											<td class="px-2 py-1 text-right">${contact.balanceDue}</td>
-											<td class="px-2 py-1 text-right">${contact.totalReceipts}</td>
+											<td class="px-2 py-1 text-right">{format(contact.balanceDue)}</td>
+											<td class="px-2 py-1 text-right">{format(contact.totalReceipts)}</td>
 											<td class="flex items-center justify-end px-2 py-1">
 												<span class="rounded-full bg-success px-3 py-1 text-xs font-bold text-white"
 													>Invoiced</span

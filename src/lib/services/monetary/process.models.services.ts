@@ -1,15 +1,36 @@
-import mongoose from 'mongoose'
+import type { Dinero } from 'dinero.js'
+import { toDineroObject, toObject } from './convert.services'
 
-export function getMonetaryValue(value: number) {
+// export function getMonetaryValue(value: string) {
+//   console.log('get', 'test')
+//   if (typeof value !== 'undefined') {
+//     return parseFloat(value.toString())
+//   }
+//   return value
+// }
+
+export function getMonetaryValue(value: string) {
   if (typeof value !== 'undefined') {
-    return parseFloat(value.toString())
+    return toDineroObject(JSON.parse(value))
   }
   return value
 }
 
-export function setMonetaryValue(value: number) {
-  if (typeof value !== 'undefined') {
-    return mongoose.Types.Decimal128.fromString((+value).toFixed(4))
+export function setMonetaryValue(value: number | string | Dinero<number>): string {
+  console.log('🚀 ~ file: process.models.services.ts ~ line 20 ~ setMonetaryValue ~ value', value)
+  console.log('🚀 ~ file: process.models.services.ts ~ line 20 ~ setMonetaryValue ~ value', typeof value)
+
+  if (typeof value === 'number' || typeof value === 'string') {
+    const dineroObject = toDineroObject(value)
+    return JSON.stringify(dineroObject.toJSON())
   }
-  return 0
+  if (typeof value === 'object') {
+    return JSON.stringify(toObject(value))
+  }
+  // const dineroObject = toDineroObject(0)
+  // return JSON.stringify(toDineroObject(0).toJSON())
+}
+
+export function defaultMonetaryValue(): string {
+  return JSON.stringify(toDineroObject(0).toJSON())
 }

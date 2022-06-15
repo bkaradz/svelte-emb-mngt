@@ -11,14 +11,14 @@ export type dineroSnapshot = {
   scale: number
 }
 
-export function toDineroObject(amount: number) {
-  return dinero({ amount, currency: USD })
-}
+//  function toDineroObject(amount: number) {
+//   return dinero({ amount, currency: USD })
+// }
 
-export function toObject(dineroObject: Dinero<number>): dineroSnapshot {
-  return toSnapshot(dineroObject)
-}
+//  function toObject(dineroObject: Dinero<number>): dineroSnapshot {
+//   return toSnapshot(dineroObject)
+// }
 
-export function getAmount(dineroObject: Dinero<unknown>): number {
-  return toUnit(dineroObject)
-}
+//  function getAmount(dineroObject: Dinero<unknown>): number {
+//   return toUnit(dineroObject)
+// }

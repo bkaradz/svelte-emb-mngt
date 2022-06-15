@@ -2,10 +2,11 @@ import ContactsModel, { type ContactsDocument } from '$lib/models/contacts.model
 import omit from 'lodash/omit';
 import logger from '$lib/utility/logger';
 import aggregateQuery from '$lib/services/aggregateQuery.services';
-import { postSuite } from '$lib/validation/server/contacts.validate';
+// import { postSuite } from '$lib/validation/server/contacts.validate';
 import pickBy from 'lodash/pickBy';
 import identity from 'lodash/identity';
 import type { RequestHandler } from '@sveltejs/kit';
+import { toDineroObject } from "$lib/services/monetary";
 
 export const get: RequestHandler = async ({
 	url,
@@ -79,12 +80,24 @@ export const get: RequestHandler = async ({
 			},
 			{
 				$addFields: {
-					balanceDue: {
-						$toString: '$balanceDue'
+					// balanceDue:	toDineroObject("$balanceDue"),
+					// totalReceipts:	toDineroObject("$totalReceipts"),
+					balanceDue:	{
+						$function:
+               {
+                  body: "toDineroObject(amount)",
+                  args: [ "$balanceDue" ],
+                  lang: "js"
+               }
 					},
 					totalReceipts: {
-						$toString: '$totalReceipts'
-					}
+						$function:
+               {
+                  body: "toDineroObject(amount)",
+                  args: [ "$totalReceipts" ],
+                  lang: "js"
+               }
+					},
 				}
 			},
 			{
@@ -148,6 +161,7 @@ export const get: RequestHandler = async ({
 			body: contacts
 		};
 	} catch (err) {
+    console.log("🚀 ~ file: index.json.ts ~ line 148 ~ err", err)
 		logger.error(`Error: ${err.message}`)
     return {
       status: 500,
@@ -184,17 +198,17 @@ export const post: RequestHandler = async ({
 
 		reqContact.isActive = true;
 
-		const result = postSuite(reqContact);
+		// const result = postSuite(reqContact);
 
-		if (result.hasErrors()) {
-			logger.error(result.getErrors());
-			return {
-				status: 400,
-				body: {
-					message: `${result.getErrors()}`
-				}
-			};
-		}
+		// if (result.hasErrors()) {
+		// 	logger.error(result.getErrors());
+		// 	return {
+		// 		status: 400,
+		// 		body: {
+		// 			message: `${result.getErrors()}`
+		// 		}
+		// 	};
+		// }
 
 		const contactFiltered = pickBy(reqContact, identity);
 
@@ -211,6 +225,7 @@ export const post: RequestHandler = async ({
 		};
 	} catch (err) {
 		logger.error(`Error: ${err.message}`)
+		console.log('error log', err)
     return {
       status: 500,
       body: {

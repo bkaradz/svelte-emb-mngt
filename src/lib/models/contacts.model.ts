@@ -1,7 +1,7 @@
 import mongoose, { model, Schema, Document } from 'mongoose'
 import bcrypt from 'bcrypt'
 import config from 'config'
-import { getMonetaryValue, setMonetaryValue } from '$lib/services/monetary'
+import { defaultMonetaryValue, getMonetaryValue, setMonetaryValue } from '$lib/services/monetary'
 
 export interface ContactsPaginationDocument {
   totalRecords: number
@@ -61,18 +61,18 @@ const contactsSchema: Schema = new Schema<ContactsDocument>(
       },
     },
     balanceDue: {
-      type: Schema.Types.Decimal128,
+      type: String,
       required: true,
-      get: (v: number) => getMonetaryValue(v),
+      get: (v: string) => getMonetaryValue(v),
       set: (v: number) => setMonetaryValue(v),
-      default: 0,
+      default: defaultMonetaryValue(),
     },
     totalReceipts: {
-      type: Schema.Types.Decimal128,
+      type: String,
       required: true,
-      get: (v: number) => getMonetaryValue(v),
+      get: (v: string) => getMonetaryValue(v),
       set: (v: number) => setMonetaryValue(v),
-      default: 0,
+      default: defaultMonetaryValue(),
     },
     isActive: { type: Boolean, required: true, default: false },
     isUser: { type: Boolean, required: true, default: false },
