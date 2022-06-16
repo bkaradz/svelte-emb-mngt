@@ -6,7 +6,8 @@ import aggregateQuery from '$lib/services/aggregateQuery.services';
 import pickBy from 'lodash/pickBy';
 import identity from 'lodash/identity';
 import type { RequestHandler } from '@sveltejs/kit';
-import { toDineroObject } from "$lib/services/monetary";
+// import { toDineroObject } from '$lib/services/monetary';
+// import { dinero } from 'dinero.js';
 
 export const get: RequestHandler = async ({
 	url,
@@ -80,24 +81,24 @@ export const get: RequestHandler = async ({
 			},
 			{
 				$addFields: {
-					// balanceDue:	toDineroObject("$balanceDue"),
-					// totalReceipts:	toDineroObject("$totalReceipts"),
-					balanceDue:	{
-						$function:
-               {
-                  body: "toDineroObject(amount)",
-                  args: [ "$balanceDue" ],
-                  lang: "js"
-               }
+					balanceDue: {
+						$function: {
+							body: function (params: string) {
+								return JSON.parse(params);
+							},
+							args: ['$balanceDue'],
+							lang: 'js'
+						}
 					},
 					totalReceipts: {
-						$function:
-               {
-                  body: "toDineroObject(amount)",
-                  args: [ "$totalReceipts" ],
-                  lang: "js"
-               }
-					},
+						$function: {
+							body: function (params: string) {
+								return JSON.parse(params);
+							},
+							args: ['$totalReceipts'],
+							lang: 'js'
+						}
+					}
 				}
 			},
 			{
@@ -161,14 +162,13 @@ export const get: RequestHandler = async ({
 			body: contacts
 		};
 	} catch (err) {
-    console.log("🚀 ~ file: index.json.ts ~ line 148 ~ err", err)
-		logger.error(`Error: ${err.message}`)
-    return {
-      status: 500,
-      body: {
-        error: `A server error occurred ${err}`,
-      },
-    }
+		logger.error(`Error: ${err.message}`);
+		return {
+			status: 500,
+			body: {
+				error: `A server error occurred ${err}`
+			}
+		};
 	}
 };
 
@@ -224,14 +224,13 @@ export const post: RequestHandler = async ({
 			body: contacts
 		};
 	} catch (err) {
-		logger.error(`Error: ${err.message}`)
-		console.log('error log', err)
-    return {
-      status: 500,
-      body: {
-        error: `A server error occurred ${err}`,
-      },
-    }
+		logger.error(`Error: ${err.message}`);
+		return {
+			status: 500,
+			body: {
+				error: `A server error occurred ${err}`
+			}
+		};
 	}
 };
 
@@ -261,13 +260,13 @@ export const put: RequestHandler = async ({
 			body: res
 		};
 	} catch (err) {
-		logger.error(`Error: ${err.message}`)
-    return {
-      status: 500,
-      body: {
-        error: `A server error occurred ${err}`,
-      },
-    }
+		logger.error(`Error: ${err.message}`);
+		return {
+			status: 500,
+			body: {
+				error: `A server error occurred ${err}`
+			}
+		};
 	}
 };
 

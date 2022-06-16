@@ -1,74 +1,73 @@
-import type { RequestHandler } from '@sveltejs/kit'
-import ContactsModel from '$lib/models/contacts.model'
-import omit from 'lodash/omit'
-import { postSuite } from '$lib/validation/server/signUp.validate'
-import logger from '$lib/utility/logger'
+import type { RequestHandler } from '@sveltejs/kit';
+import ContactsModel from '$lib/models/contacts.model';
+import omit from 'lodash/omit';
+import { postSuite } from '$lib/validation/server/signUp.validate';
+import logger from '$lib/utility/logger';
 
 export const post: RequestHandler = async ({ request }) => {
-  try {
-    const reqUser = await request.json()
+	try {
+		const reqUser = await request.json();
 
-    // const result = postSuite(reqUser)
+		// const result = postSuite(reqUser)
 
-    // if (result.hasErrors()) {
-    //   return {
-    //     status: 400,
-    //     body: {
-    //       message: result.getErrors(),
-    //     },
-    //   }
-    // }
+		// if (result.hasErrors()) {
+		//   return {
+		//     status: 400,
+		//     body: {
+		//       message: result.getErrors(),
+		//     },
+		//   }
+		// }
 
-    const userExist = await ContactsModel.findOne({ email: reqUser.email })
+		const userExist = await ContactsModel.findOne({ email: reqUser.email });
 
-    if (userExist) {
-      return {
-        status: 409,
-        body: {
-          message: 'User with that email already exist',
-        },
-      }
-    }
+		if (userExist) {
+			return {
+				status: 409,
+				body: {
+					message: 'User with that email already exist'
+				}
+			};
+		}
 
-    const contacts = new ContactsModel(reqUser)
+		const contacts = new ContactsModel(reqUser);
 
-    const allUsers = await ContactsModel.find({
-      isUser: true,
-      isActive: true,
-      userRole: 'ADMIN',
-    }).select('-password')
+		const allUsers = await ContactsModel.find({
+			isUser: true,
+			isActive: true,
+			userRole: 'ADMIN'
+		}).select('-password');
 
-    /**
-     * If the database has no ADMIN create one,
-     * other users are activated by the first ADMIN
-     */
-    if (allUsers.length === 0) {
-      contacts.userRole = 'ADMIN'
-      contacts.isActive = true
-    } else {
-      contacts.userRole = 'USER'
-      contacts.isActive = false
-    }
+		/**
+		 * If the database has no ADMIN create one,
+		 * other users are activated by the first ADMIN
+		 */
+		if (allUsers.length === 0) {
+			contacts.userRole = 'ADMIN';
+			contacts.isActive = true;
+		} else {
+			contacts.userRole = 'USER';
+			contacts.isActive = false;
+		}
 
-    contacts.isUser = true
+		contacts.isUser = true;
 
-    await contacts.save()
+		await contacts.save();
 
-    return {
-      status: 200,
-      body: omit(contacts.toJSON(), ['password', 'createdAt', 'updatedAt', '__v']),
-    }
-  } catch (err) {
-    logger.error(`Error: ${err.message}`)
-    console.log('error log', err)
-    return {
-      status: 500,
-      body: {
-        error: `A server error occurred ${err}`,
-      },
-    }
-  }
-}
+		return {
+			status: 200,
+			body: omit(contacts.toJSON(), ['password', 'createdAt', 'updatedAt', '__v'])
+		};
+	} catch (err) {
+		logger.error(`Error: ${err.message}`);
+		return {
+			status: 500,
+			body: {
+				error: `A server error occurred ${err}`
+			}
+		};
+	}
+};
 
 // export const get: RequestHandler = async () => {
 // 	try {

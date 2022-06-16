@@ -19,8 +19,14 @@
 //   }
 // }
 
-
-import { dinero, haveSameCurrency, toFormat, toSnapshot, type Dinero } from 'dinero.js';
+import {
+	dinero,
+	haveSameCurrency,
+	toFormat,
+	toSnapshot,
+	type Dinero,
+	type DineroOptions
+} from 'dinero.js';
 import { BOND, RTGS } from './convert.services';
 import type { dineroSnapshot } from './monetary.services';
 
@@ -33,7 +39,6 @@ function intlFormat(locale: string, options = {}) {
 				currency: currency.code
 			});
 		}
-
 		return toFormat(dineroObject, transformer);
 	};
 }
@@ -54,14 +59,13 @@ const formatters = {
 	USD: intlFormat('en-US'),
 	ZAR: intlFormat('en-ZA'),
 	BWP: intlFormat('en_BW'),
-	EUR: intlFormat('fr-FR'),
+	EUR: intlFormat('fr-FR')
 };
 
-export function format(dineroObject: Dinero<unknown>) {
-  console.log("🚀 ~ file: format.services.ts ~ line 61 ~ format ~ dineroObject", dineroObject)
-	const { currency } = toSnapshot(dineroObject) as dineroSnapshot;
-  console.log("🚀 ~ file: format.services.ts ~ line 63 ~ format ~ currency", currency)
+export function format(dineroObject: DineroOptions<number>) {
+	const dineroValue = dinero(dineroObject);
+	const { currency } = toSnapshot(dineroValue) as dineroSnapshot;
 	const formatFn = formatters[currency.code] || formatDefault;
 
-	return formatFn(dineroObject);
+	return formatFn(dineroValue);
 }

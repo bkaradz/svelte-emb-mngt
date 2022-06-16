@@ -9,7 +9,7 @@
 	let pricelists = [];
 
 	const heandleDelete = (id: string) => {
-		console.log('🚀 ~ file: PricelistsTable.svelte ~ line 12 ~ heandleDelete ~ id', id);
+		return id;
 	};
 
 	const getPricelists = async () => {

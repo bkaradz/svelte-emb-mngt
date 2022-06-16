@@ -40,7 +40,6 @@
 			const res = await fetch(endpoint);
 			if (res.ok) {
 				pricelist = await res.json();
-				console.log('🚀 ~ file: [id].svelte ~ line 43 ~ onMount ~ pricelist', pricelist);
 			}
 		} catch (err) {
 			logger.error(err.message);
