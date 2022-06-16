@@ -105,7 +105,6 @@
 				</tbody>
 			</table>
 		</div>
-		<pre class="text-xs text-royal-blue-900" />
 	</div>
 	<!-- Table End -->
 {/if}

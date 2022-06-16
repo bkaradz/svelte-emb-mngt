@@ -45,20 +45,21 @@ export const post: RequestHandler = async ({ request, locals }) => {
     const userId = locals.user._id
 
     const reqPricelists = await request.json()
+    console.log('🚀 ~ file: index.json.ts ~ line 48 ~ constpost:RequestHandler= ~ reqPricelists', reqPricelists)
 
     reqPricelists.userID = userId
 
-    const result = postSuite(reqPricelists)
+    // const result = postSuite(reqPricelists)
 
-    if (result.hasErrors()) {
-      logger.error(result.getErrors())
-      return {
-        status: 400,
-        body: {
-          message: result.getErrors(),
-        },
-      }
-    }
+    // if (result.hasErrors()) {
+    //   logger.error(result.getErrors())
+    //   return {
+    //     status: 400,
+    //     body: {
+    //       message: result.getErrors(),
+    //     },
+    //   }
+    // }
 
     const newPricelists = new PricelistsModel(reqPricelists)
 
@@ -70,6 +71,7 @@ export const post: RequestHandler = async ({ request, locals }) => {
     }
   } catch (err) {
     logger.error(`Error: ${err.message}`)
+    console.log('first ', err)
     return {
       status: 500,
       body: {
