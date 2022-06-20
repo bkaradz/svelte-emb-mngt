@@ -255,7 +255,6 @@ export const incOrderID = (orderID: string) => {
 export const getCurrentOrderID = async () => {
 	try {
 		const quotation = await OrdersModel.find({}).sort({ _id: -1 }).limit(1).select('orderID');
-		// console.log('products', products)
 		let orderID = '';
 		if (quotation.length === 0) {
 			// set the orderID to the initial Value so xxxxxxx

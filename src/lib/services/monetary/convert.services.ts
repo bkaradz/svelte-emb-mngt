@@ -39,8 +39,8 @@ export function createConverter({ code }) {
 
 export function toDineroObject(amount: number | string | DineroOptions<number>) {
 	if (typeof amount === 'number') {
-		const temp = amount * 100;
-		return dinero({ amount: temp, currency: USD });
+		const temp = amount * 1000;
+		return dinero({ amount: temp, currency: USD, scale: 3 });
 	}
 	if (typeof amount === 'string') {
 		// if string is a stringified dinero object
@@ -50,8 +50,8 @@ export function toDineroObject(amount: number | string | DineroOptions<number>) 
 		} catch (err) {
 			logger.error(`Error: ${err.message}`);
 		}
-		const temp = +amount * 100;
-		return dinero({ amount: temp, currency: USD });
+		const temp = +amount * 1000;
+		return dinero({ amount: temp, currency: USD, scale: 3 });
 	}
 	return dinero(amount);
 }

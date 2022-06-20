@@ -1,128 +1,158 @@
-import PricelistsModel from '$lib/models/pricelists.model'
-import { postSuite } from '$lib/validation/server/pricelists.validate'
-import logger from '$lib/utility/logger'
-import type { RequestHandler } from '@sveltejs/kit'
+import PricelistsModel, {
+	type PricelistsDocument,
+	type PricelistsSubDocument
+} from '$lib/models/pricelists.model';
+import { postSuite } from '$lib/validation/server/pricelists.validate';
+import logger from '$lib/utility/logger';
+import type { RequestHandler } from '@sveltejs/kit';
+import { getMonetaryValue, setMonetaryValue } from '$lib/services/monetary';
 
 export const get: RequestHandler = async ({ locals }) => {
-  try {
-    if (!locals?.user?._id) {
-      return {
-        status: 401,
-        body: {
-          message: 'Unauthorized',
-        },
-      }
-    }
+	try {
+		if (!locals?.user?._id) {
+			return {
+				status: 401,
+				body: {
+					message: 'Unauthorized'
+				}
+			};
+		}
 
-    const pricelists = await PricelistsModel.find()
+		const reqPricelists: Array<PricelistsDocument> = await PricelistsModel.find();
 
-    return {
-      status: 200,
-      body: pricelists,
-    }
-  } catch (err) {
-    logger.error(`Error: ${err.message}`)
-    return {
-      status: 500,
-      body: {
-        error: `A server error occurred ${err}`,
-      },
-    }
-  }
-}
+		if (reqPricelists) {
+			reqPricelists.forEach((subPricelist: Partial<PricelistsDocument>) => {
+				const pricelists = subPricelist.pricelists.map(
+					(list: Partial<PricelistsSubDocument>): PricelistsSubDocument => {
+						return {
+							...list,
+							pricePerThousandStitches: getMonetaryValue(list.pricePerThousandStitches),
+							minimumPrice: getMonetaryValue(list.minimumPrice)
+						};
+					}
+				);
+				subPricelist.pricelists = pricelists;
+			});
+		}
+
+		return {
+			status: 200,
+			body: reqPricelists
+		};
+	} catch (err) {
+		logger.error(`Error: ${err.message}`);
+		return {
+			status: 500,
+			body: {
+				error: `A server error occurred ${err}`
+			}
+		};
+	}
+};
 
 export const post: RequestHandler = async ({ request, locals }) => {
-  try {
-    if (!locals?.user?._id) {
-      return {
-        status: 401,
-        body: {
-          message: 'Unauthorized',
-        },
-      }
-    }
+	try {
+		if (!locals?.user?._id) {
+			return {
+				status: 401,
+				body: {
+					message: 'Unauthorized'
+				}
+			};
+		}
 
-    const userId = locals.user._id
+		const userId = locals.user._id;
 
-    const reqPricelists = await request.json()
-    console.log('🚀 ~ file: index.json.ts ~ line 48 ~ constpost:RequestHandler= ~ reqPricelists', reqPricelists)
+		const reqPricelists = await request.json();
 
-    reqPricelists.userID = userId
+		const pricelists = reqPricelists.pricelists.map((list) => {
+			return {
+				...list,
+				pricePerThousandStitches: setMonetaryValue(list.pricePerThousandStitches),
+				minimumPrice: setMonetaryValue(list.minimumPrice)
+			};
+		});
 
-    // const result = postSuite(reqPricelists)
+		reqPricelists.pricelists = pricelists;
 
-    // if (result.hasErrors()) {
-    //   logger.error(result.getErrors())
-    //   return {
-    //     status: 400,
-    //     body: {
-    //       message: result.getErrors(),
-    //     },
-    //   }
-    // }
+		reqPricelists.userID = userId;
 
-    const newPricelists = new PricelistsModel(reqPricelists)
+		// const result = postSuite(reqPricelists)
 
-    const res = await newPricelists.save()
+		// if (result.hasErrors()) {
+		//   logger.error(result.getErrors())
+		//   return {
+		//     status: 400,
+		//     body: {
+		//       message: result.getErrors(),
+		//     },
+		//   }
+		// }
 
-    return {
-      status: 200,
-      body: res,
-    }
-  } catch (err) {
-    logger.error(`Error: ${err.message}`)
-    console.log('first ', err)
-    return {
-      status: 500,
-      body: {
-        error: `A server error occurred ${err}`,
-      },
-    }
-  }
-}
+		const newPricelists = new PricelistsModel(reqPricelists);
+
+		const res = await newPricelists.save();
+
+		return {
+			status: 200,
+			body: res
+		};
+	} catch (err) {
+		logger.error(`Error: ${err.message}`);
+		return {
+			status: 500,
+			body: {
+				error: `A server error occurred ${err}`
+			}
+		};
+	}
+};
 
 export const put: RequestHandler = async ({ request, locals }) => {
-  try {
-    if (!locals?.user?._id) {
-      return {
-        status: 401,
-        body: {
-          message: 'Unauthorized',
-        },
-      }
-    }
+	try {
+		if (!locals?.user?._id) {
+			return {
+				status: 401,
+				body: {
+					message: 'Unauthorized'
+				}
+			};
+		}
 
-    const userId = locals.user._id
+		const userId = locals.user._id;
 
-    const reqPricelists = await request.json()
+		const reqPricelists = await request.json();
 
-    reqPricelists.userID = userId
+		reqPricelists.userID = userId;
 
-    const result = postSuite(reqPricelists)
+		const result = postSuite(reqPricelists);
 
-    if (result.hasErrors()) {
-      logger.error(result.getErrors())
-      return {
-        status: 400,
-        body: {
-          message: result.getErrors(),
-        },
-      }
-    }
+		if (result.hasErrors()) {
+			logger.error(result.getErrors());
+			return {
+				status: 400,
+				body: {
+					message: result.getErrors()
+				}
+			};
+		}
 
-    const newPricelists = await PricelistsModel.findByIdAndUpdate({ _id: reqPricelists._id }, reqPricelists)
+		const newPricelists = await PricelistsModel.findByIdAndUpdate(
+			{ _id: reqPricelists._id },
+			reqPricelists
+		);
 
-    return {
-      status: 200,
-      body: newPricelists,
-    }
-  } catch (err) {
-    logger.error(`Error: ${err.message}`)
-    return {
-      status: 500,
-      body: {
-        error: `A server error occurred ${err}`,
-      },
-    }
-  }
-}
+		return {
+			status: 200,
+			body: newPricelists
+		};
+	} catch (err) {
+		logger.error(`Error: ${err.message}`);
+		return {
+			status: 500,
+			body: {
+				error: `A server error occurred ${err}`
+			}
+		};
+	}
+};

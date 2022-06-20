@@ -7,7 +7,7 @@
 	import Input from '$lib/components/Input.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import type { PricelistsDocument, PricelistsSubDocument } from '$lib/models/pricelists.model';
-
+	import { format } from '$lib/services/monetary';
 	let result = suite.get();
 
 	export let tableHeadings = [
@@ -108,7 +108,7 @@
 								class=" sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
 							>
 								{#each tableHeadings as header (header)}
-									<th on:click={() => console.log(header)} class="px-2 py-2">{header}</th>
+									<th class="px-2 py-2">{header}</th>
 								{/each}
 							</tr>
 						</thead>

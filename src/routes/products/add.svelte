@@ -118,7 +118,6 @@
 	 */
 	// const handleComboInput = (e: SubmitEvent) => {
 	// 	// onInput={handleComboInput}
-	// 	console.log('e.target', e.target);
 	// 	formData = {
 	// 		...formData,
 	// 		category: e.target.value
