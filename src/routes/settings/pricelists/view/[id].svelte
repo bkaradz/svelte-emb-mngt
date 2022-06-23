@@ -8,6 +8,7 @@
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import type { PricelistsDocument, PricelistsSubDocument } from '$lib/models/pricelists.model';
 	import { dinero, toFormat, type DineroOptions } from 'dinero.js';
+	import { convertPricelist } from '$lib/utility/pricelists.utils';
 
 	let result = suite.get();
 
@@ -36,31 +37,10 @@
 		});
 	}
 
-	function formatDefault(dineroObject: DineroOptions<number>) {
-		return toFormat(
-			dinero(dineroObject),
-			({ amount, currency }) => `${currency.code} $${amount.toFixed(3)}`
-		);
-	}
-
-	$: convertPricelist = (subPricelist) => {
-		const pricelists = subPricelist.pricelists.map((list: any): PricelistsSubDocument => {
-			return {
-				...list,
-				pricePerThousandStitches: formatDefault(JSON.parse(list.pricePerThousandStitches)),
-				minimumPrice: formatDefault(JSON.parse(list.minimumPrice))
-			};
-		});
-		subPricelist.pricelists = pricelists;
-		return subPricelist;
-	};
-
 	onMount(async () => {
 		try {
 			const res = await fetch(endpoint);
 			if (res.ok) {
-				// pricelist = await res.json();
-
 				const tempPricelist = await res.json();
 				pricelist = tempPricelist ? convertPricelist(tempPricelist) : null;
 			}
