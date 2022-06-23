@@ -10,6 +10,7 @@
 	import { v4 as uuidv4 } from 'uuid';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { PricelistsDocument, PricelistsSubDocument } from '$lib/models/pricelists.model';
+	import { convertPricelist } from '$lib/utility/pricelists.utils';
 
 	let result = suite.get();
 
@@ -46,7 +47,8 @@
 		try {
 			const res = await fetch(endpoint);
 			if (res.ok) {
-				pricelist = await res.json();
+				const tempPricelist = await res.json();
+				pricelist = tempPricelist ? convertPricelist(tempPricelist) : null;
 			}
 		} catch (err) {
 			logger.error(err.message);
@@ -66,9 +68,28 @@
 	const heandleEditable = async (list: PricelistsSubDocument) => {
 		if (isEditableID === null) {
 			isEditableID = list._id;
+			pricelist.pricelists = pricelist.pricelists.map((plist) => {
+				if (plist._id === list._id) {
+					return {
+						...plist,
+						minimumPrice: parseFloat(list.minimumPrice.replace('USD $', '')),
+						pricePerThousandStitches: parseFloat(list.pricePerThousandStitches.replace('USD $', ''))
+					};
+				}
+				return plist;
+			});
 		} else {
-			// await updateOrAddOptions(list);
 			isEditableID = null;
+			pricelist.pricelists = pricelist.pricelists.map((plist) => {
+				if (plist._id === list._id) {
+					return {
+						...plist,
+						minimumPrice: `USD $${plist.minimumPrice.toFixed(3)}`,
+						pricePerThousandStitches: `USD $${plist.pricePerThousandStitches.toFixed(3)}`
+					};
+				}
+				return plist;
+			});
 		}
 	};
 
