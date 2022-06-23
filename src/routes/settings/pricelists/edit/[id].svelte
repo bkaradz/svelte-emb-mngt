@@ -129,10 +129,11 @@
 				}
 				return {
 					...pList,
-					minimumPrice: pList.minimumPrice,
-					pricePerThousandStitches: pList.pricePerThousandStitches
+					minimumPrice: parseFloat(pList.minimumPrice.replace('USD $', '')),
+					pricePerThousandStitches: parseFloat(pList.pricePerThousandStitches.replace('USD $', ''))
 				};
 			});
+
 			const res = await fetch('/api/pricelists.json', {
 				method: 'PUT',
 				body: JSON.stringify(pricelist),
