@@ -57,7 +57,7 @@
 	});
 
 	const viewProducts = async (id: string) => {
-		await goto(`/products/${id}`);
+		await goto(`/products/view/${id}`);
 	};
 
 	const gotoAddProducts = async () => {
@@ -466,7 +466,7 @@
 											<td class="py-1 text-center">
 												<button
 													class=" m-0 p-0"
-													on:click={async () => await goto(`/products/${product._id}`)}
+													on:click|preventDefault={() => viewProducts(product._id)}
 													><span class="fill-current text-pickled-bluewood-500"
 														>{@html svgView}</span
 													></button

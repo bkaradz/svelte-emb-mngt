@@ -93,7 +93,7 @@
 	});
 
 	const viewContact = async (id: string) => {
-		await goto(`/contacts/${id}`);
+		await goto(`/contacts/view/${id}`);
 	};
 
 	const gotoAddContact = async () => {
@@ -480,9 +480,7 @@
 												>
 											</td>
 											<td class="p-1 text-center ">
-												<button
-													class=" m-0 p-0"
-													on:click={async () => await goto(`/contacts/${contact._id}`)}
+												<button class=" m-0 p-0" on:click={() => viewContact(contact._id)}
 													><span class="fill-current text-pickled-bluewood-500"
 														>{@html svgView}</span
 													></button

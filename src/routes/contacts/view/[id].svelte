@@ -19,6 +19,7 @@
 	import dayjs from 'dayjs';
 	import { Menu, MenuButton, MenuItems, MenuItem } from '@rgossiaux/svelte-headlessui';
 	import logger from '$lib/utility/logger';
+	import { format } from '$lib/services/monetary';
 
 	const endpoint = `/api/contacts/${$page.params.id}.json`;
 
@@ -73,7 +74,7 @@
 		await goto(`/contacts`);
 	};
 	const heandleEdit = async (id: string) => {
-		await goto(`/contacts/edit-${id}`);
+		await goto(`/contacts/edit/${id}`);
 	};
 
 	$: contact;
@@ -157,13 +158,13 @@
 					<div class="p-2">
 						<p class="p-2 text-xs font-semibold text-pickled-bluewood-500">BALANCE DUE</p>
 						<span class="p-2 text-lg font-bold text-pickled-bluewood-500">
-							${contact.balanceDue}
+							{format(contact.balanceDue)}
 						</span>
 					</div>
 					<div class="p-2">
 						<p class="p-2 text-xs font-semibold text-pickled-bluewood-500 ">TOTAL INVOICED</p>
 						<span class="p-2 text-lg font-bold text-pickled-bluewood-500">
-							${contact.totalReceipts}
+							{format(contact.totalReceipts)}
 						</span>
 					</div>
 				</div>
