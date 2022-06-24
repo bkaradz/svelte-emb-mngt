@@ -3,10 +3,8 @@
 	import { settingsAsideList } from '$lib/stores/settingsAside.store';
 </script>
 
-<div class="flex h-full w-full space-x-4">
-	<div
-		class="h-full w-40 grow-0 rounded bg-pickled-bluewood-200 py-4 px-3 dark:bg-pickled-bluewood-800"
-	>
+<div class="flex w-full space-x-4">
+	<div class="w-40 grow-0 rounded bg-pickled-bluewood-200 py-4 px-3 dark:bg-pickled-bluewood-800">
 		<aside class="w-full" aria-label="Sidebar">
 			<ul class="space-y-2">
 				{#each $settingsAsideList as tag (tag.id)}
@@ -27,7 +25,7 @@
 			</ul>
 		</aside>
 	</div>
-	<div class="h-full grow overflow-hidden rounded bg-pickled-bluewood-200 p-5">
+	<div class="p-4 grow rounded bg-pickled-bluewood-200">
 		<slot />
 	</div>
 </div>

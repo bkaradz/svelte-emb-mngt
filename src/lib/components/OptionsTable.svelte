@@ -166,7 +166,7 @@
 </script>
 
 <!-- Table start -->
-<div class="relative w-full overflow-auto bg-white p-2 shadow-lg">
+<div class="bg-white p-2 shadow-lg">
 	<div>
 		{#if optionsList.length}
 			{#each [...groupList] as list, index (index)}
@@ -180,8 +180,8 @@
 			{/each}
 		{/if}
 	</div>
-	<div class="block overflow-y-auto">
-		<table class="relative w-full rounded-lg text-left text-sm overflow-y-auto">
+	<div class="">
+		<table class="w-full rounded-lg text-left text-sm">
 			<thead>
 				<tr
 					class="sticky border border-b-0 border-pickled-bluewood-700 bg-pickled-bluewood-700 text-white"
@@ -191,7 +191,7 @@
 					{/each}
 				</tr>
 			</thead>
-			<tbody class="overflow-y-auto">
+			<tbody class="vertical-scroll-wrapper">
 				{#if optionsList.length}
 					{#each optionsList as list (list._id)}
 						{#if selectedGroup === list.group || selectedGroup === 'all'}
@@ -282,5 +282,9 @@
 </div>
 
 <!-- Table End -->
-<style>
+<style lang="postcss">
+	.vertical-scroll-wrapper {
+		overflow-y: hidden !important;
+		overflow-x: auto !important;
+	}
 </style>

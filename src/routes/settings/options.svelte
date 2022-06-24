@@ -6,12 +6,12 @@
 	<title>Settings: Options</title>
 </svelte:head>
 
-<div>
+<div class="">
 	<div class="mb-2 bg-white p-4">
 		<h1>Options</h1>
 	</div>
 	<OptionsTable />
 </div>
 
-<style>
+<style lang="postcss">
 </style>
