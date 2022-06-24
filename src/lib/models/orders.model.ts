@@ -63,24 +63,24 @@ const productsSchema: Schema = new Schema<ProductDocument>(
     category: {
       type: String,
       required: true,
-      validate: (value: string) => {
-        return optionContainsName(optionsGroupsNames.PRODUCT_CATEGORIES, value)
-      },
+      // validate: (value: string) => {
+      //   return optionContainsName(optionsGroupsNames.PRODUCT_CATEGORIES, value)
+      // },
     },
     embroideryType: {
       type: String,
-      validate: (value: string) => {
-        return optionContainsName(optionsGroupsNames.EMBROIDERY_TYPES, value)
-      },
+      // validate: (value: string) => {
+      //   return optionContainsName(optionsGroupsNames.EMBROIDERY_TYPES, value)
+      // },
       required: function () {
         return this.category === optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORY
       },
     },
     garmentPositions: {
       type: String,
-      validate: (value: string) => {
-        return optionContainsName(optionsGroupsNames.GARMENT_POSITIONS, value)
-      },
+      // validate: (value: string) => {
+      //   return optionContainsName(optionsGroupsNames.GARMENT_POSITIONS, value)
+      // },
       required: function () {
         return this.category === optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORY
       },
@@ -93,9 +93,9 @@ const productsSchema: Schema = new Schema<ProductDocument>(
     },
     manufacturingStatus: {
       type: String,
-      validate: (value: string) => {
-        return optionContainsName(optionsGroupsNames.MANUFACTURING_STATUS, value)
-      },
+      // validate: (value: string) => {
+      //   return optionContainsName(optionsGroupsNames.MANUFACTURING_STATUS, value)
+      // },
     },
     createdAt: { type: Date },
     updatedAt: { type: Date },
@@ -209,13 +209,13 @@ const ordersSchema: Schema = new Schema<OrdersDocument>(
       required: true,
       default: false,
     },
-    orderLine: { type: [productsSchema], required: true },
+    orderLine: [productsSchema],
     accountsStatus: {
       type: String,
       required: true,
-      validate: (value: string) => {
-        return optionContainsName(optionsGroupsNames.ACCOUNTS_STATUS, value)
-      },
+      // validate: (value: string) => {
+      //   return optionContainsName(optionsGroupsNames.ACCOUNTS_STATUS, value)
+      // },
     },
   },
   { timestamps: true }
