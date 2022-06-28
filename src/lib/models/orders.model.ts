@@ -1,19 +1,13 @@
 import mongoose, { model, Schema, Document } from 'mongoose';
-import type { ProductsDocument } from './products.models';
 import logger from '$lib/utility/logger';
 import dayjs from 'dayjs';
-import { getMonetaryValue, setMonetaryValue } from '$lib/services/monetary';
-import {
-	optionContainsName,
-	optionsGroupsNames,
-	optionsGroupsValuesDefaults
-} from '$lib/models/options.models';
+import { optionsGroupsValuesDefaults } from '$lib/models/options.models';
 dayjs().format();
 
 const oneWeek = dayjs().add(7, 'day').toDate();
 const date = dayjs().toDate();
 
-export interface ProductDocument extends Document {
+export interface OrderLineDocument extends Document {
 	_id: mongoose.Schema.Types.ObjectId;
 	productID: string;
 	name: string;
@@ -29,7 +23,7 @@ export interface ProductDocument extends Document {
 	updatedAt: Date;
 }
 
-const productsSchema: Schema = new Schema<ProductDocument>(
+const orderLineSchema: Schema = new Schema<OrderLineDocument>(
 	{
 		_id: {
 			type: mongoose.Schema.Types.ObjectId,
@@ -52,24 +46,22 @@ const productsSchema: Schema = new Schema<ProductDocument>(
 		},
 		unitPrice: {
 			type: String,
-			required: true,
-			get: (v: string) => getMonetaryValue(v),
-			set: (v: number) => setMonetaryValue(v),
-			default: 0
+			required: true
+			// get: (v: string) => getMonetaryValue(v),
+			// set: (v: number) => setMonetaryValue(v)
 		},
 		total: {
 			type: String,
-			required: true,
-			get: (v: string) => getMonetaryValue(v),
-			set: (v: number) => setMonetaryValue(v),
-			default: 0
+			required: true
+			// get: (v: string) => getMonetaryValue(v),
+			// set: (v: number) => setMonetaryValue(v)
 		},
 		category: {
 			type: String,
 			required: true
 			// validate: (value: string) => {
-			//   return optionContainsName(optionsGroupsNames.PRODUCT_CATEGORIES, value)
-			// },
+			// 	return optionContainsName(optionsGroupsNames.PRODUCT_CATEGORIES, value);
+			// }
 		},
 		embroideryType: {
 			type: String,
@@ -117,14 +109,14 @@ export interface OrdersDocument extends Document {
 	orderDate?: Date;
 	quoteExpiryDate?: Date;
 	requiredDate?: Date;
-	subTotal: string | number;
-	tax?: string | number;
-	taxRate?: number;
-	discount?: string | number;
-	balance: string | number;
-	discountRate?: number;
+	subTotal: string;
+	tax?: string;
+	taxRate?: string;
+	discount?: string;
+	balance: string;
+	discountRate?: string;
 	isActive: boolean;
-	orderLine: Array<Partial<ProductsDocument>>;
+	orderLine: Array<Partial<OrderLineDocument>>;
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -174,46 +166,42 @@ const ordersSchema: Schema = new Schema<OrdersDocument>(
 		},
 		subTotal: {
 			type: String,
-			required: true,
-			get: (v: string) => getMonetaryValue(v),
-			set: (v: number) => setMonetaryValue(v),
-			default: 0
+			required: true
+			// get: (v: string) => getMonetaryValue(v),
+			// set: (v: number) => setMonetaryValue(v)
 		},
 		tax: {
 			type: String,
-			required: true,
-			get: (v: string) => getMonetaryValue(v),
-			set: (v: number) => setMonetaryValue(v),
-			default: 0
+			required: true
+			// get: (v: string) => getMonetaryValue(v),
+			// set: (v: number) => setMonetaryValue(v)
 		},
 		taxRate: {
-			type: Number,
+			type: String,
 			required: true
 		},
 		discount: {
 			type: String,
-			required: true,
-			get: (v: string) => getMonetaryValue(v),
-			set: (v: number) => setMonetaryValue(v),
-			default: 0
+			required: true
+			// get: (v: string) => getMonetaryValue(v),
+			// set: (v: number) => setMonetaryValue(v)
 		},
 		discountRate: {
-			type: Number,
+			type: String,
 			required: true
 		},
 		balance: {
 			type: String,
-			required: true,
-			get: (v: string) => getMonetaryValue(v),
-			set: (v: number) => setMonetaryValue(v),
-			default: 0
+			required: true
+			// get: (v: string) => getMonetaryValue(v),
+			// set: (v: number) => setMonetaryValue(v)
 		},
 		isActive: {
 			type: Boolean,
 			required: true,
 			default: false
 		},
-		orderLine: [productsSchema],
+		orderLine: [orderLineSchema],
 		accountsStatus: {
 			type: String,
 			required: true

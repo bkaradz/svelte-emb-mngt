@@ -20,21 +20,6 @@ export const get: RequestHandler = async ({ locals }) => {
 
 		const reqPricelists: Array<PricelistsDocument> = await PricelistsModel.find();
 
-		if (reqPricelists) {
-			reqPricelists.forEach((subPricelist: Partial<PricelistsDocument>) => {
-				const pricelists = subPricelist.pricelists.map(
-					(list: Partial<PricelistsSubDocument>): PricelistsSubDocument => {
-						return {
-							...list,
-							pricePerThousandStitches: getMonetaryValue(list.pricePerThousandStitches),
-							minimumPrice: getMonetaryValue(list.minimumPrice)
-						};
-					}
-				);
-				subPricelist.pricelists = pricelists;
-			});
-		}
-
 		return {
 			status: 200,
 			body: reqPricelists

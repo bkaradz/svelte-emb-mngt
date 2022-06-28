@@ -1,4 +1,3 @@
-import { defaultMonetaryValue, getMonetaryValue, setMonetaryValue } from '$lib/services/monetary';
 import mongoose, { model, Schema, Document } from 'mongoose';
 import logger from '$lib/utility/logger';
 
@@ -26,16 +25,10 @@ const pricelistsSubSchema: Schema = new Schema<PricelistsSubDocument>(
 		minimumPrice: {
 			type: String,
 			required: true
-			// get: (v: string) => getMonetaryValue(v),
-			// set: (v: number) => setMonetaryValue(v)
-			// default: defaultMonetaryValue()
 		},
 		pricePerThousandStitches: {
 			type: String,
 			required: true
-			// get: (v: string) => getMonetaryValue(v),
-			// set: (v: number) => setMonetaryValue(v)
-			// default: defaultMonetaryValue()
 		},
 		minimumQuantity: {
 			type: Number,
@@ -110,17 +103,18 @@ const PricelistsModel = model<PricelistsDocument>('Pricelists', pricelistsSchema
 
 export default PricelistsModel;
 
-export const getQuantityPricelist = async ({
-	id,
+export const getQuantityPricelist = ({
+	pricelist,
 	embroideryType,
 	quantity
 }: {
-	id: string;
+	pricelist: PricelistsDocument;
 	embroideryType: string;
 	quantity: number;
-}): Promise<PricelistsSubDocument> => {
+}) => {
+	console.time('Execution Time');
 	try {
-		const pricelist = await PricelistsModel.findById({ _id: id }).lean();
+		// const pricelist = await PricelistsModel.findById({ _id: id }).lean();
 		const pricelistsArray = pricelist.pricelists;
 
 		const minimumQuantityArray = pricelistsArray
@@ -128,6 +122,7 @@ export const getQuantityPricelist = async ({
 			.sort((a, b) => a.minimumQuantity - b.minimumQuantity)
 			.filter((list) => list.minimumQuantity <= quantity);
 
+		console.timeEnd('Execution Time');
 		return minimumQuantityArray.pop();
 	} catch (err) {
 		logger.error(`Error ${err.message}`);

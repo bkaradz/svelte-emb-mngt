@@ -1,202 +1,217 @@
-import logger from '$lib/utility/logger'
-import aggregateQuery from '$lib/services/aggregateQuery.services'
-import OrdersModel from '$lib/models/orders.model'
-import omit from 'lodash/omit'
-import ProductsModel from '$lib/models/products.models'
+import logger from '$lib/utility/logger';
+import aggregateQuery from '$lib/services/aggregateQuery.services';
+import OrdersModel from '$lib/models/orders.model';
+import omit from 'lodash/omit';
+import { calculateOrder } from '$lib/services/orders';
+import PricelistsModel from '$lib/models/pricelists.model';
+import ContactsModel from '$lib/models/contacts.model';
 
 export const get = async ({ url }) => {
-  try {
-    const queryParams = Object.fromEntries(url.searchParams)
+	try {
+		const queryParams = Object.fromEntries(url.searchParams);
 
-    let { limit = 15, page = 1 } = queryParams
+		let { limit = 15, page = 1 } = queryParams;
 
-    limit = parseInt(limit) < 1 ? 1 : parseInt(limit)
-    page = parseInt(page)
+		limit = parseInt(limit) < 1 ? 1 : parseInt(limit);
+		page = parseInt(page);
 
-    const startIndex = (page - 1) * limit
-    const endIndex = page * limit
+		const startIndex = (page - 1) * limit;
+		const endIndex = page * limit;
 
-    let previous = null
-    const next = null
-    const current = {
-      page: page,
-      limit,
-    }
+		let previous = null;
+		const next = null;
+		const current = {
+			page: page,
+			limit
+		};
 
-    if (startIndex > 0) {
-      previous = {
-        page: page - 1,
-        limit,
-      }
-    }
+		if (startIndex > 0) {
+			previous = {
+				page: page - 1,
+				limit
+			};
+		}
 
-    const endSearchParams = { limit, page, next, endIndex, current }
-    /**
-     * TODO: Make sort to be dynamic
-     */
+		const endSearchParams = { limit, page, next, endIndex, current };
+		/**
+		 * TODO: Make sort to be dynamic
+		 */
 
-    const finalQuery = omit(queryParams, ['page', 'limit', 'sort'])
+		const finalQuery = omit(queryParams, ['page', 'limit', 'sort']);
 
-    const objectKeys = Object.keys(finalQuery)
+		const objectKeys = Object.keys(finalQuery);
 
-    let newRegExQuery = {}
+		let newRegExQuery = {};
 
-    objectKeys.forEach((name) => {
-      if (name === 'isCorporate' || name === 'isUser' || name === 'isActive') {
-        finalQuery[name] = finalQuery[name] === 'true' ? true : false
-        newRegExQuery = { ...newRegExQuery, [name]: finalQuery[name] }
-      } else {
-        newRegExQuery = { ...newRegExQuery, [name]: { $regex: finalQuery[name], $options: 'ig' } }
-      }
-    })
+		objectKeys.forEach((name) => {
+			if (name === 'isCorporate' || name === 'isUser' || name === 'isActive') {
+				finalQuery[name] = finalQuery[name] === 'true' ? true : false;
+				newRegExQuery = { ...newRegExQuery, [name]: finalQuery[name] };
+			} else {
+				newRegExQuery = { ...newRegExQuery, [name]: { $regex: finalQuery[name], $options: 'ig' } };
+			}
+		});
 
-    const aggregateFilter = [
-      // {
-      // 	$lookup: {
-      // 		from: 'products',
-      // 		localField: 'organizationID',
-      // 		foreignField: '_id',
-      // 		as: 'organizationID'
-      // 	}
-      // },
-      {
-        $addFields: {
-          stitches: {
-            $toString: '$stitches',
-          },
-        },
-      },
-      {
-        $match: newRegExQuery,
-      },
-      {
-        $sort: {
-          name: 1,
-        },
-      },
+		const aggregateFilter = [
+			// {
+			// 	$lookup: {
+			// 		from: 'products',
+			// 		localField: 'organizationID',
+			// 		foreignField: '_id',
+			// 		as: 'organizationID'
+			// 	}
+			// },
+			// {
+			//   $addFields: {
+			//     stitches: {
+			//       $toString: '$stitches',
+			//     },
+			//   },
+			// },
+			{
+				$match: newRegExQuery
+			},
+			{
+				$sort: {
+					name: 1
+				}
+			},
 
-      {
-        $facet: {
-          metaData: [
-            {
-              $count: 'totalRecords',
-            },
-            {
-              $addFields: {
-                previous,
-                current,
-                limit,
-              },
-            },
-          ],
-          results: [
-            {
-              $skip: startIndex,
-            },
-            {
-              $limit: limit,
-            },
-          ],
-        },
-      },
-      {
-        $project: {
-          results: {
-            createdAt: 0,
-            updatedAt: 0,
-            __v: 0,
-          },
-        },
-      },
-    ]
+			{
+				$facet: {
+					metaData: [
+						{
+							$count: 'totalRecords'
+						},
+						{
+							$addFields: {
+								previous,
+								current,
+								limit
+							}
+						}
+					],
+					results: [
+						{
+							$skip: startIndex
+						},
+						{
+							$limit: limit
+						}
+					]
+				}
+			},
+			{
+				$project: {
+					results: {
+						createdAt: 0,
+						updatedAt: 0,
+						__v: 0
+					}
+				}
+			}
+		];
 
-    let products = await aggregateQuery(queryParams, ProductsModel, aggregateFilter, endSearchParams)
+		let orders = await aggregateQuery(queryParams, OrdersModel, aggregateFilter, endSearchParams);
 
-    products = { ...products, ...products.metaData[0] }
-    delete products.metaData
+		orders = { ...orders, ...orders.metaData[0] };
+		delete orders.metaData;
 
-    return {
-      status: 200,
-      body: { ...products },
-    }
-  } catch (err) {
-    logger.error(`Error: ${err.message}`)
-    return {
-      status: 500,
-      body: {
-        error: `A server error occurred ${err}`,
-      },
-    }
-  }
-}
+		return {
+			status: 200,
+			body: { ...orders }
+		};
+	} catch (err) {
+		logger.error(`Error: ${err.message}`);
+		return {
+			status: 500,
+			body: {
+				error: `A server error occurred ${err}`
+			}
+		};
+	}
+};
 
 export const post = async ({ request, locals }) => {
-  try {
-    if (!locals?.user?._id) {
-      return {
-        status: 401,
-        body: {
-          message: 'Unauthorized',
-        },
-      }
-    }
+	try {
+		if (!locals?.user?._id) {
+			return {
+				status: 401,
+				body: {
+					message: 'Unauthorized'
+				}
+			};
+		}
 
-    const userId = locals.user._id
+		const userId = locals.user._id;
 
-    const reqOrder = await request.json()
+		const reqOrder = await request.json();
 
-    // const result = postSuite(reqOrder);
+		// check that the pricelist exist
+		const pricelist = await PricelistsModel.findById({ _id: reqOrder.pricelistID }).lean();
 
-    // if (result.hasErrors()) {
-    // 	logger.error(result.getErrors());
-    // 	return {
-    // 		status: 400,
-    // 		body: {
-    // 			message: result.getErrors()
-    // 		}
-    // 	};
-    // }
+		if (!pricelist) {
+			return {
+				status: 401,
+				body: {
+					message: 'Pricelist does not exist'
+				}
+			};
+		}
+		// check that the customer exist
+		const customerExist = await ContactsModel.exists({ _id: reqOrder.customerID });
 
-    const newOrder = new OrdersModel(reqOrder)
+		if (!customerExist) {
+			return {
+				status: 401,
+				body: {
+					message: 'Customer does not exist'
+				}
+			};
+		}
 
-    newOrder.userID = userId
+		const calcOrder = await calculateOrder(reqOrder, pricelist);
 
-    await newOrder.save()
+		const newOrder = new OrdersModel(calcOrder);
 
-    return {
-      status: 200,
-      body: newOrder,
-    }
-  } catch (err) {
-    logger.error(`Error: ${err.message}`)
-    return {
-      status: 500,
-      body: {
-        error: `A server error occurred ${err}`,
-      },
-    }
-  }
-}
+		newOrder.userID = userId;
+
+		await newOrder.save();
+
+		return {
+			status: 200,
+			body: newOrder
+		};
+	} catch (err) {
+		logger.error(`Error: ${err.message}`);
+		return {
+			status: 500,
+			body: {
+				error: `A server error occurred ${err}`
+			}
+		};
+	}
+};
 
 export const put = async () => {
-  try {
-    return {
-      status: 200,
-      body: {
-        message: 'Success',
-      },
-    }
-  } catch (err) {
-    logger.error(`Error: ${err.message}`)
-    return {
-      status: 500,
-      body: {
-        error: `A server error occurred ${err}`,
-      },
-    }
-  }
-}
+	try {
+		return {
+			status: 200,
+			body: {
+				message: 'Success'
+			}
+		};
+	} catch (err) {
+		logger.error(`Error: ${err.message}`);
+		return {
+			status: 500,
+			body: {
+				error: `A server error occurred ${err}`
+			}
+		};
+	}
+};
 
 export async function del() {
-  return
+	return;
 }
