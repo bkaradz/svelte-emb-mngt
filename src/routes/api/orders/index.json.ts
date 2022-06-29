@@ -53,14 +53,22 @@ export const get = async ({ url }) => {
 		});
 
 		const aggregateFilter = [
-			// {
-			// 	$lookup: {
-			// 		from: 'products',
-			// 		localField: 'organizationID',
-			// 		foreignField: '_id',
-			// 		as: 'organizationID'
-			// 	}
-			// },
+			{
+				$lookup: {
+					from: 'contacts',
+					localField: 'customerID',
+					foreignField: '_id',
+					as: 'customerID'
+				}
+			},
+			{
+				$lookup: {
+					from: 'pricelists',
+					localField: 'pricelistID',
+					foreignField: '_id',
+					as: 'pricelistID'
+				}
+			},
 			// {
 			//   $addFields: {
 			//     stitches: {
