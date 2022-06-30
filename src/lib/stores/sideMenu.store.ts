@@ -35,7 +35,7 @@ const anchorTags = [
 	},
 	{
 		id: uuidv4(),
-		url: '/sales',
+		url: '/orders',
 		name: 'Sales',
 		icon: svgDollar
 	},

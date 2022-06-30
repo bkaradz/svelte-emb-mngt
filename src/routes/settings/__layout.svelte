@@ -4,7 +4,7 @@
 </script>
 
 <div class="flex w-full space-x-4">
-	<div class="w-40 grow-0 rounded bg-pickled-bluewood-200 py-4 px-3 dark:bg-pickled-bluewood-800">
+	<div class="w-40 grow-0 rounded bg-pickled-bluewood-200 py-4 px-3 ">
 		<aside class="w-full" aria-label="Sidebar">
 			<ul class="space-y-2">
 				{#each $settingsAsideList as tag (tag.id)}
