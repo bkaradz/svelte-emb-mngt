@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import Combobox from '$lib/components/Combobox.svelte';
+	import Input from '$lib/components/Input.svelte';
 	import AddOrder from '$lib/components/orders/addOrder.svelte';
 	import { svgArrow } from '$lib/utility/svgLogos';
 
@@ -10,8 +12,8 @@
 
 <AddOrder>
 	<div slot="header">
-		<div class="flex justify-between">
-			<div class="flex">
+		<div class="flex justify-between items-center">
+			<div class="flex items-center">
 				<button class="mr-3" on:click={gotoOrders}>
 					{@html svgArrow}
 				</button>
@@ -23,10 +25,45 @@
 			</div>
 		</div>
 	</div>
-	<div slot="page">
-		<h1>Page</h1>
+	<div class="flex flex-col m-4 bg-white" slot="page">
+		<div class="grow-0 m-4">
+			<div class="flex flex-row">
+				<div class="grow">
+					<Combobox label="Customer" />
+					<div class="flex p-4">
+						<article class=" mr-24">
+							<h4>Customer Details</h4>
+							<p>
+								Ap #121-8985 Phasellus Av. <br />
+								P.O. Box 856, 6546 Eu Avenue <br />
+								Ap #901-9426 At, St. <br />
+								706-5115 Ultricies Street <br />
+								P.O. Box 411, 2950 Nisi. Av.
+							</p>
+						</article>
+						<article>
+							<h4>Customer Address</h4>
+							<p>
+								Ap #121-8985 Phasellus Av. <br />
+								P.O. Box 856, 6546 Eu Avenue <br />
+								Ap #901-9426 At, St. <br />
+								706-5115 Ultricies Street <br />
+								P.O. Box 411, 2950 Nisi. Av.
+							</p>
+						</article>
+					</div>
+				</div>
+				<div class="grow-0">
+					<Combobox label="Quotation #" />
+					<Input label="Date" />
+					<Input label="Due Date" />
+					<Combobox label="PriceList" />
+				</div>
+			</div>
+		</div>
+		<div class=" bg-active grow m-4">table</div>
 	</div>
 </AddOrder>
 
-<style>
+<style lang="postcss">
 </style>
