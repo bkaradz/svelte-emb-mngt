@@ -191,7 +191,7 @@
 					{/each}
 				</tr>
 			</thead>
-			<tbody class="vertical-scroll-wrapper">
+			<tbody class="">
 				{#if optionsList.length}
 					{#each optionsList as list (list._id)}
 						{#if selectedGroup === list.group || selectedGroup === 'all'}
@@ -283,8 +283,4 @@
 
 <!-- Table End -->
 <style lang="postcss">
-	.vertical-scroll-wrapper {
-		overflow-y: hidden !important;
-		overflow-x: auto !important;
-	}
 </style>

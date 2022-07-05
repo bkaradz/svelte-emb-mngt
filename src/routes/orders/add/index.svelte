@@ -4,22 +4,73 @@
 	import Input from '$lib/components/Input.svelte';
 	import AddOrder from '$lib/components/orders/addOrder.svelte';
 	import { svgArrow, svgDocumentAdd, svgPencil, svgPlus, svgXSmall } from '$lib/utility/svgLogos';
+	import logger from '$lib/utility/logger';
+	import { onMount } from 'svelte';
+
+	import {
+		Dialog,
+		DialogOverlay,
+		DialogTitle,
+		Transition,
+		TransitionChild
+	} from '@rgossiaux/svelte-headlessui';
+	let isOpen = false;
+	$: console.log('🚀 ~ file: index.svelte ~ line 18 ~ isOpen', isOpen);
 
 	let isEditableID;
 
 	export let tableHeadings = [
 		'Name',
 		'ProductID',
-		'Stitches',
-		'Quantity',
 		'Category',
 		'Emb Type',
 		'Emb Position',
-		'Edit/Save',
-		'Delete & Add Row'
+		'Stitches',
+		'Unit Price',
+		'Quantity',
+		'Total'
 	];
 
 	let itemList = [];
+	let contacts;
+	$: console.log('🚀 ~ file: index.svelte ~ line 26 ~ contacts', contacts);
+	let products;
+	let pricelists;
+
+	const getPricelists = async () => {
+		try {
+			const res = await fetch('/api/pricelists.json?');
+			pricelists = await res.json();
+		} catch (err) {
+			logger.error(err.message);
+		}
+	};
+
+	const getProducts = async (paramsObj: any) => {
+		try {
+			let searchParams = new URLSearchParams(paramsObj);
+			const res = await fetch('/api/products.json?' + searchParams.toString());
+			products = await res.json();
+		} catch (err) {
+			logger.error(err.message);
+		}
+	};
+
+	const getContacts = async (paramsObj: any) => {
+		try {
+			let searchParams = new URLSearchParams(paramsObj);
+			const res = await fetch('/api/contacts.json?' + searchParams.toString());
+			contacts = await res.json();
+		} catch (err) {
+			logger.error(err.message);
+		}
+	};
+
+	onMount(() => {
+		getContacts({});
+		getProducts({});
+		getPricelists();
+	});
 
 	const gotoOrders = async () => {
 		await goto(`/orders`);
@@ -45,7 +96,9 @@
 		<div class="grow-0 m-4">
 			<div class="flex flex-row space-x-10">
 				<div class="grow">
-					<Combobox label="Customer" />
+					{#if contacts}
+						<Combobox label="Customer" list={contacts.results} />
+					{/if}
 					<div class="flex p-4">
 						<article class=" mr-24">
 							<h4>Customer Details</h4>
@@ -73,11 +126,13 @@
 					<Combobox label="Quotation #" />
 					<Input label="Date" />
 					<Input label="Due Date" />
-					<Combobox label="PriceList" />
+					{#if pricelists}
+						<Combobox label="PriceList" list={pricelists} />
+					{/if}
 				</div>
 			</div>
 		</div>
-		<div class=" bg-active grow m-4">
+		<div class=" grow m-4">
 			<table class="w-full rounded-lg text-left text-sm">
 				<thead>
 					<tr
@@ -152,30 +207,101 @@
 							</tr>
 						{/each}
 					{/if}
+					{#if products}
+						<tr
+							class="whitespace-no-wrap w-full border border-t-0 border-transparent font-normal bg-white text-white"
+						>
+							<td class="p-1 pb-0 border-pickled-bluewood-300 bg-royal-blue-300">
+								<button class=" m-0 p-0" on:click|preventDefault={() => (isOpen = !isOpen)}
+									><span class="flex fill-current text-white"
+										>{@html svgPlus} Add Product/Service</span
+									></button
+								>
+							</td>
+							<td class="px-2 py-1" />
+							<td class="px-2 py-1" />
+							<td class="px-2 py-1" />
+							<td class="px-2 py-1" />
+							<td class="px-2 py-1" />
+							<td class="px-2 py-1" />
+							<td class="px-2 py-1" />
+							<td class="px-2 py-1" />
+						</tr>
+					{/if}
 					<tr
-						class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 bg-royal-blue-300 font-normal text-white"
+						class="whitespace-no-wrap w-full border border-t-0 border-transparent font-normal text-pickled-bluewood-800"
 					>
-						<td class="px-2 py-1">Group</td>
-						<td class="px-2 py-1">Name</td>
-						<td class="px-2 py-1">value</td>
-						<td class="px-2 py-1">
-							<input disabled type="checkbox" name="isActive" checked={false} />
-						</td>
-						<td class="px-2 py-1">
-							<input disabled type="checkbox" name="isActive" checked={true} />
-						</td>
 						<td class="px-2 py-1" />
-						<td class="p-1 text-center">
-							<button class=" m-0 p-0" on:click|preventDefault={() => console.log('hi')}
-								><span class="flex fill-current text-white">{@html svgPlus} Add Row</span></button
-							>
-						</td>
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1 text-right">Sub Total</td>
+						<td class="px-2 py-1">$12.30</td>
+					</tr>
+					<tr
+						class="whitespace-no-wrap w-full border border-t-0 border-transparent font-normal text-pickled-bluewood-800"
+					>
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1 text-right">VAT</td>
+						<td class="px-2 py-1">$12.30</td>
+					</tr>
+					<tr
+						class="whitespace-no-wrap w-full border border-t-0 border-transparent font-normal text-pickled-bluewood-800"
+					>
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1" />
+						<td class="px-2 py-1 text-right">Total</td>
+						<td class="px-2 py-1">$12.30</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
 </AddOrder>
+
+<Transition show={isOpen}>
+	<Dialog on:close={() => (isOpen = false)}>
+		<!-- Use one `TransitionChild` to apply one transition to the overlay... -->
+		<TransitionChild
+			enter="ease-out duration-300"
+			enterFrom="opacity-0"
+			enterTo="opacity-100"
+			leave="ease-in duration-200"
+			leaveFrom="opacity-100"
+			leaveTo="opacity-0"
+		>
+			<DialogOverlay />
+		</TransitionChild>
+
+		<!-- ...and another `TransitionChild` to apply a separate transition to the contents -->
+		<TransitionChild
+			enter="ease-out duration-300"
+			enterFrom="opacity-0 scale-95"
+			enterTo="opacity-100 scale-100"
+			leave="ease-in duration-200"
+			leaveFrom="opacity-100 scale-100"
+			leaveTo="opacity-0 scale-95"
+		>
+			<DialogTitle>Deactivate account</DialogTitle>
+
+			<!-- ... -->
+		</TransitionChild>
+	</Dialog>
+</Transition>
 
 <style lang="postcss">
 </style>
