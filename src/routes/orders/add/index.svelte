@@ -75,6 +75,10 @@
 	const gotoOrders = async () => {
 		await goto(`/orders`);
 	};
+
+	const gotoAddProduct = async () => {
+		await goto(`/orders/add/order-items`);
+	}
 </script>
 
 <AddOrder>
@@ -212,7 +216,7 @@
 							class="whitespace-no-wrap w-full border border-t-0 border-transparent font-normal bg-white text-white"
 						>
 							<td class="p-1 pb-0 border-pickled-bluewood-300 bg-royal-blue-300">
-								<button class=" m-0 p-0" on:click|preventDefault={() => (isOpen = !isOpen)}
+								<button class=" m-0 p-0" on:click|preventDefault={gotoAddProduct}
 									><span class="flex fill-current text-white"
 										>{@html svgPlus} Add Product/Service</span
 									></button
