@@ -7,19 +7,9 @@
 	import logger from '$lib/utility/logger';
 	import { onMount } from 'svelte';
 
-	import {
-		Dialog,
-		DialogOverlay,
-		DialogTitle,
-		Transition,
-		TransitionChild
-	} from '@rgossiaux/svelte-headlessui';
-	let isOpen = false;
-	$: console.log('🚀 ~ file: index.svelte ~ line 18 ~ isOpen', isOpen);
+	let isEditableID: any;
 
-	let isEditableID;
-
-	export let tableHeadings = [
+	const tableHeadings = [
 		'Name',
 		'ProductID',
 		'Category',
@@ -78,7 +68,7 @@
 
 	const gotoAddProduct = async () => {
 		await goto(`/orders/add/order-items`);
-	}
+	};
 </script>
 
 <AddOrder>
@@ -91,8 +81,8 @@
 				<h1 class="text-slate-700 text-2xl font-medium">New Quotation</h1>
 			</div>
 			<div>
-				<button class="bg-royal-blue-500  px-5 py-2 rounded text-white mr-4">Cancel</button>
-				<button class="bg-royal-blue-500  px-5 py-2 rounded text-white" type="submit">Done</button>
+				<button class="btn btn-primary">Cancel</button>
+				<button class="btn btn-success" type="submit">Done</button>
 			</div>
 		</div>
 	</div>

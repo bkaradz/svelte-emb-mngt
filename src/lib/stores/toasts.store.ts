@@ -1,8 +1,6 @@
 import { writable } from 'svelte/store';
 import { v4 as uuidv4 } from 'uuid';
 
-// export const toasts = writable([]);
-
 export interface toastInterface {
 	message: string;
 	type: 'success' | 'info' | 'warning' | 'error';
