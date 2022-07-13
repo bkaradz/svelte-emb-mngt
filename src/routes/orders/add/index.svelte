@@ -6,6 +6,7 @@
 	import { svgArrow, svgDocumentAdd, svgPencil, svgPlus, svgXSmall } from '$lib/utility/svgLogos';
 	import logger from '$lib/utility/logger';
 	import { onMount } from 'svelte';
+	import { orderItems } from '$lib/stores/order.items.store';
 
 	let isEditableID: any;
 
@@ -21,15 +22,20 @@
 		'Total'
 	];
 
-	let itemList = [];
+	let itemList = $orderItems;
 	let contacts;
 	$: console.log('🚀 ~ file: index.svelte ~ line 26 ~ contacts', contacts);
 	let products;
 	let pricelists;
+	let options;
+
+	const filterOptionsGroup = (group: string) => {
+		return options.filter((option: { group: string; }) => option.group === group);
+	};
 
 	const getPricelists = async () => {
 		try {
-			const res = await fetch('/api/pricelists.json?');
+			const res = await fetch('/api/pricelists.json');
 			pricelists = await res.json();
 		} catch (err) {
 			logger.error(err.message);
@@ -56,10 +62,20 @@
 		}
 	};
 
+	const getOptions = async () => {
+		try {
+			const res = await fetch('/api/options.json');
+			options = await res.json();
+		} catch (err) {
+			logger.error(err.message);
+		}
+	};
+
 	onMount(() => {
 		getContacts({});
 		getProducts({});
 		getPricelists();
+		getOptions();
 	});
 
 	const gotoOrders = async () => {
@@ -144,59 +160,37 @@
 								class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
 							>
 								<td class="px-2 py-1">
-									<input
-										class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
-										type="text"
-										name="group"
-										disabled={true}
-										bind:value={list.group}
-									/>
+									{list.name}
 								</td>
 								<td class="px-2 py-1">
-									<input
-										class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
-										type="text"
-										name="name"
-										disabled={true}
-										bind:value={list.name}
-									/>
+									{list.productID}
 								</td>
 								<td class="px-2 py-1">
 									<input
 										class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
 										type="text"
 										name="value"
-										disabled={true}
-										bind:value={list.value}
+										disabled={false}
+										bind:value={list.category}
 									/>
 								</td>
 								<td class="px-2 py-1">
-									<input
-										bind:checked={list.isActive}
-										disabled={true}
-										type="checkbox"
-										name="isActive"
-									/>
+									{list.embroideryType}
 								</td>
 								<td class="px-2 py-1">
-									<input
-										bind:checked={list.isDefault}
-										disabled={true}
-										type="checkbox"
-										name="isDefault"
-									/>
+									{list.garmentPositions}
 								</td>
-								<td class="p-1 text-center ">
-									<button class=" m-0 p-0" on:click|preventDefault={() => console.log('hi')}>
-										<span class="fill-current text-pickled-bluewood-500">
-											{@html isEditableID === list._id ? svgDocumentAdd : svgPencil}
-										</span>
-									</button>
+								<td class="px-2 py-1">
+									{list.stitches}
 								</td>
-								<td class="p-1 text-center ">
-									<button class=" m-0 p-0" on:click|preventDefault={() => console.log('hi')}>
-										<span class="fill-current text-pickled-bluewood-500">{@html svgXSmall}</span>
-									</button>
+								<td class="px-2 py-1">
+									{list.quantity}
+								</td>
+								<td class="px-2 py-1">
+									{list.unitPrice}
+								</td>
+								<td class="px-2 py-1">
+									{list.total}
 								</td>
 							</tr>
 						{/each}

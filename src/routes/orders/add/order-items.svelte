@@ -49,7 +49,7 @@
 	};
 
 	const gotoAddProducts = async () => {
-		await goto(`/products/add`);
+		await goto(`/orders/add`);
 	};
 
 	let searchInputValue = '';
@@ -134,7 +134,7 @@
 					on:click={gotoAddProducts}
 					class="btn btn-primary inline-flex items-center justify-center px-3"
 				>
-					<span>Done</span>
+					Done
 				</button>
 			</div>
 		</div>
