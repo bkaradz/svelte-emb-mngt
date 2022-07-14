@@ -15,21 +15,29 @@
 <script lang="ts">
 	import Loading from '$lib/components/Loading.svelte';
 	import { onMount } from 'svelte';
-
 	import { page } from '$app/stores';
 	import Toasts from '$lib/components/Toasts.svelte';
 	import { svgSignIn, svgSignUp } from '$lib/utility/svgLogos';
 	import logo from '$lib/assets/logo.ico';
+	import logger from '$lib/utility/logger';
 
+	let isPageLoading = false;
 
-	let isPageLoading = true;
+	// Ping to connect to database
+	const pingHealthCheck = async () => {
+		try {
+			const res = await fetch('/api/healthcheck.json');
+		} catch (err) {
+			logger.error(err.message);
+		}
+	};
 
 	onMount(() => {
-		// isPageLoading = false;
+		pingHealthCheck();
 
-		setTimeout(function () {
-			isPageLoading = false;
-		}, 450);
+		// setTimeout(function () {
+		// 	isPageLoading = false;
+		// }, 450);
 	});
 
 	const navList = [
@@ -51,8 +59,8 @@
 	<link rel="icon" href={logo} />
 </svelte:head>
 
-{#if !isPageLoading} 
-<div class="height_max flex flex-col items-center bg-pickled-bluewood-50">
+{#if !isPageLoading}
+	<div class="height_max flex flex-col items-center bg-pickled-bluewood-50">
 		<div
 			class="mb-16 flex h-[70px] w-screen flex-row items-center justify-center bg-pickled-bluewood-100 drop-shadow-md"
 		>

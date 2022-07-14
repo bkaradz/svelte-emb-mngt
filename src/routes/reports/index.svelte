@@ -1,35 +1,43 @@
-<script lang="ts">
-	import Select from '$lib/components/Select.svelte';
-	import { onMount } from 'svelte';
-	import logger from '$lib/utility/logger';
+<script>
+	let questions = [
+		{ id: 1, text: `Where did you go to school?` },
+		{ id: 2, text: `What is your mother's name?` },
+		{ id: 3, text: `What is another personal fact that an attacker could easily find with Google?` }
+	];
 
-	let options;
 	let selected;
-	$: console.log('🚀 ~ file: index.svelte ~ line 8 ~ selected', selected);
 
-	onMount(() => {
-		getOptions();
-	});
+	let answer = '';
 
-	const filterOptionsGroup = (group: string) => {
-		return options.filter((option: { group: string }) => option.group === group);
-	};
-
-	const getOptions = async () => {
-		try {
-			const res = await fetch('/api/options.json');
-			options = await res.json();
-		} catch (err) {
-			logger.error(err.message);
-		}
-	};
+	function handleSubmit() {
+		alert(`answered question ${selected.id} (${selected.text}) with "${answer}"`);
+	}
 </script>
 
-{#if options?.length}
-	<div>
-		<Select {selected} list={filterOptionsGroup('productCategories')} />
-	</div>
-{/if}
+<h2>Insecurity questions</h2>
+
+<form on:submit|preventDefault={handleSubmit}>
+	<select bind:value={selected} on:change="{() => answer = ''}">
+		{#each questions as question}
+			<option value={question}>
+				{question.text}
+			</option>
+		{/each}
+	</select>
+
+	<input bind:value={answer}>
+
+	<button disabled={!answer} type=submit>
+		Submit
+	</button>
+</form>
+
+<p>selected question {selected ? selected.id : '[waiting...]'}</p>
 
 <style>
+	input {
+		display: block;
+		width: 500px;
+		max-width: 100%;
+	}
 </style>

@@ -2,11 +2,11 @@
 	type $$Props = Partial<HTMLSelectElement> & {
 		selected: string;
 		list: Array<any>;
-		selectChange: () => {};
+		selectChange: Function;
 	};
 	export let selected = '';
 	export let list = [];
-	export let selectChange = () => {};
+	export let selectChange;
 </script>
 
 <select

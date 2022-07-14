@@ -19,6 +19,21 @@
 	import '../styles/app.css';
 	// import { goto } from '$app/navigation';
 	import Toasts from '$lib/components/Toasts.svelte';
+	import logger from '$lib/utility/logger';
+	import { onMount } from 'svelte';
+
+	// Ping to connect to database
+	const pingHealthCheck = async () => {
+		try {
+			const res = await fetch('/api/healthcheck.json');
+		} catch (err) {
+			logger.error(err.message);
+		}
+	};
+
+	onMount(() => {
+		pingHealthCheck();
+	});
 
 	// async function redirectToLogin() {
 	// 	if (typeof window !== 'undefined') {
