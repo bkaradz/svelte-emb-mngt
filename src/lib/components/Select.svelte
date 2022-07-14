@@ -1,19 +1,26 @@
-<script lang='ts'>
-
-  export let selected = ''
-  export let items = []
-  export let selectChange = () => {}
-   
+<script lang="ts">
+	type $$Props = Partial<HTMLSelectElement> & {
+		selected: string;
+		list: Array<any>;
+		selectChange: () => {};
+	};
+	export let selected = '';
+	export let list = [];
+	export let selectChange = () => {};
 </script>
 
-<select bind:value={selected} on:change|preventDefault={selectChange}>
-  {#each items as item}
-    <option value={item}>
-      {item.name}
-    </option>
-  {/each}
+<select
+	class="input"
+	bind:value={selected}
+	on:change|preventDefault={selectChange}
+	{...$$restProps}
+>
+	{#each list as item}
+		<option value={item}>
+			{item.name}
+		</option>
+	{/each}
 </select>
 
 <style>
-
 </style>
