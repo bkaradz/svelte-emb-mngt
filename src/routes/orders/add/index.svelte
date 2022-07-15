@@ -28,9 +28,10 @@
 	let products;
 	let pricelists;
 	let options;
+	let selected;
 
 	const filterOptionsGroup = (group: string) => {
-		return options.filter((option: { group: string; }) => option.group === group);
+		return options.filter((option: { group: string }) => option.group === group);
 	};
 
 	const getPricelists = async () => {
@@ -166,19 +167,37 @@
 									{list.productID}
 								</td>
 								<td class="px-2 py-1">
-									<input
-										class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
-										type="text"
-										name="value"
-										disabled={false}
-										bind:value={list.category}
-									/>
+									{#if options?.length}
+										<select bind:value={selected}>
+											{#each filterOptionsGroup('productCategories') as item}
+												<option value={item}>
+													{item.name}
+												</option>
+											{/each}
+										</select>
+									{/if}
 								</td>
 								<td class="px-2 py-1">
-									{list.embroideryType}
+									{#if options?.length}
+										<select bind:value={selected}>
+											{#each filterOptionsGroup('embroideryTypes') as item}
+												<option value={item}>
+													{item.name}
+												</option>
+											{/each}
+										</select>
+									{/if}
 								</td>
 								<td class="px-2 py-1">
-									{list.garmentPositions}
+									{#if options?.length}
+										<select bind:value={selected}>
+											{#each filterOptionsGroup('garmentPositions') as item}
+												<option value={item}>
+													{item.name}
+												</option>
+											{/each}
+										</select>
+									{/if}
 								</td>
 								<td class="px-2 py-1">
 									{list.stitches}
