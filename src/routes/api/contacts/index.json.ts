@@ -9,6 +9,39 @@ import type { RequestHandler } from '@sveltejs/kit';
 // import { toDineroObject } from '$lib/services/monetary';
 // import { dinero } from 'dinero.js';
 
+export interface contactsTest {
+	_id: string;
+	userID: string;
+	name: string;
+	isCorporate: boolean;
+	phone: string;
+	balanceDue: number;
+	totalReceipts: number;
+	isActive: boolean;
+	isUser: boolean;
+	organizationID: {
+		name: string;
+	};
+	vatOrBpNo?: string;
+	email?: string;
+	address?: string;
+}
+
+export interface Pagination {
+	totalRecords: number;
+	totalPages: number;
+	limit: number;
+	error: boolean;
+	previous?: { page: number; limit: number };
+	current: { page: number; limit: number };
+	next?: { page: number; limit: number };
+}
+
+export interface ContentsPaginationIterface extends Pagination {
+	results: ContactsDocument[];
+	
+}
+
 export const get: RequestHandler = async ({
 	url,
 	locals

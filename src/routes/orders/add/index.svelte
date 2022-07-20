@@ -7,6 +7,8 @@
 	import logger from '$lib/utility/logger';
 	import { onMount } from 'svelte';
 	import { orderItems } from '$lib/stores/order.items.store';
+	import type { OptionsDocument } from '$lib/models/options.models';
+import type { PricelistsDocument } from '$lib/models/pricelists.model';
 
 	let isEditableID: any;
 
@@ -26,12 +28,21 @@
 	let contacts;
 	$: console.log('🚀 ~ file: index.svelte ~ line 26 ~ contacts', contacts);
 	let products;
-	let pricelists;
-	let options;
-	let selected;
+	let pricelists: PricelistsDocument[];
+	let options: OptionsDocument[];
 
 	const filterOptionsGroup = (group: string) => {
-		return options.filter((option: { group: string }) => option.group === group);
+		return options.filter((option) => option.group === group);
+	};
+
+	const optionsToList = (optionsObj: OptionsDocument[]) => {
+		return optionsObj.map((option) => option.name);
+	};
+
+	const optionsListMapObj = (optionsObj: OptionsDocument[]) => {
+		return optionsObj.reduce((accumulator, option) => {
+			return { ...accumulator, [option.name]: option.value };
+		}, {});
 	};
 
 	const getPricelists = async () => {
@@ -168,10 +179,10 @@
 								</td>
 								<td class="px-2 py-1">
 									{#if options?.length}
-										<select bind:value={selected}>
-											{#each filterOptionsGroup('productCategories') as item}
-												<option value={item}>
-													{item.name}
+										<select bind:value={list.category}>
+											{#each optionsToList(filterOptionsGroup('productCategories')) as name}
+												<option value={name}>
+													{name}
 												</option>
 											{/each}
 										</select>
@@ -179,10 +190,10 @@
 								</td>
 								<td class="px-2 py-1">
 									{#if options?.length}
-										<select bind:value={selected}>
-											{#each filterOptionsGroup('embroideryTypes') as item}
-												<option value={item}>
-													{item.name}
+										<select bind:value={list.embroideryType}>
+											{#each optionsToList(filterOptionsGroup('embroideryTypes')) as name}
+												<option value={name}>
+													{name}
 												</option>
 											{/each}
 										</select>
@@ -190,10 +201,10 @@
 								</td>
 								<td class="px-2 py-1">
 									{#if options?.length}
-										<select bind:value={selected}>
-											{#each filterOptionsGroup('garmentPositions') as item}
-												<option value={item}>
-													{item.name}
+										<select bind:value={list.garmentPositions}>
+											{#each optionsToList(filterOptionsGroup('garmentPositions')) as name}
+												<option value={name}>
+													{name}
 												</option>
 											{/each}
 										</select>
