@@ -162,7 +162,7 @@
 								<td class="px-2 py-1">{product.productID}</td>
 								<td class="px-2 py-1">{product.category}</td>
 								<td class="px-2 py-1">{product.embroideryType}</td>
-								<td class="px-2 py-1">{product.garmentPositions}</td>
+								<td class="px-2 py-1">{product.embroideryPosition}</td>
 								<td class="px-2 py-1">{product.stitches}</td>
 								<td class="px-2 py-1">
 									{!product.quantity ? '...' : product.quantity}

@@ -166,7 +166,7 @@ import type { PricelistsDocument } from '$lib/models/pricelists.model';
 					</tr>
 				</thead>
 				<tbody class="vertical-scroll-wrapper">
-					{#if itemList.length}
+					{#if itemList.length && options?.length}
 						{#each itemList as list (list._id)}
 							<tr
 								class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
@@ -178,7 +178,7 @@ import type { PricelistsDocument } from '$lib/models/pricelists.model';
 									{list.productID}
 								</td>
 								<td class="px-2 py-1">
-									{#if options?.length}
+									
 										<select bind:value={list.category}>
 											{#each optionsToList(filterOptionsGroup('productCategories')) as name}
 												<option value={name}>
@@ -186,10 +186,10 @@ import type { PricelistsDocument } from '$lib/models/pricelists.model';
 												</option>
 											{/each}
 										</select>
-									{/if}
+									
 								</td>
 								<td class="px-2 py-1">
-									{#if options?.length}
+									
 										<select bind:value={list.embroideryType}>
 											{#each optionsToList(filterOptionsGroup('embroideryTypes')) as name}
 												<option value={name}>
@@ -197,18 +197,18 @@ import type { PricelistsDocument } from '$lib/models/pricelists.model';
 												</option>
 											{/each}
 										</select>
-									{/if}
+									
 								</td>
 								<td class="px-2 py-1">
-									{#if options?.length}
-										<select bind:value={list.garmentPositions}>
-											{#each optionsToList(filterOptionsGroup('garmentPositions')) as name}
+									
+										<select bind:value={list.embroideryPosition}>
+											{#each optionsToList(filterOptionsGroup('embroideryPosition')) as name}
 												<option value={name}>
 													{name}
 												</option>
 											{/each}
 										</select>
-									{/if}
+									
 								</td>
 								<td class="px-2 py-1">
 									{list.stitches}
@@ -292,4 +292,7 @@ import type { PricelistsDocument } from '$lib/models/pricelists.model';
 </AddOrder>
 
 <style lang="postcss">
+	select {
+		@apply m-0 p-0 w-full bg-pickled-bluewood-200 border-none ;
+	}
 </style>
