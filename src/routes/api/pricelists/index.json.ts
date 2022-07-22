@@ -7,7 +7,7 @@ import logger from '$lib/utility/logger';
 import type { RequestHandler } from '@sveltejs/kit';
 import { getMonetaryValue, setMonetaryValue } from '$lib/services/monetary';
 
-export const get: RequestHandler = async ({ locals }) => {
+export const GET: RequestHandler = async ({ locals }) => {
 	try {
 		if (!locals?.user?._id) {
 			return {
@@ -35,7 +35,7 @@ export const get: RequestHandler = async ({ locals }) => {
 	}
 };
 
-export const post: RequestHandler = async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
 	try {
 		if (!locals?.user?._id) {
 			return {
@@ -93,7 +93,7 @@ export const post: RequestHandler = async ({ request, locals }) => {
 	}
 };
 
-export const put: RequestHandler = async ({ request, locals }) => {
+export const PUT: RequestHandler = async ({ request, locals }) => {
 	try {
 		if (!locals?.user?._id) {
 			return {

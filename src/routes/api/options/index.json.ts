@@ -5,7 +5,7 @@ import type { RequestHandler } from '@sveltejs/kit'
 import type { OptionsDocument } from '$lib/models/options.models'
 
 /** @type {import('@sveltejs/kit').RequestHandler}*/
-export const get: RequestHandler = async ({
+export const GET: RequestHandler = async ({
   url,
   locals,
 }): Promise<{
@@ -42,7 +42,7 @@ export const get: RequestHandler = async ({
 }
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
-export const post: RequestHandler = async ({
+export const POST: RequestHandler = async ({
   request,
   locals,
 }): Promise<{
@@ -91,7 +91,7 @@ export const post: RequestHandler = async ({
 }
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
-export const put: RequestHandler = async ({
+export const PUT: RequestHandler = async ({
   locals,
   request,
 }): Promise<{
@@ -132,7 +132,7 @@ export const put: RequestHandler = async ({
 }
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
-export const del: RequestHandler = async ({
+export const DELETE: RequestHandler = async ({
   locals,
   request,
 }): Promise<{

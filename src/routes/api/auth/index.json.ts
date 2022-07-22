@@ -3,7 +3,7 @@ import logger from '$lib/utility/logger'
 import { postSuite } from '$lib/validation/server/signUp.validate'
 import type { RequestHandler } from '@sveltejs/kit'
 
-export const get: RequestHandler = async ({ locals }): Promise<unknown> => {
+export const GET: RequestHandler = async ({ locals }): Promise<unknown> => {
   try {
     if (!locals?.user?._id) {
       return {
@@ -42,7 +42,7 @@ export const get: RequestHandler = async ({ locals }): Promise<unknown> => {
   }
 }
 
-export const post: RequestHandler = async ({ request }): Promise<unknown> => {
+export const POST: RequestHandler = async ({ request }): Promise<unknown> => {
   try {
     const reqUser = await request.json()
 
@@ -109,7 +109,7 @@ export const post: RequestHandler = async ({ request }): Promise<unknown> => {
   }
 }
 
-export const put: RequestHandler = async ({ request, locals }): Promise<unknown> => {
+export const PUT: RequestHandler = async ({ request, locals }): Promise<unknown> => {
   try {
     if (!locals?.user?._id) {
       return {
@@ -142,7 +142,7 @@ export const put: RequestHandler = async ({ request, locals }): Promise<unknown>
   }
 }
 
-export const del: RequestHandler = async ({ locals, request }): Promise<unknown> => {
+export const DELETE: RequestHandler = async ({ locals, request }): Promise<unknown> => {
   try {
     if (!locals?.user?._id) {
       return {

@@ -13,7 +13,7 @@ export interface signInRequestInterface {
 
 export type signedInUserInterface = Pick<ContactsDocument, '_id' | 'id' | 'name' | 'email' | 'isUser' | 'isCorporate' | 'isActive' | 'userRole'>
 
-export const post: RequestHandler = async ({ request }): Promise<unknown> => {
+export const POST: RequestHandler = async ({ request }): Promise<unknown> => {
   try {
     // validate the user's password
     const reqUser: signInRequestInterface = await request.json()
@@ -88,7 +88,7 @@ export const post: RequestHandler = async ({ request }): Promise<unknown> => {
  * TODO: Refactor to remove session
  * Session GET
  */
-// export const get: RequestHandler = async ({ locals }): Promise<unknown> => {
+// export const GET: RequestHandler = async ({ locals }): Promise<unknown> => {
 // 	try {
 // 		const userId = lodashGet(locals.user, '_id', null);
 
@@ -132,7 +132,7 @@ export const post: RequestHandler = async ({ request }): Promise<unknown> => {
 // /**
 //  * Session DELETE
 //  */
-// export const del: RequestHandler = async ({ locals }): Promise<unknown> => {
+// export const DELETE: RequestHandler = async ({ locals }): Promise<unknown> => {
 // 	const sessionId = locals.user.sessionId;
 
 // 	if (sessionId) {

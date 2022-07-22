@@ -4,7 +4,7 @@ import omit from 'lodash/omit';
 import { postSuite } from '$lib/validation/server/signUp.validate';
 import logger from '$lib/utility/logger';
 
-export const post: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const reqUser = await request.json();
 
@@ -69,7 +69,7 @@ export const post: RequestHandler = async ({ request }) => {
 	}
 };
 
-// export const get: RequestHandler = async () => {
+// export const GET: RequestHandler = async () => {
 // 	try {
 // 		const contacts = await ContactsModel.find({ isUser: true, isActive: true }).select('-password');
 // 		return {
@@ -88,7 +88,7 @@ export const post: RequestHandler = async ({ request }) => {
 // 	}
 // };
 
-// export const put: RequestHandler = async ({ request }) => {
+// export const PUT: RequestHandler = async ({ request }) => {
 // 	try {
 // 		return {
 // 			status: 200,
@@ -106,6 +106,6 @@ export const post: RequestHandler = async ({ request }) => {
 // 	}
 // };
 
-// export const del: RequestHandler = async ({ request }) => {
+// export const DELETE: RequestHandler = async ({ request }) => {
 // 	return;
 // };

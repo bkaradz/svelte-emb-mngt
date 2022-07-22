@@ -1,6 +1,6 @@
 import type { RequestHandler } from '@sveltejs/kit';
 
-export const get: RequestHandler = async () => {
+export const GET: RequestHandler = async () => {
 	try {
 		return {
 			status: 200,

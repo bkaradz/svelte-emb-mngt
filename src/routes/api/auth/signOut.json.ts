@@ -2,7 +2,7 @@ import type { RequestHandler } from '@sveltejs/kit'
 import { deleteSessionCookies, deleteSessions } from '$lib/services/session.services'
 import logger from '$lib/utility/logger'
 
-export const post: RequestHandler = async ({ locals }) => {
+export const POST: RequestHandler = async ({ locals }) => {
   try {
     const sessionId = locals?.user?.sessionId
     const name = locals?.user?.name

@@ -7,7 +7,7 @@ import csv from 'csvtojson';
 import type { RequestHandler } from '@sveltejs/kit';
 
 /** @type {import('@sveltejs/kit').RequestHandler}*/
-export const post: RequestHandler = async ({
+export const POST: RequestHandler = async ({
 	request,
 	locals
 }): Promise<{

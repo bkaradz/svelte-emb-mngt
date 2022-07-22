@@ -3,8 +3,10 @@ import ProductsModel from '$lib/models/products.models';
 import aggregateQuery from '$lib/services/aggregateQuery.services';
 import { postSuite } from '$lib/validation/server/products.validate';
 import { omit } from 'lodash';
+import type { RequestHandler } from '@sveltejs/kit';
 
-export const get = async ({ url }) => {
+
+export const GET: RequestHandler = async ({ url }) => {
 	try {
 		const queryParams = Object.fromEntries(url.searchParams);
 
@@ -144,7 +146,7 @@ export const get = async ({ url }) => {
 	}
 };
 
-export const post = async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
 	try {
 		if (!locals?.user?._id) {
 			return {
@@ -194,7 +196,7 @@ export const post = async ({ request, locals }) => {
 	}
 };
 
-export const put = async () => {
+export const PUT: RequestHandler = async () => {
 	try {
 		return {
 			status: 200,
@@ -213,6 +215,4 @@ export const put = async () => {
 	}
 };
 
-export async function del() {
-	return;
-}
+

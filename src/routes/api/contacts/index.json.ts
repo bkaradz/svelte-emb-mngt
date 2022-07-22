@@ -42,7 +42,7 @@ export interface ContentsPaginationIterface extends Pagination {
 	
 }
 
-export const get: RequestHandler = async ({
+export const GET: RequestHandler = async ({
 	url,
 	locals
 }): Promise<{
@@ -205,7 +205,7 @@ export const get: RequestHandler = async ({
 	}
 };
 
-export const post: RequestHandler = async ({
+export const POST: RequestHandler = async ({
 	request,
 	locals
 }): Promise<{
@@ -267,7 +267,7 @@ export const post: RequestHandler = async ({
 	}
 };
 
-export const put: RequestHandler = async ({
+export const PUT: RequestHandler = async ({
 	request,
 	locals
 }): Promise<{
@@ -303,6 +303,6 @@ export const put: RequestHandler = async ({
 	}
 };
 
-// export const del: RequestHandler = async() => {
+// export const DELETE: RequestHandler = async() => {
 // 	return;
 // }

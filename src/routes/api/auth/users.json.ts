@@ -1,7 +1,9 @@
 import ContactsModel from '$lib/models/contacts.model'
 import logger from '$lib/utility/logger'
+import type { RequestHandler } from '@sveltejs/kit';
 
-export const get = async ({ locals }) => {
+
+export const GET: RequestHandler = async ({ locals }) => {
   try {
     if (!locals?.user?._id) {
       return {

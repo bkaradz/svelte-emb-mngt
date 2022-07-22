@@ -11,7 +11,7 @@ import ProductsModel, {
 import csv from 'csvtojson';
 
 /** @type {import('@sveltejs/kit').RequestHandler}*/
-export const post: RequestHandler = async ({
+export const POST: RequestHandler = async ({
 	request,
 	locals
 }): Promise<{
