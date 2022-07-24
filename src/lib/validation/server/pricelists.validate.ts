@@ -27,7 +27,7 @@ export function postSuite(data) {
 				minimumPrice: number;
 				pricePerThousandStitches: number;
 				minimumQuantity: number;
-				embroideryType: string;
+				embroideryTypes: string;
 			}) => {
 				test('minimumPrice', 'minimumPrice is required', () => {
 					enforce(field.minimumPrice).isNotBlank();
@@ -47,11 +47,11 @@ export function postSuite(data) {
 				test('minimumQuantity', 'minimumQuantity must be a number', () => {
 					enforce(field.minimumQuantity).isNumeric();
 				});
-				test('embroideryType', 'embroideryType is required', () => {
-					enforce(field.embroideryType).isNotBlank();
+				test('embroideryTypes', 'embroideryTypes is required', () => {
+					enforce(field.embroideryTypes).isNotBlank();
 				});
-				test('embroideryType', 'embroideryType must be a string', () => {
-					enforce(field.embroideryType).isString();
+				test('embroideryTypes', 'embroideryTypes must be a string', () => {
+					enforce(field.embroideryTypes).isString();
 				});
 			}
 		);

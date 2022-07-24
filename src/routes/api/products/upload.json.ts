@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({
 			// increment productID and save in ProductID
 			productID = incProductID(productID);
 			const product: Partial<ProductsDocument> = {
-				category: 'embLogo',
+				productCategories: 'embroidery',
 				isActive: true,
 				productID,
 				userID: userId,

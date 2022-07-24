@@ -38,7 +38,7 @@
 	// 	title: string;
 	// 	description: string;
 	// 	unitPrice: number | string;
-	// 	category: { name: string; value: string };
+	// 	productCategories: { name: string; value: string };
 	// 	stitches: number | string;
 	// 	quantity: number | string;
 	// 	isActive: boolean;
@@ -49,7 +49,7 @@
 		title: '',
 		description: '',
 		unitPrice: 0,
-		category: { name: '', value: '' },
+		productCategories: { name: '', value: '' },
 		stitches: 0,
 		quantity: 0,
 		isActive: true
@@ -71,8 +71,8 @@
 
 	const handleSubmit = async () => {
 		try {
-			const { category, ...otherData } = formData;
-			const finalData = { ...otherData, category: category.value };
+			const { productCategories, ...otherData } = formData;
+			const finalData = { ...otherData, productCategories: productCategories.value };
 			const res = await fetch('/api/products.json', {
 				method: 'POST',
 				body: JSON.stringify(finalData),
@@ -120,7 +120,7 @@
 	// 	// onInput={handleComboInput}
 	// 	formData = {
 	// 		...formData,
-	// 		category: e.target.value
+	// 		productCategories: e.target.value
 	// 	};
 	// };
 </script>
@@ -200,14 +200,14 @@
 
 				{#if productcategories}
 					<Combobox
-						name="category"
-						label="category"
+						name="productCategories"
+						label="productCategories"
 						list={productcategories}
-						bind:value={formData.category}
+						bind:value={formData.productCategories}
 					/>
 				{/if}
 
-				{#if formData?.category?.value === 'embroideryLogo'}
+				{#if formData?.productCategories?.value === 'embroidery'}
 					<Input
 						name="stitches"
 						label="Stitches"
@@ -218,7 +218,7 @@
 					/>
 				{/if}
 
-				{#if formData?.category?.value !== 'embroideryLogo'}
+				{#if formData?.productCategories?.value !== 'embroidery'}
 					<Input
 						name="unitPrice"
 						label="Unit Price"
@@ -228,7 +228,7 @@
 						validityClass={cn('unitPrice')}
 					/>
 				{/if}
-				{#if formData?.category?.value !== 'embroideryLogo'}
+				{#if formData?.productCategories?.value !== 'embroidery'}
 					<Input
 						name="quantity"
 						label="Quantity"

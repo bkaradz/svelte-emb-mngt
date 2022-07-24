@@ -8,9 +8,9 @@ const orderItemsIDs = new Set([]);
 
 const lineItems = {
 	total: '',
-	category: '',
-	embroideryType: '',
-	garmentPositions: '',
+	productCategories: '',
+	embroideryTypes: '',
+	embroideryPositions: '',
 	manufacturingStatus: ''
 };
 

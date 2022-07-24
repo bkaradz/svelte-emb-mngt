@@ -33,7 +33,7 @@
 
 	$: if (pricelist?.pricelists?.length) {
 		pricelist.pricelists.forEach((list: PricelistsSubDocument) => {
-			groupList.add(list.embroideryType);
+			groupList.add(list.embroideryTypes);
 		});
 	}
 
@@ -117,7 +117,7 @@
 						</thead>
 						<tbody class="overflow-y-auto">
 							{#each pricelist.pricelists as list (list._id)}
-								{#if selectedGroup === list.embroideryType || selectedGroup === 'all'}
+								{#if selectedGroup === list.embroideryTypes || selectedGroup === 'all'}
 									<tr
 										class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
 									>
@@ -125,9 +125,9 @@
 											<input
 												class="m-0 w-full border-none bg-transparent p-0 text-sm focus:border-transparent focus:ring-transparent"
 												type="text"
-												name="embroideryType"
+												name="embroideryTypes"
 												disabled={!(isEditableID === list._id)}
-												bind:value={list.embroideryType}
+												bind:value={list.embroideryTypes}
 											/>
 										</td>
 										<td class="px-2 py-1">

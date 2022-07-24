@@ -10,7 +10,7 @@ export interface ProductsDocument extends Document {
 	title?: string;
 	description?: string;
 	unitPrice?: string;
-	category?: string;
+	productCategories?: string;
 	stitches?: number;
 	quantity?: number;
 	isActive: boolean;
@@ -41,24 +41,24 @@ const productsSchema: Schema = new Schema<ProductsDocument>(
 			get: (v: string) => getMonetaryValue(v),
 			set: (v: number) => setMonetaryValue(v)
 			// required: function () {
-			// 	return this.category !== optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORY;
+			// 	return this.productCategories !== optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORIES;
 			// }
 		},
-		category: {
+		productCategories: {
 			type: String,
-			default: optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORY,
+			default: optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORIES,
 			required: true
 		},
 		stitches: {
 			type: Number
 			// required: function () {
-			// 	return this.category === optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORY;
+			// 	return this.productCategories === optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORIES;
 			// }
 		},
 		quantity: {
 			type: Number
 			// required: function () {
-			// 	return this.category !== optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORY;
+			// 	return this.productCategories !== optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORIES;
 			// }
 		},
 		isActive: { type: Boolean, required: true, default: true },

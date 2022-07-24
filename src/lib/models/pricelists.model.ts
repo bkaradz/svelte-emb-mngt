@@ -6,7 +6,7 @@ export interface PricelistsSubDocument {
 	minimumPrice: string;
 	pricePerThousandStitches: string;
 	minimumQuantity: number;
-	embroideryType: string;
+	embroideryTypes: string;
 }
 
 export interface PricelistsDocument extends Document {
@@ -34,7 +34,7 @@ const pricelistsSubSchema: Schema = new Schema<PricelistsSubDocument>(
 			type: Number,
 			required: true
 		},
-		embroideryType: {
+		embroideryTypes: {
 			type: String,
 			required: true
 		}
@@ -105,11 +105,11 @@ export default PricelistsModel;
 
 export const getQuantityPricelist = ({
 	pricelist,
-	embroideryType,
+	embroideryTypes,
 	quantity
 }: {
 	pricelist: PricelistsDocument;
-	embroideryType: string;
+	embroideryTypes: string;
 	quantity: number;
 }) => {
 	console.time('Execution Time');
@@ -118,7 +118,7 @@ export const getQuantityPricelist = ({
 		const pricelistsArray = pricelist.pricelists;
 
 		const minimumQuantityArray = pricelistsArray
-			.filter((list) => embroideryType === list.embroideryType)
+			.filter((list) => embroideryTypes === list.embroideryTypes)
 			.sort((a, b) => a.minimumQuantity - b.minimumQuantity)
 			.filter((list) => list.minimumQuantity <= quantity);
 

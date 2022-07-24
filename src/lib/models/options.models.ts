@@ -86,7 +86,7 @@ export const optionsGroupsNames = {
 	USER_ROLES: 'userRoles',
 	PRODUCT_CATEGORIES: 'productCategories',
 	EMBROIDERY_TYPES: 'embroideryTypes',
-	GARMENT_POSITIONS: 'garmentPositions',
+	EMBROIDERY_POSITIONS: 'embroideryPositions',
 	CUSTOMER_TYPES: 'customerTypes',
 	ACCOUNTS_STATUS: 'accountsStatus',
 	MANUFACTURING_STATUS: 'manufacturingStatus'
@@ -95,9 +95,9 @@ export const optionsGroupsNames = {
 export const optionsGroupsValuesDefaults = {
 	// Default values
 	DEF_USER_ROLE: 'USER',
-	DEF_PRODUCT_CATEGORY: 'embroideryLogo',
+	DEF_PRODUCT_CATEGORIES: 'embroidery',
 	DEF_EMBROIDERY_TYPE: 'flat',
-	DEF_GARMENT_POSITION: 'frontLeft',
+	DEF_EMBROIDERY_POSITIONS: 'frontLeft',
 	DEF_CUSTOMER_TYPE: 'individual',
 	DEF_ACCOUNTS_STATUS: 'quotation',
 	DEF_MANUFACTURING_STATUS: 'awaitingEmbroidery'

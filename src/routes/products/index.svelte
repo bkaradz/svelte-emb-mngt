@@ -24,7 +24,7 @@
 				title: string;
 				description: string;
 				unitPrice: string;
-				category: string;
+				productCategories: string;
 				stitches: string;
 				quantity: string;
 				isActive: boolean;
@@ -76,7 +76,7 @@
 		description: 'Description',
 		unitPrice: 'Unit Price',
 		quantity: 'Quantity',
-		category: 'Category'
+		productCategories: 'Category'
 	};
 
 	const heandleSearchSelection = (event: MouseEvent) => {
@@ -213,7 +213,7 @@
 									<MenuItem let:active>
 										<a
 											on:click={heandleSearchSelection}
-											name="category"
+											name="productCategories"
 											class={`${
 												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
 											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
@@ -384,7 +384,7 @@
 								{product.name}
 							</h4>
 						</div>
-						{#if product.category === 'embLogo'}
+						{#if product.productCategories === 'embLogo'}
 							<div
 								class="mx-4 mb-4 flex h-full items-center justify-evenly border  border-royal-blue-100 bg-pickled-bluewood-50"
 							>

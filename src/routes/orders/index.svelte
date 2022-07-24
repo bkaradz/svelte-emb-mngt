@@ -76,7 +76,6 @@
 	];
 
 	let orders;
-	$: console.log('🚀 ~ file: index.svelte ~ line 78 ~ orders', orders);
 	let limit = 15;
 	let currentGlobalParams = {
 		limit,

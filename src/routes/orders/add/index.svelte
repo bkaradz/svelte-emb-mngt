@@ -26,7 +26,6 @@ import type { PricelistsDocument } from '$lib/models/pricelists.model';
 
 	let itemList = $orderItems;
 	let contacts;
-	$: console.log('🚀 ~ file: index.svelte ~ line 26 ~ contacts', contacts);
 	let products;
 	let pricelists: PricelistsDocument[];
 	let options: OptionsDocument[];
@@ -178,37 +177,31 @@ import type { PricelistsDocument } from '$lib/models/pricelists.model';
 									{list.productID}
 								</td>
 								<td class="px-2 py-1">
-									
-										<select bind:value={list.category}>
+										<select bind:value={list.productCategories}>
 											{#each optionsToList(filterOptionsGroup('productCategories')) as name}
 												<option value={name}>
 													{name}
 												</option>
 											{/each}
 										</select>
-									
 								</td>
 								<td class="px-2 py-1">
-									
-										<select bind:value={list.embroideryType}>
+										<select bind:value={list.embroideryTypes}>
 											{#each optionsToList(filterOptionsGroup('embroideryTypes')) as name}
 												<option value={name}>
 													{name}
 												</option>
 											{/each}
 										</select>
-									
 								</td>
 								<td class="px-2 py-1">
-									
-										<select bind:value={list.embroideryPosition}>
-											{#each optionsToList(filterOptionsGroup('embroideryPosition')) as name}
+										<select bind:value={list.embroideryPositions}>
+											{#each optionsToList(filterOptionsGroup('embroideryPositions')) as name}
 												<option value={name}>
 													{name}
 												</option>
 											{/each}
-										</select>
-									
+										</select>								
 								</td>
 								<td class="px-2 py-1">
 									{list.stitches}

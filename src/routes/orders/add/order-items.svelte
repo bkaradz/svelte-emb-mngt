@@ -63,7 +63,7 @@
 		description: 'Description',
 		unitPrice: 'Unit Price',
 		quantity: 'Quantity',
-		category: 'Category'
+		productCategories: 'Category'
 	};
 
 	const tableHeadings = [
@@ -115,8 +115,6 @@
 		removeItemID(product._id);
 		orderItems.add(product);
 	};
-
-	$: console.log('first', $orderItems);
 </script>
 
 <svelte:head>
@@ -155,24 +153,16 @@
 					</thead>
 					<tbody class="overflow-y-auto">
 						{#each $orderItems as product (product._id)}
-							<tr
-								class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
-							>
+							<tr class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900 dot-align">
 								<td class="px-2 py-1">{product.name}</td>
 								<td class="px-2 py-1">{product.productID}</td>
-								<td class="px-2 py-1">{product.category}</td>
-								<td class="px-2 py-1">{product.embroideryType}</td>
-								<td class="px-2 py-1">{product.embroideryPosition}</td>
-								<td class="px-2 py-1">{product.stitches}</td>
-								<td class="px-2 py-1">
-									{!product.quantity ? '...' : product.quantity}
-								</td>
-								<td class="px-2 py-1 text-right">
-									{!product.unitPrice ? '...' : product.unitPrice}
-								</td>
-								<td class="px-2 py-1 text-right">
-									{!product.unitPrice ? '...' : product.total}
-								</td>
+								<td class="px-2 py-1">{product.productCategories ? product.productCategories : '...'}</td>
+								<td class="px-2 py-1">{product.embroideryTypes ? product.embroideryTypes : '...'}</td>
+								<td class="px-2 py-1">{product.embroideryPositions ? product.embroideryPositions : '...'}</td>
+								<td class="px-2 py-1">{product.stitches ? product.stitches : '...'}</td>
+								<td class="px-2 py-1">{product.quantity ? product.quantity : '...'}</td>
+								<td class="px-2 py-1">{product.unitPrice ? product.unitPrice : '...'}</td>
+								<td class="px-2 py-1">{product.unitPrice ? product.total : '...'}</td>
 							</tr>
 						{/each}
 					</tbody>
@@ -264,7 +254,7 @@
 									<MenuItem let:active>
 										<a
 											on:click={heandleSearchSelection}
-											name="category"
+											name="productCategories"
 											class={`${
 												active ? 'active bg-royal-blue-500 text-white' : 'inactive'
 											} block px-4 py-2 text-sm text-pickled-bluewood-700 hover:bg-royal-blue-500 hover:text-white`}
@@ -430,21 +420,14 @@
 					<tbody class="overflow-y-auto">
 						{#each products.results as product (product._id)}
 							<tr
-								class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
+								class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900 dot-align"
 							>
 								<td class="px-2 py-1">{product.name}</td>
 								<td class="px-2 py-1">{product.productID}</td>
-								<td class="px-2 py-1">{product.stitches}</td>
-
-								<td class="px-2 py-1">
-									{!product.description ? '...' : product.description}
-								</td>
-								<td class="px-2 py-1">
-									{!product.quantity ? '...' : product.quantity}
-								</td>
-								<td class="px-2 py-1 text-right">
-									{!product.unitPrice ? '...' : product.unitPrice}
-								</td>
+								<td class="px-2 py-1">{product.stitches ? product.stitches : '...'}</td>
+								<td class="px-2 py-1">{product.description ? product.description : '...'}</td>
+								<td class="px-2 py-1">{product.quantity ? product.quantity : '...'}</td>
+								<td class="px-2 py-1">{product.unitPrice ? product.unitPrice : '...'}</td>
 								<td class="px-2 py-1">
 									<span
 										class="whitespace-nowrap rounded-full bg-success px-3 py-1 text-xs font-bold text-white"

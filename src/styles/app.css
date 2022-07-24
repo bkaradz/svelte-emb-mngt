@@ -105,6 +105,10 @@ input:checked ~ .dot {
   grid-area: sidebar;
 }
 
+.dot-align {
+  text-align: "." center;
+}
+
 /* .big-menu {
 	width: 200px;
 }

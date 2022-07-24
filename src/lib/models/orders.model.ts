@@ -14,9 +14,9 @@ export interface OrderLineDocument extends Document {
 	quantity: number;
 	unitPrice: string;
 	total: string;
-	category: string;
-	embroideryType?: string;
-	garmentPositions?: string;
+	productCategories: string;
+	embroideryTypes?: string;
+	embroideryPositions?: string;
 	manufacturingStatus?: string;
 	stitches?: number;
 	createdAt: Date;
@@ -56,35 +56,35 @@ const orderLineSchema: Schema = new Schema<OrderLineDocument>(
 			// get: (v: string) => getMonetaryValue(v),
 			// set: (v: number) => setMonetaryValue(v)
 		},
-		category: {
+		productCategories: {
 			type: String,
 			required: true
 			// validate: (value: string) => {
 			// 	return optionContainsName(optionsGroupsNames.PRODUCT_CATEGORIES, value);
 			// }
 		},
-		embroideryType: {
+		embroideryTypes: {
 			type: String,
 			// validate: (value: string) => {
 			//   return optionContainsName(optionsGroupsNames.EMBROIDERY_TYPES, value)
 			// },
 			required: function () {
-				return this.category === optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORY;
+				return this.productCategories === optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORIES;
 			}
 		},
-		garmentPositions: {
+		embroideryPositions: {
 			type: String,
 			// validate: (value: string) => {
-			//   return optionContainsName(optionsGroupsNames.GARMENT_POSITIONS, value)
+			//   return optionContainsName(optionsGroupsNames.EMBROIDERY_POSITIONS, value)
 			// },
 			required: function () {
-				return this.category === optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORY;
+				return this.productCategories === optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORIES;
 			}
 		},
 		stitches: {
 			type: Number,
 			required: function () {
-				return this.category === optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORY;
+				return this.productCategories === optionsGroupsValuesDefaults.DEF_PRODUCT_CATEGORIES;
 			}
 		},
 		manufacturingStatus: {

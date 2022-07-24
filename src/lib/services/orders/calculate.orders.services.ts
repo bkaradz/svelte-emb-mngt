@@ -11,7 +11,7 @@ export const calculateOrder = (order, pricelist: PricelistsDocument) => {
 	try {
 		// calculate the order list totals and unit prices
 		const orderLine = order.orderLine.map((line) => {
-			const { stitches, quantity = 1, embroideryType = 'flat' } = line;
+			const { stitches, quantity = 1, embroideryTypes = 'flat' } = line;
 			// const productExist = await ProductsModel.exists({ _id });
 
 			// if (!productExist) {
@@ -24,7 +24,7 @@ export const calculateOrder = (order, pricelist: PricelistsDocument) => {
 				 */
 				const { pricePerThousandStitches, minimumPrice } = getQuantityPricelist({
 					pricelist,
-					embroideryType,
+					embroideryTypes,
 					quantity
 				});
 
@@ -85,6 +85,6 @@ export const calculateOrder = (order, pricelist: PricelistsDocument) => {
 		};
 	} catch (err) {
 		logger.error(`Error: ${err.message}`);
-		console.log('Log Error', err);
+		
 	}
 };
