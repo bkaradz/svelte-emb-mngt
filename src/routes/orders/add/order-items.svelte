@@ -15,6 +15,9 @@
 	import Loading from '$lib/components/Loading.svelte';
 	import { orderItems } from '$lib/stores/order.items.store';
 	import type { ProductsDocument } from '$lib/models/products.models';
+	import type { PricelistsDocument } from '$lib/models/pricelists.model';
+	import type { OptionsDocument } from '$lib/models/options.models';
+	import Combobox from '$lib/components/Combobox.svelte';
 
 	interface productIterface {
 		results: ProductsDocument[];
@@ -26,12 +29,30 @@
 		next: { page: number; limit: number };
 	}
 
+	let itemList = [];
 	let products: productIterface;
+	let pricelists: PricelistsDocument[];
+	let options: OptionsDocument[];
+
 	let limit = 15;
 	let currentGlobalParams = {
 		limit,
 		page: 1,
 		sort: 'name'
+	};
+
+	const filterOptionsGroup = (group: string) => {
+		return options.filter((option) => option.group === group);
+	};
+
+	const optionsToList = (optionsObj: OptionsDocument[]) => {
+		return optionsObj.map((option) => option.name).reverse();
+	};
+
+	const optionsListMapObj = (optionsObj: OptionsDocument[]) => {
+		return optionsObj.reduce((accumulator, option) => {
+			return { ...accumulator, [option.name]: option.value };
+		}, {});
 	};
 
 	const checkValue = () => {
@@ -42,6 +63,8 @@
 
 	onMount(() => {
 		getProducts(currentGlobalParams);
+		getPricelists();
+		getOptions();
 	});
 
 	const viewProducts = async (id: string) => {
@@ -103,6 +126,24 @@
 		}
 	};
 
+	const getPricelists = async () => {
+		try {
+			const res = await fetch('/api/pricelists.json');
+			pricelists = await res.json();
+		} catch (err) {
+			logger.error(err.message);
+		}
+	};
+
+	const getOptions = async () => {
+		try {
+			const res = await fetch('/api/options.json');
+			options = await res.json();
+		} catch (err) {
+			logger.error(err.message);
+		}
+	};
+
 	const removeItemID = (id: Schema.Types.ObjectId) => {
 		products.results = products.results.filter((item) => item._id !== id);
 	};
@@ -111,9 +152,11 @@
 		products.results = products.results.filter((item) => !orderItems.orderItemsHasID(item._id));
 	};
 
+
+
 	const addProduct = (product: ProductsDocument) => {
 		removeItemID(product._id);
-		orderItems.add(product);
+		itemList = [...itemList, product]
 	};
 </script>
 
@@ -151,20 +194,99 @@
 							{/each}
 						</tr>
 					</thead>
-					<tbody class="overflow-y-auto">
-						{#each $orderItems as product (product._id)}
-							<tr class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900 dot-align">
-								<td class="px-2 py-1">{product.name}</td>
-								<td class="px-2 py-1">{product.productID}</td>
-								<td class="px-2 py-1">{product.productCategories ? product.productCategories : '...'}</td>
-								<td class="px-2 py-1">{product.embroideryTypes ? product.embroideryTypes : '...'}</td>
-								<td class="px-2 py-1">{product.embroideryPositions ? product.embroideryPositions : '...'}</td>
-								<td class="px-2 py-1">{product.stitches ? product.stitches : '...'}</td>
-								<td class="px-2 py-1">{product.quantity ? product.quantity : '...'}</td>
-								<td class="px-2 py-1">{product.unitPrice ? product.unitPrice : '...'}</td>
-								<td class="px-2 py-1">{product.unitPrice ? product.total : '...'}</td>
-							</tr>
-						{/each}
+					<tbody>
+						{#if itemList.length && options?.length}
+							{#each itemList as list (list._id)}
+								<tr
+									class="whitespace-no-wrap w-full border border-t-0 border-pickled-bluewood-300 font-normal odd:bg-pickled-bluewood-100 odd:text-pickled-bluewood-900 even:text-pickled-bluewood-900"
+								>
+									<td class="px-2 py-1">
+										{list.name}
+									</td>
+									<td class="px-2 py-1">
+										{list.productID}
+									</td>
+									<td class="px-2 py-1">
+										<select bind:value={list.productCategories} class="text-sm">
+											{#each optionsToList(filterOptionsGroup('productCategories')) as name}
+												<option value={name}>
+													{name}
+												</option>
+											{/each}
+										</select>
+									</td>
+									<td class="px-2 py-1">
+										<select bind:value={list.embroideryTypes} class="text-sm">
+											{#each optionsToList(filterOptionsGroup('embroideryTypes')) as name}
+												<option value={name} >
+													{name}
+												</option>
+											{/each}
+										</select>
+									</td>
+									<td class="px-2 py-1">
+										<select bind:value={list.embroideryPositions} class="text-sm">
+											{#each optionsToList(filterOptionsGroup('embroideryPositions')) as name}
+												<option value={name}>
+													{name}
+												</option>
+											{/each}
+										</select>
+									</td>
+									<td class="px-2 py-1">
+										{list.stitches}
+									</td>
+									<td class="px-2 py-1">
+										<div class="flex flex-row bg-transparent">
+											<button
+												on:click={list.quantity = (list.quantity === 1) ? list.quantity : list.quantity - 1}
+												class="h-full w-20 cursor-pointer bg-pickled-bluewood-300 text-pickled-bluewood-700 outline-none hover:bg-pickled-bluewood-400 hover:text-pickled-bluewood-700"
+											>
+												<span class="text-sm">−</span>
+											</button>
+											<input
+												type="number"
+												class="text-sm my-0 py-0 hover:text-black focus:text-black md:text-basecursor-default flex select-all items-center border-0 bg-pickled-bluewood-300 text-center font-semibold  text-pickled-bluewood-700 outline-none focus:border-0  focus:outline-none"
+												name="quantity"
+												bind:value={list.quantity}
+											/>
+											<button
+												on:click={list.quantity = list.quantity + 1}
+												class="h-full w-20 cursor-pointer bg-pickled-bluewood-300 text-pickled-bluewood-700 outline-none hover:bg-pickled-bluewood-400 hover:text-pickled-bluewood-700"
+											>
+												<span class="text-sm">+</span>
+											</button>
+										</div>
+										
+									</td>
+									<td class="px-2 py-1">
+										{list.unitPrice}
+									</td>
+									<td class="px-2 py-1">
+										{list.total}
+									</td>
+								</tr>
+							{/each}
+						{/if}
+						<tr
+							class="whitespace-no-wrap w-full border border-t-0 border-transparent bg-royal-blue-50 font-normal text-pickled-bluewood-800"
+						>
+							<td class="px-2 py-1 text-right">
+								Pricelists
+							</td>
+							<td class="px-2 py-1">
+								{#if pricelists}
+									<Combobox class='py-0 my-0 w-full border-none' list={pricelists} />
+								{/if}
+							</td>
+							<td class="px-2 py-1" />
+							<td class="px-2 py-1" />
+							<td class="px-2 py-1" />
+							<td class="px-2 py-1" />
+							<td class="px-2 py-1" />
+							<td class="px-2 py-1">Total</td>
+							<td class="px-2 py-1">$12.30</td>
+						</tr>
 					</tbody>
 				</table>
 				<!-- Search and View Bar -->
@@ -450,3 +572,22 @@
 {:else}
 	<Loading />
 {/if}
+
+<style lang="postcss">
+	select {
+		@apply m-0 p-0 w-full bg-pickled-bluewood-200 border-none;
+	}
+	input[type='number']::-webkit-inner-spin-button,
+	input[type='number']::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	/* .custom-number-input input:focus {
+		outline: none !important;
+	}
+
+	.custom-number-input button:focus {
+		outline: none !important;
+	} */
+</style>

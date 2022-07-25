@@ -164,7 +164,7 @@ import type { PricelistsDocument } from '$lib/models/pricelists.model';
 						{/each}
 					</tr>
 				</thead>
-				<tbody class="vertical-scroll-wrapper">
+				<tbody>
 					{#if itemList.length && options?.length}
 						{#each itemList as list (list._id)}
 							<tr

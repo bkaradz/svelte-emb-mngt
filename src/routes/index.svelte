@@ -19,26 +19,24 @@
 	<label for="custom-input-number" class="w-full text-sm font-semibold text-pickled-bluewood-700"
 		>Counter Input
 	</label>
-	<div class="relative mt-1 flex h-10 w-full flex-row rounded-lg bg-transparent">
+	<div class="flex w-full flex-row bg-transparent">
 		<button
 			on:click={decrement}
-			data-action="decrement"
-			class=" h-full w-20 cursor-pointer rounded-l bg-pickled-bluewood-300 text-pickled-bluewood-700 outline-none hover:bg-pickled-bluewood-400 hover:text-pickled-bluewood-700"
+			class="h-full w-20 cursor-pointer bg-pickled-bluewood-300 text-pickled-bluewood-700 outline-none hover:bg-pickled-bluewood-400 hover:text-pickled-bluewood-700"
 		>
-			<span class="m-auto text-2xl font-thin">−</span>
+			<span class="m-auto text-2xl">−</span>
 		</button>
 		<input
 			type="number"
-			class=" text-md hover:text-black focus:text-black md:text-basecursor-default flex w-full select-all items-center border-0 bg-pickled-bluewood-300 text-center font-semibold  text-pickled-bluewood-700 outline-none focus:border-0  focus:outline-none"
+			class="text-sm my-0 py-0 hover:text-black focus:text-black md:text-basecursor-default flex w-full select-all items-center border-0 bg-pickled-bluewood-300 text-center font-semibold  text-pickled-bluewood-700 outline-none focus:border-0  focus:outline-none"
 			name="custom-input-number"
 			bind:value
 		/>
 		<button
 			on:click={increment}
-			data-action="increment"
-			class="h-full w-20 cursor-pointer rounded-r bg-pickled-bluewood-300 text-pickled-bluewood-600 hover:bg-pickled-bluewood-400 hover:text-pickled-bluewood-700"
+			class="h-full w-20 cursor-pointer bg-pickled-bluewood-300 text-pickled-bluewood-700 outline-none hover:bg-pickled-bluewood-400 hover:text-pickled-bluewood-700"
 		>
-			<span class="m-auto text-2xl font-thin">+</span>
+			<span class="m-auto text-2xl">+</span>
 		</button>
 	</div>
 </div>
