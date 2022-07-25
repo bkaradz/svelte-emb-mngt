@@ -2,7 +2,7 @@ import { USD } from '@dinero.js/currencies';
 import { add, dinero, greaterThanOrEqual, multiply, subtract, toSnapshot } from 'dinero.js';
 import logger from '$lib/utility/logger';
 import { getQuantityPricelist, type PricelistsDocument } from '$lib/models/pricelists.model';
-// import ProductsModel from '$lib/models/products.models';
+import ProductsModel from '$lib/models/products.models';
 
 export const calculateOrder = (order, pricelist: PricelistsDocument) => {
 	let { balance, subTotal, discountRate, discount, taxRate, tax } = order;
@@ -10,13 +10,13 @@ export const calculateOrder = (order, pricelist: PricelistsDocument) => {
 
 	try {
 		// calculate the order list totals and unit prices
-		const orderLine = order.orderLine.map((line) => {
+		const orderLine = order.orderLine.map(async (line) => {
 			const { stitches, quantity = 1, embroideryTypes = 'flat' } = line;
-			// const productExist = await ProductsModel.exists({ _id });
+			const productExist = await ProductsModel.exists({ _id });
 
-			// if (!productExist) {
-			// 	throw new Error('Product does not exist');
-			// }
+			if (!productExist) {
+				throw new Error('Product does not exist');
+			}
 
 			if (stitches) {
 				/**

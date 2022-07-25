@@ -18,6 +18,7 @@
 	import type { PricelistsDocument } from '$lib/models/pricelists.model';
 	import type { OptionsDocument } from '$lib/models/options.models';
 	import Combobox from '$lib/components/Combobox.svelte';
+	// import { calculateOrder } from "$lib/services/orders/calculate.orders.services";
 
 	interface productIterface {
 		results: ProductsDocument[];
@@ -96,8 +97,8 @@
 		'Emb Type',
 		'Emb Position',
 		'Stitches',
-		'Unit Price',
 		'Quantity',
+		'Unit Price',
 		'Total'
 	];
 
@@ -152,11 +153,20 @@
 		products.results = products.results.filter((item) => !orderItems.orderItemsHasID(item._id));
 	};
 
-
-
 	const addProduct = (product: ProductsDocument) => {
 		removeItemID(product._id);
-		itemList = [...itemList, product]
+		itemList = [...itemList, { ...product, quantity: 1 }];
+	};
+
+	const incrementQuantity = (object: any, value: number) => {
+	
+		if (object.quantity <= 1 && value === - 1) {
+			return
+		}
+		object.quantity = object.quantity + value
+		// calculate Unit price and total
+		itemList = itemList
+		
 	};
 </script>
 
@@ -218,7 +228,7 @@
 									<td class="px-2 py-1">
 										<select bind:value={list.embroideryTypes} class="text-sm">
 											{#each optionsToList(filterOptionsGroup('embroideryTypes')) as name}
-												<option value={name} >
+												<option value={name}>
 													{name}
 												</option>
 											{/each}
@@ -239,7 +249,7 @@
 									<td class="px-2 py-1">
 										<div class="flex flex-row bg-transparent">
 											<button
-												on:click={list.quantity = (list.quantity === 1) ? list.quantity : list.quantity - 1}
+												on:click|preventDefault={(e) => incrementQuantity(list, -1)}
 												class="h-full w-20 cursor-pointer bg-pickled-bluewood-300 text-pickled-bluewood-700 outline-none hover:bg-pickled-bluewood-400 hover:text-pickled-bluewood-700"
 											>
 												<span class="text-sm">−</span>
@@ -251,13 +261,12 @@
 												bind:value={list.quantity}
 											/>
 											<button
-												on:click={list.quantity = list.quantity + 1}
+												on:click|preventDefault={(e) => incrementQuantity(list, 1)}
 												class="h-full w-20 cursor-pointer bg-pickled-bluewood-300 text-pickled-bluewood-700 outline-none hover:bg-pickled-bluewood-400 hover:text-pickled-bluewood-700"
 											>
 												<span class="text-sm">+</span>
 											</button>
 										</div>
-										
 									</td>
 									<td class="px-2 py-1">
 										{list.unitPrice}
@@ -271,12 +280,10 @@
 						<tr
 							class="whitespace-no-wrap w-full border border-t-0 border-transparent bg-royal-blue-50 font-normal text-pickled-bluewood-800"
 						>
-							<td class="px-2 py-1 text-right">
-								Pricelists
-							</td>
+							<td class="px-2 py-1 text-right"> Pricelists </td>
 							<td class="px-2 py-1">
 								{#if pricelists}
-									<Combobox class='py-0 my-0 w-full border-none' list={pricelists} />
+									<Combobox class="py-0 my-0 w-full border-none" list={pricelists} />
 								{/if}
 							</td>
 							<td class="px-2 py-1" />
