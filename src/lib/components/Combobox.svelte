@@ -111,6 +111,7 @@
 						class="input border-transparent"
 						type="text"
 						{disabled}
+						{...$$restProps}
 					/>
 					<!-- Loader -->
 					{#if pending}
