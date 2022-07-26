@@ -8,7 +8,7 @@
 	import { onMount } from 'svelte';
 	import { orderItems } from '$lib/stores/order.items.store';
 	import type { OptionsDocument } from '$lib/models/options.models';
-import type { PricelistsDocument } from '$lib/models/pricelists.model';
+	import type { PricelistsDocument } from '$lib/models/pricelists.model';
 
 	let isEditableID: any;
 
@@ -177,31 +177,31 @@ import type { PricelistsDocument } from '$lib/models/pricelists.model';
 									{list.productID}
 								</td>
 								<td class="px-2 py-1">
-										<select bind:value={list.productCategories}>
-											{#each optionsToList(filterOptionsGroup('productCategories')) as name}
-												<option value={name}>
-													{name}
-												</option>
-											{/each}
-										</select>
+									<select bind:value={list.productCategories}>
+										{#each optionsToList(filterOptionsGroup('productCategories')) as name}
+											<option value={name}>
+												{name}
+											</option>
+										{/each}
+									</select>
 								</td>
 								<td class="px-2 py-1">
-										<select bind:value={list.embroideryTypes}>
-											{#each optionsToList(filterOptionsGroup('embroideryTypes')) as name}
-												<option value={name}>
-													{name}
-												</option>
-											{/each}
-										</select>
+									<select bind:value={list.embroideryTypes}>
+										{#each optionsToList(filterOptionsGroup('embroideryTypes')) as name}
+											<option value={name}>
+												{name}
+											</option>
+										{/each}
+									</select>
 								</td>
 								<td class="px-2 py-1">
-										<select bind:value={list.embroideryPositions}>
-											{#each optionsToList(filterOptionsGroup('embroideryPositions')) as name}
-												<option value={name}>
-													{name}
-												</option>
-											{/each}
-										</select>								
+									<select bind:value={list.embroideryPositions}>
+										{#each optionsToList(filterOptionsGroup('embroideryPositions')) as name}
+											<option value={name}>
+												{name}
+											</option>
+										{/each}
+									</select>
 								</td>
 								<td class="px-2 py-1">
 									{list.stitches}
@@ -286,6 +286,6 @@ import type { PricelistsDocument } from '$lib/models/pricelists.model';
 
 <style lang="postcss">
 	select {
-		@apply m-0 p-0 w-full bg-pickled-bluewood-200 border-none ;
+		@apply m-0 p-0 w-full bg-pickled-bluewood-200 border-none;
 	}
 </style>

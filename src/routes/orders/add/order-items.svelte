@@ -18,7 +18,8 @@
 	import type { PricelistsDocument } from '$lib/models/pricelists.model';
 	import type { OptionsDocument } from '$lib/models/options.models';
 	import Combobox from '$lib/components/Combobox.svelte';
-	// import { calculateOrder } from "$lib/services/orders/calculate.orders.services";
+import { calculateOrder } from '$lib/services/orders';
+
 
 	interface productIterface {
 		results: ProductsDocument[];
@@ -34,6 +35,8 @@
 	let products: productIterface;
 	let pricelists: PricelistsDocument[];
 	let options: OptionsDocument[];
+	const selectedPricelist = {name: ''}
+  $: console.log("🚀 ~ file: order-items.svelte ~ line 39 ~ selectedPricelist", selectedPricelist)
 
 	let limit = 15;
 	let currentGlobalParams = {
@@ -165,6 +168,8 @@
 		}
 		object.quantity = object.quantity + value
 		// calculate Unit price and total
+		const order = { balance: 0, subTotal: 0, discountRate: 0, discount: 0, taxRate: 0, tax: 0, orderLine: itemList} 
+		// console.log('calculateOrder()', calculateOrder(order, selectedPricelist));
 		itemList = itemList
 		
 	};
@@ -250,19 +255,19 @@
 										<div class="flex flex-row bg-transparent">
 											<button
 												on:click|preventDefault={(e) => incrementQuantity(list, -1)}
-												class="h-full w-20 cursor-pointer bg-pickled-bluewood-300 text-pickled-bluewood-700 outline-none hover:bg-pickled-bluewood-400 hover:text-pickled-bluewood-700"
+												class="h-full w-5 cursor-pointer bg-pickled-bluewood-300 text-pickled-bluewood-700 outline-none hover:bg-pickled-bluewood-400 hover:text-pickled-bluewood-700"
 											>
 												<span class="text-sm">−</span>
 											</button>
 											<input
 												type="number"
-												class="text-sm my-0 py-0 hover:text-black focus:text-black md:text-basecursor-default flex select-all items-center border-0 bg-pickled-bluewood-300 text-center font-semibold  text-pickled-bluewood-700 outline-none focus:border-0  focus:outline-none"
+												class="text-sm w-20 my-0 py-0 hover:text-black focus:text-black md:text-basecursor-default flex select-all items-center border-0 bg-pickled-bluewood-300 text-center font-semibold  text-pickled-bluewood-700 outline-none focus:border-0  focus:outline-none"
 												name="quantity"
 												bind:value={list.quantity}
 											/>
 											<button
 												on:click|preventDefault={(e) => incrementQuantity(list, 1)}
-												class="h-full w-20 cursor-pointer bg-pickled-bluewood-300 text-pickled-bluewood-700 outline-none hover:bg-pickled-bluewood-400 hover:text-pickled-bluewood-700"
+												class="h-full w-5 cursor-pointer bg-pickled-bluewood-300 text-pickled-bluewood-700 outline-none hover:bg-pickled-bluewood-400 hover:text-pickled-bluewood-700"
 											>
 												<span class="text-sm">+</span>
 											</button>
@@ -283,7 +288,7 @@
 							<td class="px-2 py-1 text-right"> Pricelists </td>
 							<td class="px-2 py-1">
 								{#if pricelists}
-									<Combobox class="py-0 my-0 w-full border-none" list={pricelists} />
+									<Combobox class="py-0 my-0 w-full border-none" list={pricelists} value={selectedPricelist}/>
 								{/if}
 							</td>
 							<td class="px-2 py-1" />

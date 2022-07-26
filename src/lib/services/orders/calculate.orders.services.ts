@@ -4,7 +4,7 @@ import logger from '$lib/utility/logger';
 import { getQuantityPricelist, type PricelistsDocument } from '$lib/models/pricelists.model';
 import ProductsModel from '$lib/models/products.models';
 
-export const calculateOrder = (order, pricelist: PricelistsDocument) => {
+export const calculateOrder = (order, pricelist: Partial<PricelistsDocument>) => {
 	let { balance, subTotal, discountRate, discount, taxRate, tax } = order;
 	balance = dinero({ amount: 0, currency: USD, scale: 3 });
 
@@ -12,11 +12,12 @@ export const calculateOrder = (order, pricelist: PricelistsDocument) => {
 		// calculate the order list totals and unit prices
 		const orderLine = order.orderLine.map(async (line) => {
 			const { stitches, quantity = 1, embroideryTypes = 'flat' } = line;
-			const productExist = await ProductsModel.exists({ _id });
 
-			if (!productExist) {
-				throw new Error('Product does not exist');
-			}
+			// const productExist = await ProductsModel.exists(line._id);
+
+			// if (!productExist) {
+			// 	throw new Error('Product does not exist');
+			// }
 
 			if (stitches) {
 				/**
