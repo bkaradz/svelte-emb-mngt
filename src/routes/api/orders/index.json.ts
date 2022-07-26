@@ -180,6 +180,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		}
 
 		const calcOrder = await calculateOrder(reqOrder, pricelist);
+    console.log("🚀 ~ file: index.json.ts ~ line 183 ~ constPOST:RequestHandler= ~ calcOrder", calcOrder)
 
 		const newOrder = new OrdersModel(calcOrder);
 

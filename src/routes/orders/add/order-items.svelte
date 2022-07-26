@@ -18,9 +18,8 @@
 	import type { PricelistsDocument } from '$lib/models/pricelists.model';
 	import type { OptionsDocument } from '$lib/models/options.models';
 	import Combobox from '$lib/components/Combobox.svelte';
-import { calculateOrder } from '$lib/services/orders';
-
-
+	import { calculateOrder } from '$lib/services/orders';
+	
 	interface productIterface {
 		results: ProductsDocument[];
 		totalRecords: number;
@@ -35,8 +34,8 @@ import { calculateOrder } from '$lib/services/orders';
 	let products: productIterface;
 	let pricelists: PricelistsDocument[];
 	let options: OptionsDocument[];
-	const selectedPricelist = {name: ''}
-  $: console.log("🚀 ~ file: order-items.svelte ~ line 39 ~ selectedPricelist", selectedPricelist)
+	const selectedPricelist = { name: '' };
+	$: console.log('🚀 ~ file: order-items.svelte ~ line 39 ~ selectedPricelist', selectedPricelist);
 
 	let limit = 15;
 	let currentGlobalParams = {
@@ -162,16 +161,22 @@ import { calculateOrder } from '$lib/services/orders';
 	};
 
 	const incrementQuantity = (object: any, value: number) => {
-	
-		if (object.quantity <= 1 && value === - 1) {
-			return
+		if (object.quantity <= 1 && value === -1) {
+			return;
 		}
-		object.quantity = object.quantity + value
+		object.quantity = object.quantity + value;
 		// calculate Unit price and total
-		const order = { balance: 0, subTotal: 0, discountRate: 0, discount: 0, taxRate: 0, tax: 0, orderLine: itemList} 
-		// console.log('calculateOrder()', calculateOrder(order, selectedPricelist));
-		itemList = itemList
-		
+		const order = {
+			balance: 0,
+			subTotal: 0,
+			discountRate: 0,
+			discount: 0,
+			taxRate: 0,
+			tax: 0,
+			orderLine: itemList
+		};
+		console.log('calculateOrder()', calculateOrder(order, selectedPricelist));
+		itemList = itemList;
 	};
 </script>
 
@@ -288,7 +293,11 @@ import { calculateOrder } from '$lib/services/orders';
 							<td class="px-2 py-1 text-right"> Pricelists </td>
 							<td class="px-2 py-1">
 								{#if pricelists}
-									<Combobox class="py-0 my-0 w-full border-none" list={pricelists} value={selectedPricelist}/>
+									<Combobox
+										class="py-0 my-0 w-full border-none"
+										list={pricelists}
+										value={selectedPricelist}
+									/>
 								{/if}
 							</td>
 							<td class="px-2 py-1" />

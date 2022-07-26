@@ -1,16 +1,18 @@
 import { USD } from '@dinero.js/currencies';
 import { add, dinero, greaterThanOrEqual, multiply, subtract, toSnapshot } from 'dinero.js';
 import logger from '$lib/utility/logger';
-import { getQuantityPricelist, type PricelistsDocument } from '$lib/models/pricelists.model';
-import ProductsModel from '$lib/models/products.models';
+import { getQuantityPricelist } from '$lib/services/getQuantityPricelist.services';
+// import ProductsModel from '$lib/models/products.models';
 
-export const calculateOrder = (order, pricelist: Partial<PricelistsDocument>) => {
+
+export const calculateOrder = (order, pricelist) => {
+console.log("🚀 ~ file: calculate.orders.services.ts ~ line 9 ~ calculateOrder ~ pricelist", pricelist)
 	let { balance, subTotal, discountRate, discount, taxRate, tax } = order;
 	balance = dinero({ amount: 0, currency: USD, scale: 3 });
 
 	try {
 		// calculate the order list totals and unit prices
-		const orderLine = order.orderLine.map(async (line) => {
+		const orderLine = order.orderLine.map((line) => {
 			const { stitches, quantity = 1, embroideryTypes = 'flat' } = line;
 
 			// const productExist = await ProductsModel.exists(line._id);
@@ -19,7 +21,7 @@ export const calculateOrder = (order, pricelist: Partial<PricelistsDocument>) =>
 			// 	throw new Error('Product does not exist');
 			// }
 
-			if (stitches) {
+			if (stitches && pricelist) {
 				/**
 				 * Calculate prices
 				 */
@@ -28,6 +30,9 @@ export const calculateOrder = (order, pricelist: Partial<PricelistsDocument>) =>
 					embroideryTypes,
 					quantity
 				});
+
+				// const minimumPrice = '{"amount":1000,"currency":{"code":"USD","base":10,"exponent":2},"scale":3}'
+				// const pricePerThousandStitches = '{"amount":200,"currency":{"code":"USD","base":10,"exponent":2},"scale":3}'
 
 				// calculate the unit price from the stitches
 
