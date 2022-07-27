@@ -4,7 +4,7 @@ import type { SessionsDocument } from '$lib/models/sessions.model';
 import type { FilterQuery } from 'mongoose';
 import ContactsModel from '$lib/models/contacts.model';
 import type { ContactsDocument } from '$lib/models/contacts.model';
-import omit from 'lodash/omit';
+import omit from 'lodash-es/omit';
 import config from 'config';
 
 export const setSessionCookies = (accessToken: string, refreshToken: string) => {

@@ -1,6 +1,6 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import ContactsModel from '$lib/models/contacts.model';
-import omit from 'lodash/omit';
+import omit from 'lodash-es/omit';
 import { postSuite } from '$lib/validation/server/signUp.validate';
 import logger from '$lib/utility/logger';
 

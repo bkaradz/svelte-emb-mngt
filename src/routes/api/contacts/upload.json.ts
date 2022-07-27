@@ -1,7 +1,7 @@
 import { postSuite } from '$lib/validation/server/contacts.validate';
 import ContactsModel, { type ContactsDocument } from '$lib/models/contacts.model';
-import pickBy from 'lodash/pickBy';
-import identity from 'lodash/identity';
+import pickBy from 'lodash-es/pickBy';
+import identity from 'lodash-es/identity';
 import logger from '$lib/utility/logger';
 import csv from 'csvtojson';
 import type { RequestHandler } from '@sveltejs/kit';

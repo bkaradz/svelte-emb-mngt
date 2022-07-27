@@ -1,7 +1,7 @@
 import logger from '$lib/utility/logger';
 import aggregateQuery from '$lib/services/aggregateQuery.services';
 import OrdersModel from '$lib/models/orders.model';
-import omit from 'lodash/omit';
+import omit from 'lodash-es/omit';
 import { calculateOrder } from '$lib/services/orders';
 import PricelistsModel from '$lib/models/pricelists.model';
 import ContactsModel from '$lib/models/contacts.model';

@@ -2,7 +2,7 @@ import logger from '$lib/utility/logger';
 import ProductsModel from '$lib/models/products.models';
 import aggregateQuery from '$lib/services/aggregateQuery.services';
 import { postSuite } from '$lib/validation/server/products.validate';
-import { omit } from 'lodash';
+import  omit  from 'lodash-es/omit';
 import type { RequestHandler } from '@sveltejs/kit';
 
 

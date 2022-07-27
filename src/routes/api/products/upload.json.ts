@@ -1,6 +1,6 @@
 import { postSuite } from '$lib/validation/server/products.validate';
-import pickBy from 'lodash/pickBy';
-import identity from 'lodash/identity';
+import pickBy from 'lodash-es/pickBy';
+import identity from 'lodash-es/identity';
 import logger from '$lib/utility/logger';
 import type { RequestHandler } from '@sveltejs/kit';
 import ProductsModel, {

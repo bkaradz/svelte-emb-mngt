@@ -1,10 +1,10 @@
 import ContactsModel, { type ContactsDocument } from '$lib/models/contacts.model';
-import omit from 'lodash/omit';
+import omit from 'lodash-es/omit';
 import logger from '$lib/utility/logger';
 import aggregateQuery from '$lib/services/aggregateQuery.services';
 // import { postSuite } from '$lib/validation/server/contacts.validate';
-import pickBy from 'lodash/pickBy';
-import identity from 'lodash/identity';
+import pickBy from 'lodash-es/pickBy';
+import identity from 'lodash-es/identity';
 import type { RequestHandler } from '@sveltejs/kit';
 // import { toDineroObject } from '$lib/services/monetary';
 // import { dinero } from 'dinero.js';
